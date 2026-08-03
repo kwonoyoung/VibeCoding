@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>직원 명단 이메일·전화번호 검사 도구</title>
+<style>
+body{font-family:Malgun Gothic,sans-serif;background:#f3f6fa;padding:20px}
+.box{max-width:1200px;margin:auto;background:white;padding:25px;border-radius:10px}
+button{padding:10px 15px;margin:5px;background:#174a7e;color:white;border:0;border-radius:5px}
+table{width:100%;border-collapse:collapse;margin-top:20px}
+th{background:#174a7e;color:white;padding:8px}
+td{padding:8px;border-bottom:1px solid #ddd;text-align:center}
+.error{background:#ffe0e0}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>📋 직원 명단 이메일·전화번호 검사 도구</h2>
+<p>CSV UTF-8 또는 탭(Tab) 구분 파일을 불러와 검사합니다.</p>
+<input type="file" id="file">
+<button onclick="load()">불러오기</button>
+<button onclick="check()">검사하기</button>
+<button onclick="download()">결과 다운로드</button>
+<div id="summary"></div>
+<table>
+<thead><tr><th>일련번호</th><th>성명</th><th>이메일</th><th>전화번호</th><th>결과</th><th>문제</th></tr></thead>
+<tbody id="body"></tbody>
+</table>
+</div>
+<script>
+let rows=[],results=[];
+function load(){
+ const f=document.getElementById('file').files[0];
+ if(!f)return alert('파일 선택');
+ const r=new FileReader();
+ r.onload=e=>{
+  rows=[];
+  let lines=e.target.result.split(/\r?\n/);
+  lines.shift();
+  lines.forEach(x=>{
+   let c=x.includes('\t')?x.split('\t'):x.split(',');
+   if(c.length>=8) rows.push({no:c[0],name:c[5],email:c[6],phone:c[7]});
+  });
+  alert(rows.length+'건 불러오기 완료');
+ };
+ r.readAsText(f,'UTF-8');
+}
+function check(){
+ let em={},ph={};
+ rows.forEach(r=>{
+  let e=r.email.trim().toLowerCase();
+  let p=r.phone.replace(/[^0-9]/g,'');
+  em[e]=(em[e]||0)+1; ph[p]=(ph[p]||0)+1;
+ });
+ results=rows.map(r=>{
+  let p=[];
+  let e=r.email.trim().toLowerCase();
+  let n=r.phone.replace(/[^0-9]/g,'');
+  if(!r.email.trim())p.push('이메일 공란');
+  if(!r.phone.trim())p.push('전화번호 공란');
+  if(r.email.trim()&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email.trim()))p.push('이메일 형식 오류');
+  if(n.length<9||n.length>12)p.push('전화번호 형식 오류');
+  if(em[e]>1)p.push('이메일 중복');
+  if(ph[n]>1)p.push('전화번호 중복');
+  return {...r,p};
+ });
+ show(results);
+}
+function show(a){
+ body.innerHTML='';
+ a.forEach(r=>{
+  body.innerHTML+=`<tr class="${r.p.length?'error':''}"><td>${r.no}</td><td>${r.name}</td><td>${r.email}</td><td>${r.phone}</td><td>${r.p.length?'오류':'정상'}</td><td>${r.p.join(',')}</td></tr>`;
+ });
+ summary.innerHTML='검사 완료 : '+a.length+'건';
+}
+function download(){
+ let s='일련번호,성명,이메일,전화번호,결과,문제\n';
+ results.forEach(r=>s+=`${r.no},${r.name},${r.email},${r.phone},${r.p.length?'오류':'정상'},${r.p.join('|')}\n`);
+ let a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([s],{type:'text/csv;charset=utf-8'}));
+ a.download='직원명단_검사결과.csv';
+ a.click();
+}
+</script>
+</body>
+</html>
