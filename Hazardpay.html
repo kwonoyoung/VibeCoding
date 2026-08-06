@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>급여대장 위험근무수당(병) 추출기</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --navy: #244d73;
+      --blue: #4f86b5;
+      --blue-dark: #3d6f9a;
+      --blue-soft: #eaf3fa;
+      --gray-050: #f7f9fb;
+      --gray-100: #eef2f6;
+      --gray-300: #cbd5df;
+      --gray-500: #687888;
+      --gray-800: #263746;
+      --white: #fff;
+      --danger: #b64b4b;
+      --shadow: 0 10px 28px rgba(36, 77, 115, .10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--gray-800);
+      background: linear-gradient(180deg, #edf4f9 0, var(--gray-050) 260px);
+      font-family: "Malgun Gothic", "맑은 고딕", AppleGothic, sans-serif;
+      line-height: 1.5;
+    }
+
+    .topbar { height: 7px; background: linear-gradient(90deg, var(--navy), #78a9cf); }
+
+    main { width: min(1220px, calc(100% - 32px)); margin: 34px auto; }
+
+    .heading { margin-bottom: 20px; }
+    .heading h1 { margin: 0 0 7px; color: var(--navy); font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -.04em; }
+    .heading p { margin: 0; color: var(--gray-500); font-size: .93rem; }
+
+    .panel { padding: 24px; border: 1px solid #dbe4ec; border-radius: 14px; background: var(--white); box-shadow: var(--shadow); }
+
+    .upload-box {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+      padding: 18px;
+      border: 1px solid #d9e5ee;
+      border-radius: 10px;
+      background: var(--blue-soft);
+    }
+
+    label { display: block; margin-bottom: 7px; color: #35536b; font-size: .9rem; font-weight: 700; }
+    input[type="file"], input[type="search"] {
+      width: 100%;
+      min-height: 43px;
+      padding: 9px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 7px;
+      background: var(--white);
+      color: var(--gray-800);
+      font: inherit;
+    }
+    input:focus-visible, button:focus-visible { outline: 3px solid rgba(79, 134, 181, .28); outline-offset: 2px; }
+    .file-note { margin-top: 6px; color: var(--gray-500); font-size: .79rem; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 9px; margin: 18px 0; }
+    button {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      color: var(--white);
+      background: var(--blue);
+      font: 700 .92rem inherit;
+      cursor: pointer;
+      transition: background .18s, transform .08s;
+    }
+    button:hover { background: var(--blue-dark); }
+    button:active { transform: translateY(1px); }
+    button.secondary { color: var(--navy); border-color: #b9cee0; background: #f4f8fb; }
+    button.secondary:hover { background: #e7f0f7; }
+    button.clear { color: #5d6872; border-color: #ccd4db; background: #f4f5f6; }
+    button.clear:hover { color: var(--danger); background: #f9eeee; }
+
+    .search-row { display: grid; grid-template-columns: minmax(240px, 430px) 1fr; gap: 18px; align-items: end; margin-bottom: 15px; }
+    .status { padding-bottom: 10px; color: var(--gray-500); font-size: .88rem; text-align: right; }
+
+    .table-wrap { width: 100%; overflow: auto; border: 1px solid var(--gray-300); border-radius: 9px; background: var(--white); }
+    table { width: 100%; min-width: 820px; border-collapse: collapse; }
+    th, td { padding: 12px 13px; border-right: 1px solid #dce3e9; border-bottom: 1px solid #dce3e9; text-align: center; white-space: nowrap; }
+    th:last-child, td:last-child { border-right: 0; }
+    tbody tr:last-child td { border-bottom: 0; }
+    th { position: sticky; top: 0; z-index: 1; color: #294b67; background: #dfeaf3; font-size: .91rem; }
+    td { font-size: .9rem; }
+    tbody tr:nth-child(even) { background: #f8fafc; }
+    tbody tr:hover { background: #edf5fa; }
+    td.amount { text-align: right; font-variant-numeric: tabular-nums; }
+    .empty { height: 120px; color: #7a8792; white-space: normal; }
+
+    .summary { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+    .summary span { min-width: 132px; padding: 11px 15px; border: 1px solid #d4e1eb; border-radius: 8px; color: var(--navy); background: #f1f6fa; text-align: center; font-weight: 700; }
+    .privacy { margin: 16px 2px 0; color: var(--gray-500); font-size: .8rem; }
+
+    @media (max-width: 700px) {
+      main { width: min(100% - 20px, 1220px); margin: 20px auto; }
+      .panel { padding: 15px; border-radius: 10px; }
+      .upload-box, .search-row { grid-template-columns: 1fr; }
+      .upload-box button { width: 100%; }
+      .status { padding: 0; text-align: left; }
+      .actions { display: grid; grid-template-columns: 1fr 1fr; }
+      .actions .clear { grid-column: 1 / -1; }
+      .summary { justify-content: stretch; }
+      .summary span { flex: 1; min-width: 0; padding: 10px 7px; font-size: .88rem; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .topbar, .heading p, .upload-box, .actions, .search-row, .privacy { display: none; }
+      main { width: 100%; margin: 0; }
+      .panel { padding: 0; border: 0; box-shadow: none; }
+      .table-wrap { overflow: visible; border-radius: 0; }
+      table { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar"></div>
+  <main>
+    <header class="heading">
+      <h1>급여대장 위험근무수당(병) 추출기</h1>
+      <p>급여대장에서 필요한 항목만 안전하게 추출하고 엑셀 파일로 저장합니다.</p>
+    </header>
+
+    <section class="panel" aria-label="위험근무수당 추출 도구">
+      <div class="upload-box">
+        <div>
+          <label for="excelFile">급여대장 불러오기</label>
+          <input id="excelFile" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+          <div class="file-note">지원 형식: Excel 통합 문서(.xlsx) · 파일은 서버로 전송되지 않습니다.</div>
+        </div>
+        <button id="extractButton" type="button">추출하기</button>
+      </div>
+
+      <div class="actions">
+        <button id="outputButton" type="button" class="secondary">출력하기 (엑셀 저장)</button>
+        <button id="clearButton" type="button" class="clear">입력 지우기</button>
+      </div>
+
+      <div class="search-row">
+        <div>
+          <label for="orgSearch">기관명 검색</label>
+          <input id="orgSearch" type="search" placeholder="기관명의 일부를 입력하세요" autocomplete="off">
+        </div>
+        <div id="statusText" class="status" role="status" aria-live="polite">급여대장 파일을 선택해 주세요.</div>
+      </div>
+
+      <div class="table-wrap" tabindex="0" aria-label="추출 결과 표 가로 스크롤 영역">
+        <table id="resultTable">
+          <thead>
+            <tr>
+              <th scope="col">기관명</th>
+              <th scope="col">성명</th>
+              <th scope="col">생년월일</th>
+              <th scope="col">직급</th>
+              <th scope="col">위험근무수당(병)</th>
+            </tr>
+          </thead>
+          <tbody id="resultBody">
+            <tr><td class="empty" colspan="5">파일을 불러온 뒤 [추출하기]를 눌러 주세요.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="summary" aria-live="polite">
+        <span id="orgCount">기관수 0개</span>
+        <span id="personCount">인원수 0명</span>
+      </div>
+      <p class="privacy">보안 안내: 모든 파일 읽기·검색·엑셀 생성은 현재 브라우저 안에서만 처리됩니다. 생년월일 열에 주민등록번호가 있으면 뒷자리는 자동으로 마스킹됩니다.</p>
+    </section>
+  </main>
+
+  <script>
+    'use strict';
+
+    const REQUIRED_HEADERS = ['기관명', '성명', '생년월일', '직급', '위험근무수당(병)'];
+    const HEADER_ALIASES = {
+      '기관명': ['기관명', '소속기관', '소속기관명'],
+      '성명': ['성명', '이름'],
+      '생년월일': ['생년월일', '주민등록번호', '주민번호'],
+      '직급': ['직급', '직종', '직위'],
+      '위험근무수당(병)': ['위험근무수당(병)', '위험근무수당병']
+    };
+
+    const fileInput = document.getElementById('excelFile');
+    const extractButton = document.getElementById('extractButton');
+    const outputButton = document.getElementById('outputButton');
+    const clearButton = document.getElementById('clearButton');
+    const orgSearch = document.getElementById('orgSearch');
+    const resultBody = document.getElementById('resultBody');
+    const orgCount = document.getElementById('orgCount');
+    const personCount = document.getElementById('personCount');
+    const statusText = document.getElementById('statusText');
+
+    let extractedRows = [];
+    let visibleRows = [];
+
+    const normalizeHeader = value => String(value ?? '')
+      .normalize('NFKC')
+      .replace(/[\s\r\n_·:：]/g, '')
+      .toLowerCase();
+
+    function canonicalHeader(value) {
+      const normalized = normalizeHeader(value);
+      for (const canonical of REQUIRED_HEADERS) {
+        if (HEADER_ALIASES[canonical].some(alias => normalizeHeader(alias) === normalized)) return canonical;
+      }
+      return null;
+    }
+
+    function findHeaderRow(rows) {
+      let best = { index: -1, map: {}, count: 0 };
+      const scanLimit = Math.min(rows.length, 100);
+      for (let rowIndex = 0; rowIndex < scanLimit; rowIndex++) {
+        const map = {};
+        rows[rowIndex].forEach((cell, columnIndex) => {
+          const canonical = canonicalHeader(cell);
+          if (canonical && map[canonical] === undefined) map[canonical] = columnIndex;
+        });
+        const count = Object.keys(map).length;
+        if (count > best.count) best = { index: rowIndex, map, count };
+        if (count === REQUIRED_HEADERS.length) return best;
+      }
+      return best;
+    }
+
+    function safeText(value) {
+      return String(value ?? '').trim();
+    }
+
+    function maskSensitiveDate(value) {
+      const text = safeText(value);
+      if (!text) return '';
+      return text
+        .replace(/(^|\D)(\d{6})\s*[- ]?\s*([1-8])\d{6}(?=\D|$)/g, '$1$2-*******')
+        .replace(/(^|\D)(\d{8})\s*[- ]?\s*([1-8])\d{6}(?=\D|$)/g, '$1$2-*******');
+    }
+
+    function formatAmount(value) {
+      const text = safeText(value);
+      if (!text) return '';
+      const numeric = Number(text.replace(/,/g, '').replace(/\s/g, ''));
+      return Number.isFinite(numeric) ? numeric.toLocaleString('ko-KR') : text;
+    }
+
+    function addCell(rowElement, value, className = '') {
+      const cell = document.createElement('td');
+      cell.textContent = value;
+      if (className) cell.className = className;
+      rowElement.appendChild(cell);
+    }
+
+    function render(rows) {
+      visibleRows = rows;
+      resultBody.replaceChildren();
+
+      if (!rows.length) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 5;
+        cell.className = 'empty';
+        cell.textContent = extractedRows.length ? '검색 조건에 맞는 자료가 없습니다.' : '추출된 자료가 없습니다.';
+        row.appendChild(cell);
+        resultBody.appendChild(row);
+      } else {
+        const fragment = document.createDocumentFragment();
+        rows.forEach(item => {
+          const row = document.createElement('tr');
+          addCell(row, item['기관명']);
+          addCell(row, item['성명']);
+          addCell(row, item['생년월일']);
+          addCell(row, item['직급']);
+          addCell(row, formatAmount(item['위험근무수당(병)']), 'amount');
+          fragment.appendChild(row);
+        });
+        resultBody.appendChild(fragment);
+      }
+
+      const institutions = new Set(rows.map(item => safeText(item['기관명'])).filter(Boolean));
+      orgCount.textContent = `기관수 ${institutions.size.toLocaleString('ko-KR')}개`;
+      personCount.textContent = `인원수 ${rows.length.toLocaleString('ko-KR')}명`;
+    }
+
+    function readSheetRows(sheet) {
+      return XLSX.utils.sheet_to_json(sheet, {
+        header: 1,
+        defval: '',
+        raw: false,
+        blankrows: false,
+        dateNF: 'yyyy-mm-dd'
+      });
+    }
+
+    function extractFromWorkbook(workbook) {
+      const allRows = [];
+      const sheetProblems = [];
+
+      workbook.SheetNames.forEach(sheetName => {
+        const rows = readSheetRows(workbook.Sheets[sheetName]);
+        if (!rows.length) return;
+        const header = findHeaderRow(rows);
+        const missing = REQUIRED_HEADERS.filter(name => header.map[name] === undefined);
+        if (missing.length) {
+          sheetProblems.push(`${sheetName}: ${missing.join(', ')}`);
+          return;
+        }
+
+        let lastInstitution = '';
+        for (let index = header.index + 1; index < rows.length; index++) {
+          const source = rows[index];
+          const institution = safeText(source[header.map['기관명']]);
+          if (institution) lastInstitution = institution;
+          const name = safeText(source[header.map['성명']]);
+          const allowance = safeText(source[header.map['위험근무수당(병)']]);
+          if (!name && !allowance) continue;
+
+          allRows.push({
+            '기관명': institution || lastInstitution,
+            '성명': name,
+            '생년월일': maskSensitiveDate(source[header.map['생년월일']]),
+            '직급': safeText(source[header.map['직급']]),
+            '위험근무수당(병)': allowance
+          });
+        }
+      });
+
+      if (!allRows.length) {
+        const detail = sheetProblems.length
+          ? `\n\n확인된 누락 열\n- ${sheetProblems.join('\n- ')}`
+          : '';
+        throw new Error(`필수 열이 있는 자료를 찾지 못했습니다.\n필요한 열: ${REQUIRED_HEADERS.join(', ')}${detail}`);
+      }
+      return allRows;
+    }
+
+    extractButton.addEventListener('click', () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('급여대장 파일이 선택되지 않았습니다. 먼저 .xlsx 파일을 불러와 주세요.');
+        return;
+      }
+      if (!/\.xlsx$/i.test(file.name)) {
+        alert('지원하지 않는 파일 형식입니다. .xlsx 형식의 엑셀 파일을 선택해 주세요.');
+        return;
+      }
+      if (typeof XLSX === 'undefined') {
+        alert('엑셀 처리 모듈을 불러오지 못했습니다. 인터넷 연결을 확인한 뒤 페이지를 새로고침해 주세요.');
+        return;
+      }
+
+      statusText.textContent = '파일을 분석하고 있습니다…';
+      const reader = new FileReader();
+      reader.onload = event => {
+        try {
+          const workbook = XLSX.read(event.target.result, { type: 'array', cellDates: true });
+          extractedRows = extractFromWorkbook(workbook);
+          orgSearch.value = '';
+          render(extractedRows);
+          statusText.textContent = `${file.name} · ${extractedRows.length.toLocaleString('ko-KR')}건 추출 완료`;
+          alert(`추출이 완료되었습니다.\n총 ${extractedRows.length.toLocaleString('ko-KR')}명의 자료를 확인했습니다.`);
+        } catch (error) {
+          console.error(error);
+          extractedRows = [];
+          render([]);
+          statusText.textContent = '추출하지 못했습니다. 엑셀 양식을 확인해 주세요.';
+          alert(error.message || '파일을 읽는 중 오류가 발생했습니다. 엑셀 파일과 열 이름을 확인해 주세요.');
+        }
+      };
+      reader.onerror = () => {
+        statusText.textContent = '파일 읽기에 실패했습니다.';
+        alert('선택한 파일을 읽을 수 없습니다. 파일이 열리는지 확인한 뒤 다시 시도해 주세요.');
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    orgSearch.addEventListener('input', () => {
+      if (!extractedRows.length) return;
+      const keyword = safeText(orgSearch.value).toLocaleLowerCase('ko-KR');
+      const filtered = keyword
+        ? extractedRows.filter(item => safeText(item['기관명']).toLocaleLowerCase('ko-KR').includes(keyword))
+        : extractedRows;
+      render(filtered);
+      statusText.textContent = keyword
+        ? `검색 결과 ${filtered.length.toLocaleString('ko-KR')}건`
+        : `${fileInput.files[0]?.name || '급여대장'} · ${extractedRows.length.toLocaleString('ko-KR')}건 추출 완료`;
+    });
+
+    outputButton.addEventListener('click', () => {
+      if (!extractedRows.length) {
+        alert('출력할 자료가 없습니다. 먼저 급여대장을 불러오고 [추출하기]를 눌러 주세요.');
+        return;
+      }
+      if (!visibleRows.length) {
+        alert('현재 검색 조건에 맞는 출력 자료가 없습니다. 기관명 검색어를 확인해 주세요.');
+        return;
+      }
+
+      const exportRows = visibleRows.map(item => ({
+        '기관명': item['기관명'],
+        '성명': item['성명'],
+        '생년월일': item['생년월일'],
+        '직급': item['직급'],
+        '위험근무수당(병)': item['위험근무수당(병)']
+      }));
+      const sheet = XLSX.utils.json_to_sheet(exportRows, { header: REQUIRED_HEADERS });
+      sheet['!cols'] = [{ wch: 28 }, { wch: 14 }, { wch: 18 }, { wch: 16 }, { wch: 22 }];
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheet, '위험근무수당(병)');
+      const today = new Date();
+      const dateText = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+      XLSX.writeFile(workbook, `위험근무수당_병_추출결과_${dateText}.xlsx`, { compression: true });
+      statusText.textContent = `현재 표시된 ${visibleRows.length.toLocaleString('ko-KR')}건을 엑셀로 저장했습니다.`;
+    });
+
+    clearButton.addEventListener('click', () => {
+      fileInput.value = '';
+      orgSearch.value = '';
+      extractedRows = [];
+      visibleRows = [];
+      render([]);
+      resultBody.querySelector('.empty').textContent = '파일을 불러온 뒤 [추출하기]를 눌러 주세요.';
+      statusText.textContent = '급여대장 파일을 선택해 주세요.';
+    });
+
+    fileInput.addEventListener('change', () => {
+      statusText.textContent = fileInput.files[0]
+        ? `${fileInput.files[0].name} 파일이 선택되었습니다.`
+        : '급여대장 파일을 선택해 주세요.';
+    });
+  </script>
+</body>
+</html>
