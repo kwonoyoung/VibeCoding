@@ -1,79 +1,13 @@
 name: Restore Three VibeCoding Tool Pages
 
 on:
-  push:
-    paths:
-      - '.github/workflows/inject-home-once.yml'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  restore-three-pages:
+  no-op:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
-
-      - name: Restore known-good versions and fix only home links
-        shell: python
-        run: |
-          from pathlib import Path
-          import subprocess, re
-
-          GOOD = '0be0f14749931510408ea91c37d369a4dce6cdc7'
-          files = ['hazardpay2.html', 'end.html', 'person.html']
-
-          subprocess.run(['git', 'checkout', GOOD, '--', *files], check=True)
-
-          HOME = '/VibeCoding/index.html?home=latest-20260807-2352'
-
-          for name in files:
-              path = Path(name)
-              text = path.read_text(encoding='utf-8')
-
-              # Only change existing home anchors. Do not inject scripts into these
-              # files because their embedded SheetJS contains HTML-like strings.
-              text = re.sub(
-                  r'(<a\b(?=[^>]*\bid=["\']vibecoding-home-btn["\'])[^>]*\bhref=)["\'][^"\']*["\']',
-                  lambda m: m.group(1) + '"' + HOME + '"',
-                  text,
-                  flags=re.I
-              )
-              text = re.sub(
-                  r'(<a\b(?=[^>]*\bdata-vibecoding-home=["\']persistent["\'])[^>]*\bhref=)["\'][^"\']*["\']',
-                  lambda m: m.group(1) + '"' + HOME + '"',
-                  text,
-                  flags=re.I
-              )
-              text = re.sub(
-                  r'(<a\b[^>]*class=["\'][^"\']*ghost[^"\']*["\'][^>]*\bhref=)["\'](?:\./|/VibeCoding/?|/VibeCoding/index\.html[^"\']*)["\']([^>]*>\s*VibeCoding\s*🏠\s*</a>)',
-                  lambda m: m.group(1) + '"' + HOME + '"' + m.group(2),
-                  text,
-                  flags=re.I
-              )
-
-              # Ensure no recently injected helper remains.
-              text = re.sub(
-                  r'\s*<script\b[^>]*data-vibecoding-latest-home=["\']1["\'][^>]*></script>\s*',
-                  '\n',
-                  text,
-                  flags=re.I
-              )
-              path.write_text(text, encoding='utf-8', newline='')
-              print('RESTORED:', name)
-
-      - name: Commit restored pages
-        run: |
-          if git diff --quiet; then
-            echo "No changes required."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add hazardpay2.html end.html person.html
-          git commit -m "Restore three inline SheetJS tool pages"
-          git push
+      - run: echo "Manual maintenance workflow only."
