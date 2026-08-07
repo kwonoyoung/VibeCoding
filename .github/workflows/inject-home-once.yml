@@ -1,4 +1,4 @@
-name: Apply Common Navigation And Author Branding
+name: Apply Pure Inspired Theme To All Pages
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  apply-branding:
+  apply-theme:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,13 +17,14 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Apply common author and footer branding
+      - name: Attach shared premium dark theme to every HTML page
         shell: python
         run: |
           from pathlib import Path
           import re
 
-          tool_files = [
+          files = [
+              'index.html',
               'Hazardpay.html',
               'ai.html',
               'choga.html',
@@ -35,131 +36,27 @@ jobs:
               'person.html',
               'ret.html',
           ]
-          all_files = ['index.html'] + tool_files
 
-          home_marker = 'data-vibecoding-home="persistent"'
-          home_ui = r'''
-          <!-- VibeCoding common home navigation -->
-          <style id="vibecoding-home-style" data-vibecoding-home="persistent">
-            #vibecoding-home-btn{
-              position:fixed;right:18px;bottom:18px;z-index:2147483647;
-              display:inline-flex;align-items:center;justify-content:center;gap:7px;
-              min-width:82px;height:44px;padding:0 16px;
-              border:1px solid rgba(255,255,255,.42);border-radius:999px;
-              background:rgba(9,52,78,.94);color:#fff!important;
-              box-shadow:0 10px 28px rgba(0,0,0,.20);
-              backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-              text-decoration:none!important;
-              font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;
-              letter-spacing:-.02em;transition:transform .16s ease,box-shadow .16s ease,background .16s ease;
-            }
-            #vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75;box-shadow:0 14px 32px rgba(0,0,0,.24)}
-            #vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
-            @media(max-width:640px){#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
-            @media print{#vibecoding-home-btn{display:none!important}}
-          </style>
-          <a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
-          '''.strip()
-
-          branding_style = r'''
-          <!-- VibeCoding common author branding start -->
-          <style id="vibecoding-author-branding-style">
-            #vibecoding-author-credit{
-              position:absolute;top:18px;right:20px;z-index:2147483646;
-              display:inline-flex;align-items:center;justify-content:center;gap:9px;
-              min-height:40px;padding:8px 16px;
-              border:1px solid rgba(255,255,255,.36);border-radius:999px;
-              background:linear-gradient(135deg,rgba(6,46,76,.96),rgba(0,143,135,.94));
-              color:#fff!important;box-shadow:0 9px 26px rgba(6,46,76,.20);
-              backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-              font:800 13px/1.25 Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important;
-              letter-spacing:-.02em;white-space:nowrap;pointer-events:none;
-            }
-            #vibecoding-author-credit::before{
-              content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;
-              background:#54ddd1;box-shadow:0 0 0 4px rgba(84,221,209,.18);
-            }
-            #vibecoding-webdesign-credit{
-              position:relative;z-index:2;width:min(1220px,calc(100% - 32px));
-              margin:46px auto 0;padding:20px 16px 26px;
-              border-top:1px solid rgba(117,143,158,.22);
-              color:#71828d;text-align:center;
-              font:700 12px/1.6 Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important;
-              letter-spacing:.015em;
-            }
-            @media(max-width:640px){
-              #vibecoding-author-credit{top:10px;right:10px;min-height:36px;padding:7px 12px;font-size:11.5px;gap:7px}
-              #vibecoding-author-credit::before{width:7px;height:7px;flex-basis:7px}
-              #vibecoding-webdesign-credit{width:min(100% - 20px,1220px);margin-top:32px;padding:17px 10px 22px;font-size:11px}
-            }
-            @media print{#vibecoding-author-credit{display:none!important}}
-          </style>
-          <!-- VibeCoding common author branding end -->
-          '''.strip()
-
-          author_badge = '<div id="vibecoding-author-credit" aria-label="작성자 오춘기 권오영">오춘기 권오영</div>'
-          footer_credit = '<div id="vibecoding-webdesign-credit">Web design by Kwon O Young.</div>'
-
-          style_re = re.compile(r'\s*<!-- VibeCoding common author branding start -->.*?<!-- VibeCoding common author branding end -->\s*', re.I | re.S)
-          badge_re = re.compile(r'\s*<div\s+id=["\']vibecoding-author-credit["\'][^>]*>.*?</div>\s*', re.I | re.S)
-          footer_re = re.compile(r'\s*<div\s+id=["\']vibecoding-webdesign-credit["\'][^>]*>.*?</div>\s*', re.I | re.S)
-          legacy_hero_re = re.compile(r'\s*<div\s+class=["\'][^"\']*hero-credit[^"\']*["\'][^>]*>\s*오춘기\s+권오영\s*</div>\s*', re.I | re.S)
-          legacy_program_re = re.compile(r'\s*<footer\b[^>]*class=["\'][^"\']*program-by[^"\']*["\'][^>]*>.*?Kwon\s+O\s+Young.*?</footer>\s*', re.I | re.S)
+          marker = 'data-vibecoding-theme="pure-dark"'
+          theme_link = '<link rel="stylesheet" href="./pure-theme.css?v=20260807" data-vibecoding-theme="pure-dark">'
+          theme_re = re.compile(r'\s*<link\b[^>]*data-vibecoding-theme=["\']pure-dark["\'][^>]*>\s*', re.I)
 
           changed = []
-          for name in all_files:
+          for name in files:
               path = Path(name)
               if not path.exists():
                   print(f'SKIP missing: {name}')
                   continue
 
               original = path.read_text(encoding='utf-8')
-              text = original
+              text = theme_re.sub('\n', original)
 
-              # Remove previous common branding and older author/footer variants so the result is unique.
-              text = style_re.sub('\n', text)
-              text = badge_re.sub('\n', text)
-              text = footer_re.sub('\n', text)
-              text = legacy_hero_re.sub('\n', text)
-              text = legacy_program_re.sub('\n', text)
-
-              # Add the shared branding stylesheet at the end of <head>.
-              head_matches = list(re.finditer(r'</head\s*>', text, flags=re.I))
-              if head_matches:
-                  pos = head_matches[-1].start()
-                  text = text[:pos] + '\n' + branding_style + '\n' + text[pos:]
+              heads = list(re.finditer(r'</head\s*>', text, flags=re.I))
+              if heads:
+                  pos = heads[-1].start()
+                  text = text[:pos] + '\n' + theme_link + '\n' + text[pos:]
               else:
-                  text = branding_style + '\n' + text
-
-              # Put the author badge at the very top of every page.
-              body_match = re.search(r'<body\b[^>]*>', text, flags=re.I)
-              if body_match:
-                  pos = body_match.end()
-                  text = text[:pos] + '\n' + author_badge + text[pos:]
-              else:
-                  text = author_badge + '\n' + text
-
-              # Put the web-design credit after all ordinary page content but before common fixed navigation.
-              home_comment = re.search(r'<!--\s*VibeCoding common home navigation\s*-->', text, flags=re.I)
-              if home_comment:
-                  pos = home_comment.start()
-                  text = text[:pos] + '\n' + footer_credit + '\n\n' + text[pos:]
-              else:
-                  body_closes = list(re.finditer(r'</body\s*>', text, flags=re.I))
-                  if body_closes:
-                      pos = body_closes[-1].start()
-                      text = text[:pos] + '\n' + footer_credit + '\n' + text[pos:]
-                  else:
-                      text += '\n' + footer_credit + '\n'
-
-              # Preserve the common home button on every tool page.
-              if name != 'index.html' and home_marker not in text:
-                  body_closes = list(re.finditer(r'</body\s*>', text, flags=re.I))
-                  if body_closes:
-                      pos = body_closes[-1].start()
-                      text = text[:pos] + '\n' + home_ui + '\n' + text[pos:]
-                  else:
-                      text += '\n' + home_ui + '\n'
+                  text = theme_link + '\n' + text
 
               if text != original:
                   path.write_text(text, encoding='utf-8', newline='')
@@ -170,7 +67,7 @@ jobs:
 
           print(f'Changed {len(changed)} file(s): {changed}')
 
-      - name: Commit common branding
+      - name: Commit shared theme links
         run: |
           if git diff --quiet; then
             echo "No changes required."
@@ -179,5 +76,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html Hazardpay.html ai.html choga.html end.html gum.html gumgun.html hazardpay2.html parental-leave-calculator.html person.html ret.html
-          git commit -m "Add author and web design credit to all pages"
+          git commit -m "Apply premium dark theme to all VibeCoding pages"
           git push
