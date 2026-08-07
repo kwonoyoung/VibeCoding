@@ -58,8 +58,43 @@
     @media(max-width:960px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-inner{padding-top:28px}.topline{margin-bottom:24px}}
     @media(max-width:620px){.hero-inner,.wrap{width:min(100% - 22px,1180px)}.hero-inner{padding:22px 0 28px}.topline{align-items:flex-start}.brand{font-size:13px}.brand-mark{width:40px;height:40px}.count{font-size:10px;padding:7px 10px}.hero h1{font-size:31px}.hero p{font-size:12px}.quick{align-items:flex-start}.quick span{display:none}.grid{grid-template-columns:1fr}.tool{min-height:154px}.section-head{align-items:center}.section-title h2{font-size:17px}}
   </style>
+
+<!-- VibeCoding common author branding start -->
+<style id="vibecoding-author-branding-style">
+  #vibecoding-author-credit{
+    position:absolute;top:18px;right:20px;z-index:2147483646;
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    min-height:40px;padding:8px 16px;
+    border:1px solid rgba(255,255,255,.36);border-radius:999px;
+    background:linear-gradient(135deg,rgba(6,46,76,.96),rgba(0,143,135,.94));
+    color:#fff!important;box-shadow:0 9px 26px rgba(6,46,76,.20);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    font:800 13px/1.25 Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important;
+    letter-spacing:-.02em;white-space:nowrap;pointer-events:none;
+  }
+  #vibecoding-author-credit::before{
+    content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;
+    background:#54ddd1;box-shadow:0 0 0 4px rgba(84,221,209,.18);
+  }
+  #vibecoding-webdesign-credit{
+    position:relative;z-index:2;width:min(1220px,calc(100% - 32px));
+    margin:46px auto 0;padding:20px 16px 26px;
+    border-top:1px solid rgba(117,143,158,.22);
+    color:#71828d;text-align:center;
+    font:700 12px/1.6 Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important;
+    letter-spacing:.015em;
+  }
+  @media(max-width:640px){
+    #vibecoding-author-credit{top:10px;right:10px;min-height:36px;padding:7px 12px;font-size:11.5px;gap:7px}
+    #vibecoding-author-credit::before{width:7px;height:7px;flex-basis:7px}
+    #vibecoding-webdesign-credit{width:min(100% - 20px,1220px);margin-top:32px;padding:17px 10px 22px;font-size:11px}
+  }
+  @media print{#vibecoding-author-credit{display:none!important}}
+</style>
+<!-- VibeCoding common author branding end -->
 </head>
 <body>
+<div id="vibecoding-author-credit" aria-label="작성자 오춘기 권오영">오춘기 권오영</div>
   <header class="hero">
     <div class="hero-inner">
       <div class="topline">
@@ -151,5 +186,7 @@
       });
     })();
   </script>
+
+<div id="vibecoding-webdesign-credit">Web design by Kwon O Young.</div>
 </body>
 </html>
