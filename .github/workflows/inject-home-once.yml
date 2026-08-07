@@ -1,4 +1,4 @@
-name: Apply Pure Inspired Theme To All Pages
+name: Roll Back Pure Inspired Theme
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  apply-theme:
+  rollback-theme:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,7 +17,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Attach shared premium dark theme to every HTML page
+      - name: Remove Pure-inspired shared theme from every HTML page
         shell: python
         run: |
           from pathlib import Path
@@ -37,37 +37,26 @@ jobs:
               'ret.html',
           ]
 
-          marker = 'data-vibecoding-theme="pure-dark"'
-          theme_link = '<link rel="stylesheet" href="./pure-theme.css?v=20260807" data-vibecoding-theme="pure-dark">'
           theme_re = re.compile(r'\s*<link\b[^>]*data-vibecoding-theme=["\']pure-dark["\'][^>]*>\s*', re.I)
-
           changed = []
+
           for name in files:
               path = Path(name)
               if not path.exists():
                   print(f'SKIP missing: {name}')
                   continue
-
               original = path.read_text(encoding='utf-8')
               text = theme_re.sub('\n', original)
-
-              heads = list(re.finditer(r'</head\s*>', text, flags=re.I))
-              if heads:
-                  pos = heads[-1].start()
-                  text = text[:pos] + '\n' + theme_link + '\n' + text[pos:]
-              else:
-                  text = theme_link + '\n' + text
-
               if text != original:
                   path.write_text(text, encoding='utf-8', newline='')
                   changed.append(name)
-                  print(f'UPDATED: {name}')
+                  print(f'RESTORED: {name}')
               else:
-                  print(f'OK unchanged: {name}')
+                  print(f'OK no Pure theme link: {name}')
 
-          print(f'Changed {len(changed)} file(s): {changed}')
+          print(f'Restored {len(changed)} file(s): {changed}')
 
-      - name: Commit shared theme links
+      - name: Commit restored page designs
         run: |
           if git diff --quiet; then
             echo "No changes required."
@@ -76,5 +65,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html Hazardpay.html ai.html choga.html end.html gum.html gumgun.html hazardpay2.html parental-leave-calculator.html person.html ret.html
-          git commit -m "Apply premium dark theme to all VibeCoding pages"
+          git commit -m "Restore VibeCoding design before Pure theme"
           git push
