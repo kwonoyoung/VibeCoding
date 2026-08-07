@@ -1,4 +1,4 @@
-name: Inject Home Button Into Tool Pages
+name: Apply Common Navigation And Author Branding
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  inject-home:
+  apply-branding:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,13 +17,13 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Add persistent home button to tool pages
+      - name: Apply common author and footer branding
         shell: python
         run: |
           from pathlib import Path
           import re
 
-          files = [
+          tool_files = [
               'Hazardpay.html',
               'ai.html',
               'choga.html',
@@ -35,9 +35,10 @@ jobs:
               'person.html',
               'ret.html',
           ]
+          all_files = ['index.html'] + tool_files
 
-          marker = 'data-vibecoding-home="persistent"'
-          ui = r'''
+          home_marker = 'data-vibecoding-home="persistent"'
+          home_ui = r'''
           <!-- VibeCoding common home navigation -->
           <style id="vibecoding-home-style" data-vibecoding-home="persistent">
             #vibecoding-home-btn{
@@ -60,29 +61,116 @@ jobs:
           <a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
           '''.strip()
 
+          branding_style = r'''
+          <!-- VibeCoding common author branding start -->
+          <style id="vibecoding-author-branding-style">
+            #vibecoding-author-credit{
+              position:absolute;top:18px;right:20px;z-index:2147483646;
+              display:inline-flex;align-items:center;justify-content:center;gap:9px;
+              min-height:40px;padding:8px 16px;
+              border:1px solid rgba(255,255,255,.36);border-radius:999px;
+              background:linear-gradient(135deg,rgba(6,46,76,.96),rgba(0,143,135,.94));
+              color:#fff!important;box-shadow:0 9px 26px rgba(6,46,76,.20);
+              backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+              font:800 13px/1.25 Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important;
+              letter-spacing:-.02em;white-space:nowrap;pointer-events:none;
+            }
+            #vibecoding-author-credit::before{
+              content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;
+              background:#54ddd1;box-shadow:0 0 0 4px rgba(84,221,209,.18);
+            }
+            #vibecoding-webdesign-credit{
+              position:relative;z-index:2;width:min(1220px,calc(100% - 32px));
+              margin:46px auto 0;padding:20px 16px 26px;
+              border-top:1px solid rgba(117,143,158,.22);
+              color:#71828d;text-align:center;
+              font:700 12px/1.6 Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif!important;
+              letter-spacing:.015em;
+            }
+            @media(max-width:640px){
+              #vibecoding-author-credit{top:10px;right:10px;min-height:36px;padding:7px 12px;font-size:11.5px;gap:7px}
+              #vibecoding-author-credit::before{width:7px;height:7px;flex-basis:7px}
+              #vibecoding-webdesign-credit{width:min(100% - 20px,1220px);margin-top:32px;padding:17px 10px 22px;font-size:11px}
+            }
+            @media print{#vibecoding-author-credit{display:none!important}}
+          </style>
+          <!-- VibeCoding common author branding end -->
+          '''.strip()
+
+          author_badge = '<div id="vibecoding-author-credit" aria-label="작성자 오춘기 권오영">오춘기 권오영</div>'
+          footer_credit = '<div id="vibecoding-webdesign-credit">Web design by Kwon O Young.</div>'
+
+          style_re = re.compile(r'\s*<!-- VibeCoding common author branding start -->.*?<!-- VibeCoding common author branding end -->\s*', re.I | re.S)
+          badge_re = re.compile(r'\s*<div\s+id=["\']vibecoding-author-credit["\'][^>]*>.*?</div>\s*', re.I | re.S)
+          footer_re = re.compile(r'\s*<div\s+id=["\']vibecoding-webdesign-credit["\'][^>]*>.*?</div>\s*', re.I | re.S)
+          legacy_hero_re = re.compile(r'\s*<div\s+class=["\'][^"\']*hero-credit[^"\']*["\'][^>]*>\s*오춘기\s+권오영\s*</div>\s*', re.I | re.S)
+          legacy_program_re = re.compile(r'\s*<footer\b[^>]*class=["\'][^"\']*program-by[^"\']*["\'][^>]*>.*?Kwon\s+O\s+Young.*?</footer>\s*', re.I | re.S)
+
           changed = []
-          for name in files:
+          for name in all_files:
               path = Path(name)
               if not path.exists():
                   print(f'SKIP missing: {name}')
                   continue
-              text = path.read_text(encoding='utf-8')
-              if marker in text:
-                  print(f'OK already has home: {name}')
-                  continue
-              matches = list(re.finditer(r'</body\s*>', text, flags=re.I))
-              if matches:
-                  pos = matches[-1].start()
-                  text = text[:pos] + '\n' + ui + '\n' + text[pos:]
+
+              original = path.read_text(encoding='utf-8')
+              text = original
+
+              # Remove previous common branding and older author/footer variants so the result is unique.
+              text = style_re.sub('\n', text)
+              text = badge_re.sub('\n', text)
+              text = footer_re.sub('\n', text)
+              text = legacy_hero_re.sub('\n', text)
+              text = legacy_program_re.sub('\n', text)
+
+              # Add the shared branding stylesheet at the end of <head>.
+              head_matches = list(re.finditer(r'</head\s*>', text, flags=re.I))
+              if head_matches:
+                  pos = head_matches[-1].start()
+                  text = text[:pos] + '\n' + branding_style + '\n' + text[pos:]
               else:
-                  text += '\n' + ui + '\n'
-              path.write_text(text, encoding='utf-8', newline='')
-              changed.append(name)
-              print(f'UPDATED: {name}')
+                  text = branding_style + '\n' + text
 
-          print(f'Changed {len(changed)} file(s).')
+              # Put the author badge at the very top of every page.
+              body_match = re.search(r'<body\b[^>]*>', text, flags=re.I)
+              if body_match:
+                  pos = body_match.end()
+                  text = text[:pos] + '\n' + author_badge + text[pos:]
+              else:
+                  text = author_badge + '\n' + text
 
-      - name: Commit injected buttons
+              # Put the web-design credit after all ordinary page content but before common fixed navigation.
+              home_comment = re.search(r'<!--\s*VibeCoding common home navigation\s*-->', text, flags=re.I)
+              if home_comment:
+                  pos = home_comment.start()
+                  text = text[:pos] + '\n' + footer_credit + '\n\n' + text[pos:]
+              else:
+                  body_closes = list(re.finditer(r'</body\s*>', text, flags=re.I))
+                  if body_closes:
+                      pos = body_closes[-1].start()
+                      text = text[:pos] + '\n' + footer_credit + '\n' + text[pos:]
+                  else:
+                      text += '\n' + footer_credit + '\n'
+
+              # Preserve the common home button on every tool page.
+              if name != 'index.html' and home_marker not in text:
+                  body_closes = list(re.finditer(r'</body\s*>', text, flags=re.I))
+                  if body_closes:
+                      pos = body_closes[-1].start()
+                      text = text[:pos] + '\n' + home_ui + '\n' + text[pos:]
+                  else:
+                      text += '\n' + home_ui + '\n'
+
+              if text != original:
+                  path.write_text(text, encoding='utf-8', newline='')
+                  changed.append(name)
+                  print(f'UPDATED: {name}')
+              else:
+                  print(f'OK unchanged: {name}')
+
+          print(f'Changed {len(changed)} file(s): {changed}')
+
+      - name: Commit common branding
         run: |
           if git diff --quiet; then
             echo "No changes required."
@@ -90,6 +178,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Hazardpay.html ai.html choga.html end.html gum.html gumgun.html hazardpay2.html parental-leave-calculator.html person.html ret.html
-          git commit -m "Add home button to all tool pages"
+          git add index.html Hazardpay.html ai.html choga.html end.html gum.html gumgun.html hazardpay2.html parental-leave-calculator.html person.html ret.html
+          git commit -m "Add author and web design credit to all pages"
           git push
