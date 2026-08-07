@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글로벌 주요 AI 및 AI 인프라/에이전트 기업 현황</title>
+<style>
+:root {
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#1e293b;
+  --muted:#64748b;
+  --line:#e2e8f0;
+  --primary:#4f46e5;
+  --primary2:#7c3aed;
+  --soft:#eef2ff;
+  --shadow:0 10px 30px rgba(15,23,42,.08);
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:"Pretendard","Noto Sans KR","Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(79,70,229,.08), transparent 32%),
+    radial-gradient(circle at top right, rgba(124,58,237,.07), transparent 28%),
+    var(--bg);
+  color:var(--text);
+}
+.container {
+  max-width:1400px;
+  margin:0 auto;
+  padding:32px 20px 60px;
+}
+.header {
+  background:linear-gradient(135deg,#111827,#312e81 55%,#5b21b6);
+  color:#fff;
+  border-radius:24px;
+  padding:30px;
+  box-shadow:var(--shadow);
+}
+.header-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:999px;
+  padding:7px 12px;
+  font-size:13px;
+  font-weight:700;
+}
+.header h1 {
+  margin:14px 0 10px;
+  font-size:34px;
+  letter-spacing:-.04em;
+}
+.header p {
+  margin:0;
+  color:#dbeafe;
+  line-height:1.7;
+  font-size:15px;
+}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:22px;
+}
+.stat {
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:16px;
+  padding:16px;
+}
+.stat .num { font-size:26px; font-weight:800; }
+.stat .label { margin-top:4px; font-size:12px; color:#dbeafe; }
+
+.toolbar {
+  margin-top:18px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  align-items:center;
+  box-shadow:var(--shadow);
+}
+.search-wrap {
+  position:relative;
+  flex:1 1 340px;
+}
+.search-wrap input {
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px 12px 42px;
+  font-size:14px;
+  outline:none;
+}
+.search-wrap input:focus {
+  border-color:#818cf8;
+  box-shadow:0 0 0 3px rgba(99,102,241,.12);
+}
+.search-icon {
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+}
+.filters {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.filter-btn {
+  border:1px solid var(--line);
+  background:#fff;
+  color:#334155;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.18s;
+}
+.filter-btn:hover { transform:translateY(-1px); }
+.filter-btn.active {
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  color:#fff;
+  border-color:transparent;
+}
+.summary-line {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin:18px 2px 10px;
+  color:var(--muted);
+  font-size:13px;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.card {
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 5px 18px rgba(15,23,42,.05);
+  transition:.18s ease;
+}
+.card:hover {
+  transform:translateY(-3px);
+  box-shadow:0 14px 28px rgba(15,23,42,.10);
+}
+.card-top {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+.company {
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.03em;
+}
+.country {
+  display:inline-flex;
+  background:var(--soft);
+  color:#4338ca;
+  border:1px solid #dbeafe;
+  padding:6px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.service {
+  margin-top:10px;
+  color:#475569;
+  font-size:14px;
+  line-height:1.6;
+  min-height:44px;
+}
+.meta {
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px dashed var(--line);
+}
+.meta-label {
+  color:#94a3b8;
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:5px;
+}
+.meta-value {
+  color:#334155;
+  font-size:13px;
+  font-weight:700;
+}
+.link-btn {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  width:100%;
+  margin-top:16px;
+  padding:11px 13px;
+  border-radius:11px;
+  text-decoration:none;
+  color:#fff;
+  font-weight:800;
+  font-size:13px;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+}
+.empty {
+  display:none;
+  background:#fff;
+  border:1px dashed #cbd5e1;
+  border-radius:16px;
+  padding:40px;
+  text-align:center;
+  color:var(--muted);
+  grid-column:1/-1;
+}
+.notice {
+  margin-top:18px;
+  background:#fffbeb;
+  border:1px solid #fde68a;
+  border-radius:14px;
+  padding:13px 15px;
+  color:#854d0e;
+  font-size:12px;
+  line-height:1.6;
+}
+.footer {
+  text-align:center;
+  color:#94a3b8;
+  font-size:12px;
+  padding-top:28px;
+}
+@media (max-width:1050px) {
+  .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .stats { grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:680px) {
+  .container { padding:16px 12px 40px; }
+  .header { padding:22px 18px; border-radius:18px; }
+  .header h1 { font-size:27px; }
+  .grid { grid-template-columns:1fr; }
+  .stats { grid-template-columns:repeat(2,1fr); }
+  .toolbar { padding:12px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <section class="header">
+    <div class="header-badge">✦ AI COMPANY DIRECTORY</div>
+    <h1>글로벌 주요 AI 및 AI 인프라/에이전트 기업 현황</h1>
+    <p>주요 국가별 AI 기업과 대표 AI 서비스, 대표자 및 공식 서비스 바로가기 링크를 한눈에 확인할 수 있습니다.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="num" id="totalCompanies">19</div><div class="label">전체 기업</div></div>
+      <div class="stat"><div class="num">4</div><div class="label">국가/지역</div></div>
+      <div class="stat"><div class="num">AI</div><div class="label">AI / Agent / Infra</div></div>
+      <div class="stat"><div class="num">2026</div><div class="label">정리 기준</div></div>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="searchInput" type="text" placeholder="회사명, 서비스명, 대표자 검색">
+    </div>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-country="전체">전체</button>
+      <button class="filter-btn" data-country="미국">미국</button>
+      <button class="filter-btn" data-country="중국">중국</button>
+      <button class="filter-btn" data-country="한국">한국</button>
+      <button class="filter-btn" data-country="싱가포르">싱가포르</button>
+    </div>
+  </section>
+
+  <div class="summary-line">
+    <span id="resultText">전체 19개 기업</span>
+    <span>기업 카드를 클릭하지 않고 바로가기 버튼으로 이동할 수 있습니다.</span>
+  </div>
+
+  <section class="grid" id="companyGrid"></section>
+
+  <div class="notice">
+    ※ 이 페이지의 기업명, 서비스명, 대표자 및 링크 정보는 사용자가 제공한 목록을 기준으로 구성되었습니다.
+    실제 이용 전에는 각 기업의 공식 홈페이지 및 최신 공시/공지에서 변경 여부를 다시 확인하세요.
+  </div>
+
+  <div class="footer">AI 기업정보 요약 · Single HTML</div>
+</div>
+
+<script>
+const companies = [{"country": "미국", "company": "OpenAI", "service": "ChatGPT, GPT 시리즈", "ceo": "샘 알트만 (Sam Altman)", "url": "https://openai.com/"}, {"country": "미국", "company": "Google", "service": "Gemini, Google AI Studio", "ceo": "순다르 피차이 (Sundar Pichai)", "url": "https://aistudio.google.com/"}, {"country": "미국", "company": "Anthropic", "service": "Claude 시리즈", "ceo": "다리오 아모데이 (Dario Amodei)", "url": "https://www.anthropic.com/"}, {"country": "미국", "company": "Microsoft", "service": "Copilot", "ceo": "사티아 나델라 (Satya Nadella)", "url": "https://copilot.microsoft.com/"}, {"country": "미국", "company": "GitHub", "service": "GitHub Copilot", "ceo": "토마스 돔케 (Thomas Dohmke)", "url": "https://github.com/"}, {"country": "미국", "company": "xAI", "service": "Grok", "ceo": "일론 머스크 (Elon Musk)", "url": "https://x.ai/"}, {"country": "미국", "company": "Perplexity", "service": "Perplexity", "ceo": "아라빈드 스리니바스 (Aravind Srinivas)", "url": "https://www.perplexity.ai/"}, {"country": "미국", "company": "Supabase", "service": "Supabase Vector, AI 백엔드", "ceo": "폴 코플스톤 (Paul Copplestone)", "url": "https://supabase.com/"}, {"country": "싱가포르", "company": "Manus AI", "service": "Manus", "ceo": "샤오 홍 (Red Xiao)", "url": "https://manus.im/"}, {"country": "중국", "company": "바이두 (Baidu)", "service": "Ernie Bot / 어니봇", "ceo": "로빈 리 (이옌훙)", "url": "https://yiyan.baidu.com/"}, {"country": "중국", "company": "알리바바 (Alibaba)", "service": "Tongyi Qianwen / 퉁이치엔원", "ceo": "에디 우 (우융밍)", "url": "https://tongyi.aliyun.com/"}, {"country": "중국", "company": "텐센트 (Tencent)", "service": "Hunyuan / 훈위안", "ceo": "포니 마 (마화텅)", "url": "https://hunyuan.tencent.com/"}, {"country": "중국", "company": "바이트댄스 (ByteDance)", "service": "Doubao / 더우바오", "ceo": "량루보 (Liang Rubo)", "url": "https://www.doubao.com/"}, {"country": "중국", "company": "딥시크 (DeepSeek)", "service": "DeepSeek 시리즈", "ceo": "량원펑 (Liang Wenfeng)", "url": "https://www.deepseek.com/"}, {"country": "중국", "company": "문샷 AI (Moonshot AI)", "service": "Kimi / 키미", "ceo": "양즈린 (Yang Zhilin)", "url": "https://kimi.moonshot.cn/"}, {"country": "중국", "company": "지푸 AI (Zhipu AI)", "service": "ChatGLM", "ceo": "장펑 (Zhang Peng)", "url": "https://chatglm.cn/"}, {"country": "한국", "company": "네이버 (NAVER)", "service": "HyperCLOVA X, CLOVA", "ceo": "최수연", "url": "https://clova.ai/"}, {"country": "한국", "company": "업스테이지 (Upstage)", "service": "Solar / 솔라", "ceo": "김성훈", "url": "https://www.upstage.ai/"}, {"country": "한국", "company": "미리디 (Miridih)", "service": "미리캔버스 AI", "ceo": "강창석", "url": "https://www.miricanvas.com/"}];
+
+const grid = document.getElementById('companyGrid');
+const searchInput = document.getElementById('searchInput');
+const resultText = document.getElementById('resultText');
+const filterButtons = [...document.querySelectorAll('.filter-btn')];
+let selectedCountry = '전체';
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, s => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[s]));
+}
+
+function render() {
+  const q = searchInput.value.trim().toLowerCase();
+
+  const filtered = companies.filter(item => {
+    const countryOk = selectedCountry === '전체' || item.country === selectedCountry;
+    const searchText = `${item.company} ${item.service} ${item.ceo} ${item.country}`.toLowerCase();
+    const searchOk = !q || searchText.includes(q);
+    return countryOk && searchOk;
+  });
+
+  resultText.textContent = `${selectedCountry === '전체' ? '전체' : selectedCountry} ${filtered.length}개 기업`;
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty" style="display:block">검색 조건에 맞는 기업이 없습니다.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(item => `
+    <article class="card">
+      <div class="card-top">
+        <div class="company">${escapeHtml(item.company)}</div>
+        <div class="country">${escapeHtml(item.country)}</div>
+      </div>
+
+      <div class="service">${escapeHtml(item.service)}</div>
+
+      <div class="meta">
+        <div class="meta-label">대표자</div>
+        <div class="meta-value">${escapeHtml(item.ceo)}</div>
+      </div>
+
+      <a class="link-btn" href="${item.url}" target="_blank" rel="noopener noreferrer">
+        공식 서비스 바로가기 ↗
+      </a>
+    </article>
+  `).join('');
+}
+
+filterButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCountry = btn.dataset.country;
+    render();
+  });
+});
+
+searchInput.addEventListener('input', render);
+render();
+</script>
+</body>
+</html>
