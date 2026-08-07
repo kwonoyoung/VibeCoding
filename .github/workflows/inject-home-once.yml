@@ -1,4 +1,4 @@
-name: Clean Up VibeCoding Home Page
+name: Fix VibeCoding Home Navigation
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  clean-home:
+  fix-home-navigation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,65 +17,124 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Apply requested index page cleanup
+      - name: Point every tool home button to the latest index page
         shell: python
         run: |
           from pathlib import Path
           import re
 
-          path = Path('index.html')
-          text = path.read_text(encoding='utf-8')
-          original = text
+          files = [
+              'Hazardpay.html',
+              'ai.html',
+              'choga.html',
+              'end.html',
+              'gum.html',
+              'gumgun.html',
+              'hazardpay2.html',
+              'parental-leave-calculator.html',
+              'person.html',
+              'ret.html',
+          ]
 
-          # 1) Rename the top-left service title.
-          text = text.replace(
-              '<div>업무지원 서비스<small>VIBE CODING TOOL HUB</small></div>',
-              '<div>전북특별자치도교육청 업무지원 서비스<small>VIBE CODING TOOL HUB</small></div>'
-          )
+          HOME = '/VibeCoding/index.html?home=latest-20260807-2341'
+          marker_start = '<!-- VibeCoding latest home navigation start -->'
+          marker_end = '<!-- VibeCoding latest home navigation end -->'
+          nav_script = f'''{marker_start}
+<script>
+(() => {{
+  const HOME = '{HOME}';
 
-          # 2) Remove the "업무 도구 10개" badge.
-          text = re.sub(
-              r'\s*<div class="count"><i></i>\s*업무 도구\s*10개</div>',
-              '', text, count=1
-          )
+  if ('serviceWorker' in navigator) {{
+    navigator.serviceWorker.getRegistrations()
+      .then(regs => Promise.all(regs.map(reg => reg.unregister())))
+      .catch(() => {{}});
+  }}
+  if ('caches' in window) {{
+    caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key)))).catch(() => {{}});
+  }}
 
-          # 3) Remove every visible *.html filename label from menu cards.
-          text = re.sub(
-              r'<div class="file">.*?\.html</div>',
-              '', text, flags=re.I
-          )
+  const fixLinks = () => {{
+    document.querySelectorAll('a').forEach(a => {{
+      const txt = (a.textContent || '').replace(/\\s+/g, ' ').trim();
+      const href = a.getAttribute('href') || '';
+      const explicit = a.id === 'vibecoding-home-btn' || a.getAttribute('data-vibecoding-home') === 'persistent';
+      const looksLikeHome = /(?:⌂\\s*홈|VibeCoding.*🏠|홈으로)/i.test(txt) && /^(?:\\.\\/?|index\\.html|\/VibeCoding\/?|\/VibeCoding\/index\\.html)/i.test(href);
+      if (explicit || looksLikeHome) a.setAttribute('href', HOME);
+    }});
+  }};
 
-          # 4) Remove the old VibeCoding footer/status block requested by the user.
-          text = re.sub(
-              r'\s*<footer class="footer">.*?</footer>\s*',
-              '\n', text, count=1, flags=re.S
-          )
+  fixLinks();
+  document.addEventListener('DOMContentLoaded', fixLinks, {{once:true}});
+  document.addEventListener('click', event => {{
+    const a = event.target.closest && event.target.closest('a');
+    if (!a) return;
+    const txt = (a.textContent || '').replace(/\\s+/g, ' ').trim();
+    const explicit = a.id === 'vibecoding-home-btn' || a.getAttribute('data-vibecoding-home') === 'persistent';
+    const looksLikeHome = /(?:⌂\\s*홈|VibeCoding.*🏠|홈으로)/i.test(txt);
+    if (explicit || looksLikeHome) {{
+      event.preventDefault();
+      window.location.href = HOME;
+    }}
+  }}, true);
+}})();
+</script>
+{marker_end}'''
 
-          # The removed footer contained navStatus; remove its now-unused status script too.
-          text = re.sub(
-              r'\s*<script>\s*\(\(\) => \{\s*const status = document\.getElementById\(\'navStatus\'\);.*?\}\)\(\);\s*</script>\s*',
-              '\n', text, count=1, flags=re.S
-          )
+          changed = []
+          for name in files:
+              path = Path(name)
+              if not path.exists():
+                  print(f'SKIP missing: {name}')
+                  continue
+              original = path.read_text(encoding='utf-8')
+              text = original
 
-          if text == original:
-              print('No changes required.')
-          else:
-              path.write_text(text, encoding='utf-8', newline='')
-              print('UPDATED index.html')
+              text = re.sub(
+                  re.escape(marker_start) + r'.*?' + re.escape(marker_end),
+                  '', text, flags=re.S
+              )
 
-          checks = {
-              'new service title': '전북특별자치도교육청 업무지원 서비스<small>VIBE CODING TOOL HUB</small>' in text,
-              'tool count removed': '업무 도구 10개' not in text,
-              'menu filename labels removed': '<div class="file">' not in text,
-              'old footer removed': 'VibeCoding 업무지원 서비스' not in text and '각 도구는 동일한 GitHub Pages 사이트 안에서 실행됩니다.' not in text,
-              'home status text removed': '각 도구의 홈 버튼 사용 가능' not in text,
-          }
-          for label, ok in checks.items():
-              print(f'{label}: {"OK" if ok else "FAIL"}')
-          if not all(checks.values()):
-              raise SystemExit('One or more requested changes were not applied correctly.')
+              text = re.sub(
+                  r'(<a\b(?=[^>]*\bid=["\']vibecoding-home-btn["\'])[^>]*\bhref=)["\'][^"\']*["\']',
+                  lambda m: m.group(1) + '"' + HOME + '"', text, flags=re.I
+              )
+              text = re.sub(
+                  r'(<a\b(?=[^>]*\bdata-vibecoding-home=["\']persistent["\'])[^>]*\bhref=)["\'][^"\']*["\']',
+                  lambda m: m.group(1) + '"' + HOME + '"', text, flags=re.I
+              )
+              text = re.sub(
+                  r'(<a\b[^>]*class=["\'][^"\']*ghost[^"\']*["\'][^>]*\bhref=)["\']\./["\']([^>]*>\s*VibeCoding\s*🏠\s*</a>)',
+                  lambda m: m.group(1) + '"' + HOME + '"' + m.group(2), text, flags=re.I
+              )
 
-      - name: Commit cleaned home page
+              if re.search(r'</body\s*>', text, flags=re.I):
+                  text = re.sub(r'</body\s*>', nav_script + '\n</body>', text, count=1, flags=re.I)
+              else:
+                  text += '\n' + nav_script
+
+              if text != original:
+                  path.write_text(text, encoding='utf-8', newline='')
+                  changed.append(name)
+                  print(f'UPDATED: {name}')
+
+          sw = Path('home-nav-sw.js')
+          sw_text = """self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    await self.registration.unregister();
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of clients) client.navigate(client.url);
+  })());
+});
+"""
+          if not sw.exists() or sw.read_text(encoding='utf-8') != sw_text:
+              sw.write_text(sw_text, encoding='utf-8', newline='')
+              changed.append('home-nav-sw.js')
+              print('UPDATED: home-nav-sw.js')
+
+          print(f'Changed {len(changed)} file(s): {changed}')
+
+      - name: Commit fixed home navigation
         run: |
           if git diff --quiet; then
             echo "No changes required."
@@ -83,6 +142,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          git commit -m "Clean up VibeCoding home page labels"
+          git add Hazardpay.html ai.html choga.html end.html gum.html gumgun.html hazardpay2.html parental-leave-calculator.html person.html ret.html home-nav-sw.js
+          git commit -m "Make all home buttons open latest VibeCoding index"
           git push
