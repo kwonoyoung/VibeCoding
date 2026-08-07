@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light" />
-  <title>숫자 한글 변환기</title>
+  <title>금액 한글 변환기</title>
   <meta name="description" content="숫자 금액을 한글 금액과 공문서용 금액 표기로 변환하는 도구" />
   <style>
     :root {
@@ -473,7 +473,7 @@
       <div class="brand">
         <div class="brand-mark">₩</div>
         <div>
-          숫자 한글 변환기
+          금액 한글 변환기
           <small>NUMBER TO KOREAN MONEY TEXT</small>
         </div>
       </div>
@@ -484,7 +484,7 @@
   <main>
     <section class="hero">
       <div class="eyebrow">업무 도구 · 금액 변환</div>
-      <h1>숫자 금액을 한글로<br />빠르게 변환하세요</h1>
+      <h1>금액을 한글로<br />빠르게 변환하세요</h1>
       <p>금액을 입력하면 쉼표가 포함된 숫자 표기, 한글 금액, 공문서에 바로 붙여 넣을 수 있는 형식으로 자동 변환합니다.</p>
     </section>
 
@@ -547,7 +547,7 @@
         <div class="notice" id="amountHelp">
           <div class="notice-icon">i</div>
           <div>
-            행정문서 금액은 일반적으로 <b>아라비아 숫자 금액 뒤 괄호 안에 한글 금액을 함께 표기</b>하는 방식으로 사용합니다. 이 도구의 “공문서용 표기” 결과를 복사해 바로 활용할 수 있습니다.
+            공문서 금액 표기는 <b>아라비아 숫자 뒤 괄호 안에 한글 금액을 병기</b>하며, 한글 수사에서 1이 십·백·천 자리에 올 때도 <b>일십·일백·일천</b>으로 표기하도록 적용했습니다. 예: 금113,560원(금일십일만삼천오백육십원)
           </div>
         </div>
       </div>
@@ -559,15 +559,15 @@
         <strong>12,345원</strong>
         <span>금일만이천삼백사십오원</span>
       </div>
-      <div class="example" data-value="21893854080">
-        <small>예시 2</small>
-        <strong>21,893,854,080원</strong>
-        <span>큰 금액도 쉼표와 한글 단위를 자동 처리합니다.</span>
+      <div class="example" data-value="113560">
+        <small>공문서 예시</small>
+        <strong>113,560원</strong>
+        <span>금일십일만삼천오백육십원</span>
       </div>
-      <div class="example" data-value="100000000">
+      <div class="example" data-value="10000000">
         <small>예시 3</small>
-        <strong>100,000,000원</strong>
-        <span>일억원처럼 만·억·조 단위를 자동 변환합니다.</span>
+        <strong>10,000,000원</strong>
+        <span>금일천만원</span>
       </div>
     </section>
 
@@ -617,12 +617,9 @@
           const digit = Number(padded[i]);
           if (!digit) continue;
           const pos = 3 - i;
-          if (digit === 1 && pos > 0) {
-            // 천 단위의 '일'은 생략하지 않아 '일천'으로 표기합니다.
-            result += pos === 3 ? '일' + SMALL_UNITS[pos] : SMALL_UNITS[pos];
-          } else {
-            result += DIGITS[digit] + SMALL_UNITS[pos];
-          }
+          // 공문서 금액 한글 표기에서는 1을 십·백·천 앞에서도 생략하지 않습니다.
+          // 예: 10 → 일십, 100 → 일백, 1,000 → 일천
+          result += DIGITS[digit] + SMALL_UNITS[pos];
         }
         return result;
       }
@@ -668,8 +665,8 @@
           const formatted = formatNumber(clean);
           const korean = numberToKorean(clean);
           numberResult.textContent = formatted + '원';
-          koreanResult.textContent = '금 ' + korean + '원';
-          documentResult.textContent = '금' + formatted + '원(금 ' + korean + '원)';
+          koreanResult.textContent = '금' + korean + '원';
+          documentResult.textContent = '금' + formatted + '원(금' + korean + '원)';
         } catch (err) {
           numberResult.textContent = '-';
           koreanResult.textContent = '변환할 수 없습니다.';
