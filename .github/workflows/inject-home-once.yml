@@ -1,0 +1,95 @@
+name: Inject Home Button Into Tool Pages
+
+on:
+  push:
+    paths:
+      - '.github/workflows/inject-home-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  inject-home:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add persistent home button to tool pages
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          files = [
+              'Hazardpay.html',
+              'ai.html',
+              'choga.html',
+              'end.html',
+              'gum.html',
+              'gumgun.html',
+              'hazardpay2.html',
+              'parental-leave-calculator.html',
+              'person.html',
+              'ret.html',
+          ]
+
+          marker = 'data-vibecoding-home="persistent"'
+          ui = r'''
+          <!-- VibeCoding common home navigation -->
+          <style id="vibecoding-home-style" data-vibecoding-home="persistent">
+            #vibecoding-home-btn{
+              position:fixed;right:18px;bottom:18px;z-index:2147483647;
+              display:inline-flex;align-items:center;justify-content:center;gap:7px;
+              min-width:82px;height:44px;padding:0 16px;
+              border:1px solid rgba(255,255,255,.42);border-radius:999px;
+              background:rgba(9,52,78,.94);color:#fff!important;
+              box-shadow:0 10px 28px rgba(0,0,0,.20);
+              backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+              text-decoration:none!important;
+              font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;
+              letter-spacing:-.02em;transition:transform .16s ease,box-shadow .16s ease,background .16s ease;
+            }
+            #vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75;box-shadow:0 14px 32px rgba(0,0,0,.24)}
+            #vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
+            @media(max-width:640px){#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
+            @media print{#vibecoding-home-btn{display:none!important}}
+          </style>
+          <a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
+          '''.strip()
+
+          changed = []
+          for name in files:
+              path = Path(name)
+              if not path.exists():
+                  print(f'SKIP missing: {name}')
+                  continue
+              text = path.read_text(encoding='utf-8')
+              if marker in text:
+                  print(f'OK already has home: {name}')
+                  continue
+              matches = list(re.finditer(r'</body\s*>', text, flags=re.I))
+              if matches:
+                  pos = matches[-1].start()
+                  text = text[:pos] + '\n' + ui + '\n' + text[pos:]
+              else:
+                  text += '\n' + ui + '\n'
+              path.write_text(text, encoding='utf-8', newline='')
+              changed.append(name)
+              print(f'UPDATED: {name}')
+
+          print(f'Changed {len(changed)} file(s).')
+
+      - name: Commit injected buttons
+        run: |
+          if git diff --quiet; then
+            echo "No changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Hazardpay.html ai.html choga.html end.html gum.html gumgun.html hazardpay2.html parental-leave-calculator.html person.html ret.html
+          git commit -m "Add home button to all tool pages"
+          git push
