@@ -1,216 +1,2634 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
+<html lang="ko"><head>
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-5W1N19W83C"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5W1N19W83C');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>기간제교원 퇴직금 자동계산</title>
+    <title>기간제교원 퇴직금 자동 계산</title>
+    <!-- 경로 유지 (기존 프로젝트 경로) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+    <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    
     <style>
-       body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; color: #333; }
-       .container { max-width: 1100px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-       header { border-bottom: 3px solid #2563eb; padding-bottom: 15px; margin-bottom: 25px; }
-       header div.year-badge { display: inline-block; background-color: #e0e7ff; color: #4338ca; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-bottom: 8px;}
-       h1 { color: #1e3a8a; margin: 0; font-size: 1.8rem; display: inline-block; margin-left: 10px; }
-       p.desc { color: #4b5563; font-size: 0.95rem; margin-top: 10px; line-height: 1.5; }
-       
-       .layout-grid { display: grid; grid-template-columns: 350px 1fr; gap: 25px; }
-       
-       .section-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-       .section-card h2 { margin-top: 0; font-size: 1.1rem; color: #1f2937; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; display: flex; align-items: center; }
-       .section-card h2 span.step { background: #2563eb; color: white; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 0.9rem; margin-right: 10px; }
-       
-       .form-group { margin-bottom: 15px; }
-       label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: #374151; }
-       input[type="text"], input[type="date"], input[type="number"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; transition: border-color 0.2s; }
-       input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-       
-       .info-box { background-color: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; color: #475569; }
-       
-       table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
-       th, td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
-       th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
-       td.center { text-align: center; }
-       
-       .preview-area { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #64748b; padding: 20px; text-align: center; }
-       
-       .btn-primary { background-color: #2563eb; color: white; font-weight: bold; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 20px; font-size: 1rem; transition: background-color 0.2s; }
-       .btn-primary:hover { background-color: #1d4ed8; }
-       
-       .badge-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; background: #f3f4f6; padding: 10px; border-radius: 6px; margin-top: 15px;}
+        /* === 테마 변수 (Modernized) === */
+        :root {
+            --bg: #f3f5f9;
+            --bg-card: #ffffff;
+            --bg-strong: #ffffff;
+            --bg-soft: #f8fafc;
+            --bg-hover: #f1f5f9;
+            --line: #e2e8f0;
+            --text: #1e293b;
+            --text-sub: #64748b;
+            --primary: #3b82f6;
+            --primary-light: #eff6ff;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --danger-light: #fef2f2;
+            --success: #10b981;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        body.dark {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-strong: #0f172a;
+            --bg-soft: #334155;
+            --bg-hover: #475569;
+            --line: #334155;
+            --text: #f8fafc;
+            --text-sub: #94a3b8;
+            --primary: #60a5fa;
+            --primary-light: #1e3a8a;
+            --primary-hover: #3b82f6;
+            --danger: #f87171;
+            --danger-light: #7f1d1d;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            color: var(--text);
+            background-color: var(--bg);
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        [hidden] { display: none !important; }
+
+        /* === 레이아웃 === */
+        .shell {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .eyebrow {
+            width: fit-content;
+            padding: 4px 12px;
+            border-radius: 999px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .summary-copy {
+            max-width: 700px;
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* === 버튼 컴포넌트 === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .btn-outline {
+            background: var(--bg-card);
+            border-color: var(--line);
+            color: var(--text);
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-icon {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+
+        /* === 패널 구조 === */
+        .layout {
+            display: grid;
+            grid-template-columns: 380px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--line);
+            background: var(--bg-soft);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .step-badge {
+            background: var(--primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.85rem;
+        }
+
+        .panel-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* === 드롭존 (파일 업로드) === */
+        .upload-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .upload-box {
+            border: 2px dashed var(--line);
+            border-radius: var(--radius-md);
+            padding: 24px 20px;
+            background: var(--bg-card);
+            text-align: center;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .upload-box:hover, .upload-box.dragover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .upload-icon { font-size: 1.8rem; margin-bottom: 4px; }
+        .upload-title { font-size: 1rem; font-weight: 700; color: var(--text); }
+        .upload-sub { color: var(--text-sub); font-size: 0.85rem; }
+        input[type="file"] { display: none; }
+
+        .file-name {
+            margin-top: 12px;
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--bg-soft);
+            border-radius: 999px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.8rem;
+            word-break: break-all;
+        }
+
+        /* === 현황 메트릭 === */
+        .status-box {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .metric {
+            background: var(--bg-soft);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            text-align: center;
+        }
+        .metric-label { color: var(--text-sub); font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
+        .metric-value { color: var(--text); font-size: 1.5rem; font-weight: 800; }
+
+        /* === 에러 및 힌트 === */
+        .hint {
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            padding: 12px 16px;
+            background: var(--bg-soft);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--primary);
+        }
+        .error {
+            color: var(--danger);
+            background: var(--danger-light);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .required-strong-hint {
+            color: #9a3412;
+            font-size: 0.85rem;
+            line-height: 1.55;
+            padding: 12px 16px;
+            background: #fff7ed;
+            border: 1px solid #fdba74;
+            border-left: 4px solid #f97316;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* === 입력 폼 (기본 정보) === */
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--line);
+        }
+        .form-section:last-child {
+            padding-bottom: 0; border-bottom: none;
+        }
+        .form-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field.span-2 { grid-column: span 2; }
+        .field-emphasis input {
+            border-color: #fb923c;
+            box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.12);
+        }
+        .label-required-badge {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 6px;
+            padding: 2px 7px;
+            border-radius: 999px;
+            border: 1px solid #fdba74;
+            background: #fff7ed;
+            color: #9a3412;
+            font-size: 0.72rem;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+        .field-help {
+            color: #9a3412;
+            font-size: 0.78rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+        .field-inline-check {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-top: 6px;
+        }
+        .field-inline-check input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+        
+        label { font-size: 0.85rem; font-weight: 600; color: var(--text-sub); }
+        
+        input[type="text"], input[type="date"], input[type="tel"], textarea {
+            width: 100%;
+            border: 1px solid var(--line);
+            background: var(--bg-strong);
+            color: var(--text);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        textarea { min-height: 80px; resize: vertical; }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* === 메타데이터 리스트 === */
+        .meta-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            background: var(--bg-soft);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+        }
+        .meta-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .meta-label { color: var(--text-sub); font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+        .meta-value { font-size: 0.85rem; font-weight: 500; text-align: right; word-break: break-all; }
+
+        /* === 배지 === */
+        .badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .badge {
+            display: inline-flex; align-items: center;
+            padding: 6px 12px;
+            background: var(--bg-soft);
+            color: var(--text-sub);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* === 급여 데이터 표 (테이블) === */
+        .table-scroll {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 400px; /* 너무 길어지지 않게 방지 */
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            background: var(--bg-strong);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        .data-table {
+            min-width: 1100px;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--line);
+            border-right: 1px solid var(--line);
+            font-size: 0.9rem;
+            text-align: right;
+            background: var(--bg-strong);
+            white-space: nowrap;
+        }
+        .data-table tr:hover td { background: var(--bg-hover); }
+
+        .data-table th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bg-soft);
+            font-weight: 700;
+            color: var(--text-sub);
+            text-align: center;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .data-table .sticky-cell { position: sticky; z-index: 5; background: var(--bg-strong); }
+        .data-table th.sticky-cell { z-index: 15; background: var(--bg-soft); }
+        
+        .data-table tr:hover .sticky-cell { background: var(--bg-hover); }
+
+        .data-table .sticky-average { left: 0; min-width: 60px; text-align: center; }
+        .data-table .sticky-ordinary { left: 60px; min-width: 60px; text-align: center; }
+        .data-table .sticky-label { left: 120px; min-width: 140px; text-align: left; font-weight: 600; color: var(--text); }
+        .data-table .sticky-type { left: 260px; min-width: 90px; text-align: center; color: var(--text-sub); }
+
+        /* 체크박스 디자인 */
+        .selection-toggle {
+            width: 18px; height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        .selection-toggle:disabled { cursor: not-allowed; opacity: 0.4; }
+
+        .money-input {
+            width: 90px;
+            text-align: right;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 6px 8px;
+            background: var(--bg-soft);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .money-input:hover { border-color: var(--line); }
+        .money-input:focus {
+            border-color: var(--primary);
+            background: var(--bg-strong);
+            box-shadow: 0 0 0 2px var(--primary-light);
+            outline: none;
+        }
+
+        /* === 미리보기 탭 및 컨테이너 === */
+        .preview-header-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px 24px 0;
+        }
+
+        .preview-actions-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .sheet-tabs {
+            display: inline-flex;
+            background: var(--bg-soft);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+        }
+
+        .sheet-tab {
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sheet-tab:hover { color: var(--text); }
+        .sheet-tab.active {
+            background: var(--bg-strong);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sheet-pane {
+            display: none;
+            padding: 24px;
+            overflow-x: auto;
+        }
+        .sheet-pane.active { display: block; animation: fadeIn 0.3s ease; }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            min-height: 300px;
+            color: var(--text-sub);
+            text-align: center;
+            padding: 40px;
+        }
+        .empty-icon { font-size: 3rem; opacity: 0.5; }
+
+        /* === 미리보기 테이블 서식 (기존 서식 디자인 유지하되 깔끔하게) === */
+        .sheet-surface {
+            background: #ffffff;
+            color: #1e293b;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            width: fit-content;
+            margin: 0 auto;
+        }
+        body.dark .sheet-surface { background: #fbfdfb; color: #1e293b; } /* 출력물 느낌 유지 */
+
+        .sheet { min-width: 800px; border-collapse: collapse; width: 100%; }
+        .sheet td, .sheet th { border: 1px solid #cbd5e1; padding: 10px; font-size: 0.9rem; line-height: 1.4; vertical-align: middle; }
+        .sheet th { background: #f1f5f9; font-weight: 700; text-align: center; }
+        
+        .sheet .cell-label { background: #f8fafc; font-weight: 700; text-align: center; }
+        .sheet .title-row td { background: #e2e8f0; font-size: 1.2rem; font-weight: 800; text-align: center; padding: 16px; }
+        .sheet .note-row td { font-size: 0.8rem; color: #64748b; background: #f8fafc; }
+        .sheet .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .sheet .center { text-align: center; }
+
+        /* 통상/평균 특별 서식 */
+        .sheet.ordinary-sheet .ord-label { background: #e2e8f0; font-weight: 700; }
+        .sheet.ordinary-sheet .ord-muted { background: #f1f5f9; font-weight: 600; }
+        .sheet.ordinary-sheet .ord-warn { background: #fef08a; font-weight: 800; }
+        .sheet.ordinary-sheet .ord-note { background: #fef9c3; font-weight: 700; }
+        .sheet.ordinary-sheet .ord-green { background: #bbf7d0; font-weight: 800; color: #166534; }
+        .sheet.ordinary-sheet .ord-strong { font-size: 1.05rem; font-weight: 800; }
+
+        .sheet.average-sheet .avg-formula-label { background: #f1f5f9; font-weight: 700; }
+        .sheet.average-sheet .avg-op { background: #e2e8f0; font-weight: 800; text-align: center; }
+        .sheet.average-sheet .avg-focus { background: #dbeafe; font-weight: 800; text-align: center; }
+        .sheet.average-sheet .avg-result { font-size: 1.05rem; font-weight: 800; color: #1e40af; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === 반응형 === */
+        @media (max-width: 1100px) {
+            .layout { grid-template-columns: 1fr; }
+            .topbar { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .top-actions { width: 100%; justify-content: flex-end; }
+            .preview-actions-row { flex-direction: column; align-items: stretch; }
+            .sheet-tabs { width: 100%; display: flex; }
+            .sheet-tab { flex: 1; text-align: center; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="year-badge">2026 기준</div>
+<div class="shell">
+    <header class="topbar">
+        <div class="brand">
+            <div class="eyebrow">2026 기준</div>
             <h1>기간제교원 퇴직금 자동계산</h1>
-            <p class="desc">PDF 급여총지급현황에서 월정액·비월정액을 자동 추출하고, 부족한 정보만 보완해 웹에서 퇴직금 산정서를 바로 확인하세요. 템플릿 XLSX를 함께 올리면 채워진 서식을 즉시 다운로드할 수 있습니다.</p>
-        </header>
+            <div class="summary-copy">
+                PDF 급여총지급현황에서 월정액·비월정액을 자동 추출하고, 부족한 정보만 보완해
+                웹에서 퇴직금 산정서를 바로 확인하세요. 템플릿 XLSX를 함께 올리면 채워진 서식을 즉시 다운로드할 수 있습니다.
+            </div>
+        </div>
+        <div class="top-actions">
+            <a href="index.html" class="btn btn-outline">🏠 홈으로</a>
+            <button type="button" id="themeBtn" class="btn btn-outline btn-icon" aria-label="테마 전환" data-manus_clickable="true" data-manus_click_id="2">🌙</button>
+        </div>
+    </header>
 
-        <div class="layout-grid">
-            <!-- 좌측 사이드바 -->
-            <aside>
-                <div class="section-card">
-                    <h2><span class="step">1</span> 파일 업로드</h2>
-                    
-                    <div class="form-group">
-                        <label>📄 PDF 급여총지급현황</label>
-                        <input type="file" id="pdfUpload" accept=".pdf">
-                    </div>
-                    <div class="form-group">
-                        <label>📊 템플릿 XLSX (선택)</label>
-                        <input type="file" id="excelUpload" accept=".xlsx">
-                    </div>
-                    
-                    <div class="badge-row">
-                        <div>추출된 월 수: <strong id="monthCount">0</strong>개월</div>
-                        <div>인식된 급여 항목: <strong id="itemCount">0</strong>개</div>
-                    </div>
+    <main class="layout">
+        <!-- 왼쪽 사이드바 (설정 및 입력) -->
+        <aside class="stack">
+            <!-- 1. 파일 업로드 -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title"><span class="step-badge">1</span> 파일 업로드</h2>
                 </div>
+                <div class="panel-body">
+                    <div class="upload-boxes">
+                        <div id="pdfDropzone" class="upload-box">
+                            <label class="upload-label" for="pdfInput" data-manus_clickable="true" data-manus_click_id="3">
+                                <span class="upload-icon">📄</span>
+                                <span class="upload-title">급여총지급현황 PDF (필수)</span>
+                                <span class="upload-sub">클릭하거나 파일을 드래그하세요</span>
+                                <input id="pdfInput" type="file" accept=".pdf,application/pdf">
+                            </label>
+                            <div id="pdfFileName" class="file-name">선택된 PDF 없음</div>
+                        </div>
 
-                <div class="section-card">
-                    <h2><span class="step">2</span> 인적사항 및 기본정보</h2>
-                    <div class="info-box">
+                        <div id="templateDropzone" class="upload-box">
+                            <label class="upload-label" for="templateInput" data-manus_clickable="true" data-manus_click_id="4">
+                                <span class="upload-icon">📊</span>
+                                <span class="upload-title">퇴직금 신청 서식 XLSX (선택)</span>
+                                <span class="upload-sub">서식 다운로드를 원할 경우 업로드</span>
+                                <input id="templateInput" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                            </label>
+                            <div id="templateFileName" class="file-name" style="color:var(--text-sub); background:none; border:1px solid var(--line);">선택된 템플릿 없음</div>
+                        </div>
+                    </div>
+
+                    <div id="parseError" class="error" hidden=""></div>
+
+                    <!-- 요약 메트릭 (업로드 완료 시 의미있음) -->
+                    <div class="status-box">
+                        <div class="metric">
+                            <div class="metric-label">추출된 월 수</div>
+                            <div id="monthCount" class="metric-value">0</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">인식된 급여 항목</div>
+                            <div id="rowCount" class="metric-value">0</div>
+                        </div>
+                    </div>
+
+                    <details style="margin-top: 8px;">
+                        <summary style="font-size:0.85rem; font-weight:600; color:var(--primary); cursor:pointer; padding:8px 0;" data-manus_clickable="true" data-manus_click_id="5">+ 추출된 상세 메타데이터 보기</summary>
+                        <div id="metaList" class="meta-list" style="margin-top:8px;">
+                <div class="meta-item">
+                    <div class="meta-value" style="width:100%; text-align:center; color:var(--text-sub);">PDF를 업로드하면 추출 정보가 표시됩니다.</div>
+                </div>
+            </div>
+                    </details>
+                </div>
+            </section>
+
+            <!-- 2. 기본 정보 입력 -->
+            <section class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title"><span class="step-badge">2</span> 인적사항 및 기본정보</h2>
+                </div>
+                <div class="panel-body" style="gap: 0;">
+                    <div class="hint" style="margin-bottom: 24px;">
                         PDF에 없는 생년월일, 계좌번호, 성과상여금 등을 보완해 주세요. 입력값은 우측 서식에 즉시 반영됩니다.
                     </div>
-                    
-                    <div class="form-group">
-                        <label>성명</label>
-                        <input type="text" placeholder="예: 홍길동">
+                    <div class="required-strong-hint">
+                        채용일자, 퇴직일자, 성과상여금(B등급), 성과상여금(실지급액)은 필수 입력 권장 항목입니다.
+                        단, 실제로는 비워둔 상태로도 계산/미리보기는 가능합니다.
                     </div>
-                    <div class="form-group">
-                        <label>생년월일</label>
-                        <input type="date">
+
+                    <!-- 인적/소속 정보 -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">인적 및 소속 정보</h3>
+                        <div class="field-grid">
+                            <div class="field">
+                                <label for="schoolName" data-manus_clickable="true" data-manus_click_id="6">소속 학교</label>
+                                <input id="schoolName" type="text" placeholder="예: OO중학교" data-manus_clickable="true" data-manus_click_id="7">
+                            </div>
+                            <div class="field">
+                                <label for="personName" data-manus_clickable="true" data-manus_click_id="8">성명</label>
+                                <input id="personName" type="text" placeholder="예: 홍길동" data-manus_clickable="true" data-manus_click_id="9">
+                            </div>
+                            <div class="field">
+                                <label for="birthDate" data-manus_clickable="true" data-manus_click_id="10">생년월일</label>
+                                <input id="birthDate" type="text" placeholder="예: 1999.09.09." data-manus_clickable="true" data-manus_click_id="11">
+                            </div>
+                            <div class="field">
+                                <label for="phoneNumber" data-manus_clickable="true" data-manus_click_id="12">연락처</label>
+                                <input id="phoneNumber" type="tel" placeholder="예: 010-1234-5678" data-manus_clickable="true" data-manus_click_id="13">
+                            </div>
+                            <div class="field span-2">
+                                <label for="postalCode" data-manus_clickable="true" data-manus_click_id="14">우편번호</label>
+                                <input id="postalCode" type="text" placeholder="예: 12345" data-manus_clickable="true" data-manus_click_id="15">
+                            </div>
+                            <div class="field span-2">
+                                <label for="address">주소</label>
+                                <textarea id="address" placeholder="예: 강릉시 교행길로 2번길 7" data-manus_clickable="true" data-manus_click_id="16"></textarea>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>채용일자</label>
-                        <input type="date">
+
+                    <!-- 재직 및 수당 정보 -->
+                    <div class="form-section" style="padding-top: 20px;">
+                        <h3 class="form-section-title">재직 및 수당 정보</h3>
+                        <div class="field-grid">
+                            <div class="field field-emphasis">
+                                <label for="employmentStart" data-manus_clickable="true" data-manus_click_id="17">채용일자 <span class="label-required-badge">필수</span></label>
+                                <input id="employmentStart" type="date" data-manus_clickable="true" data-manus_click_id="18">
+                                
+                            </div>
+                            <div class="field field-emphasis">
+                                <label for="retirementDate" data-manus_clickable="true" data-manus_click_id="19">퇴직일자 <span class="label-required-badge">필수</span></label>
+                                <input id="retirementDate" type="date" data-manus_clickable="true" data-manus_click_id="20">
+                                
+                            </div>
+                            <div class="field span-2 field-emphasis">
+                                <label for="performanceBonusB" data-manus_clickable="true" data-manus_click_id="21">성과상여금(B등급, 통상임금용) <span class="label-required-badge">필수 권장</span> </label>
+                                <input id="performanceBonusB" type="text" placeholder="예: 2430540" data-manus_clickable="true" data-manus_click_id="22">
+                                <div class="field-help">통상임금 계산에 반영됩니다. 미입력 시 0으로 처리됩니다.</div>
+                            </div>
+                            <div class="field span-2 field-emphasis">
+                                <label for="performanceBonusActual" data-manus_clickable="true" data-manus_click_id="23">성과상여금(실지급액, 평균임금용) <span class="label-required-badge">필수 권장</span></label>
+                                <input id="performanceBonusActual" type="text" placeholder="예: 2430540" data-manus_clickable="true" data-manus_click_id="24">
+                                <div class="field-help">평균임금 계산에 반영됩니다. 미입력 시 0으로 처리됩니다.</div>
+                                <label class="field-inline-check" for="performanceBonusSync" data-manus_clickable="true" data-manus_click_id="25">
+                                    <input id="performanceBonusSync" type="checkbox" data-manus_clickable="true" data-manus_click_id="26">
+                                    위와 동일하게 입력
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>퇴직일자</label>
-                        <input type="date">
-                    </div>
-                    
-                    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-                    
-                    <div class="form-group">
-                        <label>성과상여금 (B등급 기준)</label>
-                        <input type="number" placeholder="통상임금 계산에 반영됩니다.">
-                    </div>
-                    <div class="form-group">
-                        <label>성과상여금 (실지급액)</label>
-                        <input type="number" placeholder="평균임금 계산에 반영됩니다.">
-                    </div>
-                    
-                    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-                    
-                    <div class="form-group">
-                        <label>지급 은행</label>
-                        <input type="text" placeholder="예: 농협">
-                    </div>
-                    <div class="form-group">
-                        <label>계좌번호</label>
-                        <input type="text" placeholder="- 없이 입력">
+
+                    <!-- 계좌 정보 -->
+                    <div class="form-section" style="padding-top: 20px;">
+                        <h3 class="form-section-title">지급 계좌 정보</h3>
+                        <div class="field-grid">
+                            <div class="field">
+                                <label for="bankName" data-manus_clickable="true" data-manus_click_id="27">금융기관</label>
+                                <input id="bankName" type="text" placeholder="예: 농협은행" data-manus_clickable="true" data-manus_click_id="28">
+                            </div>
+                            <div class="field">
+                                <label for="accountHolder" data-manus_clickable="true" data-manus_click_id="29">예금주</label>
+                                <input id="accountHolder" type="text" placeholder="예: 홍길동" data-manus_clickable="true" data-manus_click_id="30">
+                            </div>
+                            <div class="field span-2">
+                                <label for="accountNumber" data-manus_clickable="true" data-manus_click_id="31">계좌번호</label>
+                                <input id="accountNumber" type="text" placeholder="예: 123-123456-12345" data-manus_clickable="true" data-manus_click_id="32">
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </aside>
+            </section>
+        </aside>
 
-            <!-- 우측 메인 영역 -->
-            <main>
-                <div class="section-card">
-                    <h2><span class="step">3</span> 급여 데이터 확인 및 수정</h2>
-                    <div style="display: flex; gap: 15px; font-size: 0.85rem; color: #059669; background: #ecfdf5; padding: 10px; border-radius: 6px;">
-                        <span>✅ 평균/통상 임금 포함 여부 체크</span>
-                        <span>✏️ 금액 클릭하여 직접 수정 가능</span>
-                        <span>💡 총액은 수정된 금액으로 즉시 재계산</span>
+        <!-- 오른쪽 메인 영역 (데이터 및 미리보기) -->
+        <section class="stack">
+            
+            <!-- 3. 추출 급여 데이터 -->
+            <div class="panel" id="payrollPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title"><span class="step-badge">3</span> 급여 데이터 확인 및 수정</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="badge-row">
+                        <span class="badge">✅ 평균/통상 임금 포함 여부 체크</span>
+                        <span class="badge">✏️ 금액 클릭하여 직접 수정 가능</span>
+                        <span class="badge">💡 총액은 수정된 금액으로 즉시 재계산</span>
                     </div>
                     
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="center" style="width: 60px;">평균</th>
-                                <th class="center" style="width: 60px;">통상</th>
-                                <th>항목</th>
-                                <th>유형</th>
-                                <th>안내</th>
-                            </tr>
-                        </thead>
-                        <tbody id="salaryTableBody">
-                            <tr>
-                                <td colspan="5" style="text-align: center; padding: 30px; color: #9ca3af;">
-                                    좌측에서 PDF를 업로드하면 추출된 급여 표가 표시됩니다.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="section-card">
-                    <h2><span class="step">4</span> 최종 서식 미리보기</h2>
-                    
-                    <div class="preview-area" id="previewArea">
-                        <div style="font-size: 3rem; margin-bottom: 10px;">📄</div>
-                        <div>1단계에서 PDF를 업로드하면 이곳에 서식 미리보기가 나타납니다.</div>
+                    <div class="table-scroll" style="margin-top: 8px;">
+                        <table class="data-table" id="payrollTable">
+                <thead><tr><th>평균</th><th>통상</th><th>항목</th><th>유형</th><th>안내</th></tr></thead>
+                <tbody><tr><td colspan="5" class="center" style="padding:40px; color:var(--text-sub);">PDF를 업로드하면 추출된 급여 표가 표시됩니다.</td></tr></tbody>
+            </table>
                     </div>
-                    
-                    <button class="btn-primary" onclick="alert('데이터가 채워진 엑셀 파일을 다운로드합니다. (실제 환경에서는 파일이 생성됩니다)')">
-                        ⬇️ 퇴직금 산정서 엑셀 다운로드
-                    </button>
                 </div>
-            </main>
-        </div>
-    </div>
+            </div>
 
-    <script>
-        // 간단한 UI 시뮬레이션
-        document.getElementById('pdfUpload').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) {
-                document.getElementById('monthCount').innerText = '12';
-                document.getElementById('itemCount').innerText = '4';
+            <!-- 4. 서식 미리보기 -->
+            <div class="panel" id="previewPanel">
+                <div class="panel-header" style="border-bottom:none;">
+                    <h2 class="panel-title"><span class="step-badge">4</span> 최종 서식 미리보기</h2>
+                </div>
                 
-                document.getElementById('salaryTableBody').innerHTML = `
-                    <tr>
-                        <td class="center"><input type="checkbox" checked></td>
-                        <td class="center"><input type="checkbox" checked></td>
-                        <td><strong>기본급</strong></td>
-                        <td>월정액</td>
-                        <td style="color: #6b7280; font-size: 0.85rem;">기본 수당</td>
-                    </tr>
-                    <tr>
-                        <td class="center"><input type="checkbox" checked></td>
-                        <td class="center"><input type="checkbox" checked></td>
-                        <td><strong>정근수당</strong></td>
-                        <td>비월정액</td>
-                        <td style="color: #6b7280; font-size: 0.85rem;">정기 수당</td>
-                    </tr>
-                    <tr>
-                        <td class="center"><input type="checkbox" checked></td>
-                        <td class="center"><input type="checkbox"></td>
-                        <td><strong>시간외근무수당</strong></td>
-                        <td>비월정액</td>
-                        <td style="color: #6b7280; font-size: 0.85rem;">변동 수당</td>
-                    </tr>
-                    <tr>
-                        <td class="center"><input type="checkbox" checked></td>
-                        <td class="center"><input type="checkbox" checked></td>
-                        <td><strong>가족수당</strong></td>
-                        <td>월정액</td>
-                        <td style="color: #6b7280; font-size: 0.85rem;">부양가족</td>
-                    </tr>
-                `;
-                
-                document.getElementById('previewArea').innerHTML = `
-                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center;">
-                        <h3 style="color: #1e40af;">퇴직금 산정 내역서 미리보기</h3>
-                        <table style="width: 80%; text-align: left; margin-top: 10px; background: white;">
-                            <tr><th style="width: 30%">산정 대상자</th><td>입력 대기중</td></tr>
-                            <tr><th>평균임금 총계</th><td style="color: #059669; font-weight: bold;">산출 중...</td></tr>
-                            <tr><th>통상임금 총계</th><td style="color: #059669; font-weight: bold;">산출 중...</td></tr>
-                            <tr><th>예상 퇴직금</th><td style="color: #dc2626; font-weight: bold; font-size: 1.1rem;">산출 중...</td></tr>
-                        </table>
+                <div class="preview-header-area">
+                    <div class="preview-actions-row">
+                        <div class="sheet-tabs" id="sheetTabs" data-manus_clickable="true" data-manus_click_id="33">
+                            <button type="button" class="sheet-tab active" data-sheet="claim" data-manus_clickable="true" data-manus_click_id="34">퇴직금 청구서</button>
+                            <button type="button" class="sheet-tab" data-sheet="average" data-manus_clickable="true" data-manus_click_id="35">평균임금 산정서</button>
+                            <button type="button" class="sheet-tab" data-sheet="ordinary" data-manus_clickable="true" data-manus_click_id="36">통상임금 산정서</button>
+                            <button type="button" class="sheet-tab" data-sheet="salary" data-manus_clickable="true" data-manus_click_id="37">보수내역</button>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" id="resetBtn" class="btn btn-outline" data-manus_clickable="true" data-manus_click_id="38">초기화</button>
+                            <button type="button" id="downloadBtn" class="btn btn-primary" data-manus_clickable="true" data-manus_click_id="39">📥 템플릿 엑셀 다운로드</button>
+                        </div>
                     </div>
-                `;
+                </div>
+
+                <div id="emptyPreview" class="empty-state" style="display: flex;">
+                    <div class="empty-icon">📄</div>
+                    <div>1단계에서 PDF를 업로드하면 이곳에 서식 미리보기가 나타납니다.</div>
+                </div>
+
+                <div id="previewWrap" hidden="" style="display: none;">
+                    <div id="claimPane" class="sheet-pane active"></div>
+                    <div id="averagePane" class="sheet-pane"></div>
+                    <div id="ordinaryPane" class="sheet-pane"></div>
+                    <div id="salaryPane" class="sheet-pane"></div>
+                </div>
+            </div>
+            
+        </section>
+    </main>
+</div>
+
+<!-- ========================================== -->
+<!-- 아래 스크립트는 이 화면의 PDF 파싱/계산/미리보기 로직입니다. -->
+<!-- ========================================== -->
+<script>
+    const KNOWN_ROWS = [
+        { key: 'regularAllowance', label: '정근수당', type: 'nonMonthly' },
+        { key: 'holidayAllowance', label: '명절휴가비', type: 'nonMonthly' },
+        { key: 'overtimeExcess', label: '시간외근무수당(초과분)', type: 'nonMonthly' },
+        { key: 'annualLeave', label: '연가보상비', type: 'nonMonthly' },
+        { key: 'basePay', label: '본봉', type: 'monthly' },
+        { key: 'regularAllowanceAdd', label: '정근수당가산금', type: 'monthly' },
+        { key: 'mealAllowance', label: '정액급식비', type: 'monthly' },
+        { key: 'remoteAreaAllowance', label: '도서벽지수당', type: 'monthly' },
+        { key: 'preservationAllowance', label: '보전수당', type: 'monthly' },
+        { key: 'preservationAllowanceAdd', label: '보전수당가산금', type: 'monthly' },
+        { key: 'teacherAllowance', label: '교직수당', type: 'monthly' },
+        { key: 'teacherAllowanceExtra1', label: '교직수당(1)', type: 'monthly' },
+        { key: 'teacherAllowanceExtra2', label: '교직수당(2)', type: 'monthly' },
+        { key: 'teacherAllowanceExtra3', label: '교직수당(3)', type: 'monthly' },
+        { key: 'teacherAllowanceExtra4', label: '교직수당(4)', type: 'monthly' },
+        { key: 'teacherAllowanceExtra5', label: '교직수당(5)', type: 'monthly' },
+        { key: 'teacherAllowanceExtra6', label: '교직수당(6)', type: 'monthly' },
+        { key: 'teacherAllowanceExtra7', label: '교직수당(7)', type: 'monthly' },
+        { key: 'teacherAllowanceExtra8', label: '교직수당(8)', type: 'monthly' },
+        { key: 'researchDutyAllowance', label: '연구업무수당', type: 'monthly' },
+        { key: 'researchAllowance', label: '교원연구비', type: 'monthly' },
+        { key: 'studentGuidanceAllowance', label: '학생지도비', type: 'monthly' },
+        { key: 'overtimeFixed', label: '시간외 근무수당(정액분)', type: 'monthly' },
+        { key: 'etc1', label: '기타수당', type: 'monthly' },
+        { key: 'etc2', label: '기타수당', type: 'monthly' },
+        { key: 'etc3', label: '기타수당', type: 'monthly' }
+    ];
+
+    const DISPLAY_PRIORITY = [
+        'basePay',
+        'regularAllowanceAdd',
+        'preservationAllowance',
+        'preservationAllowanceAdd',
+        'overtimeFixed',
+        'mealAllowance',
+        'teacherAllowance',
+        'teacherAllowanceExtra1',
+        'remoteAreaAllowance',
+        'researchAllowance',
+        'studentGuidanceAllowance',
+        'researchDutyAllowance'
+    ];
+
+    const EDIT_ORDER = [
+        'basePay',
+        'regularAllowance',
+        'regularAllowanceAdd',
+        'holidayAllowance',
+        'mealAllowance',
+        'teacherAllowance',
+        'teacherAllowanceExtra1',
+        'overtimeFixed',
+        'overtimeExcess',
+        'researchAllowance',
+        'remoteAreaAllowance',
+        'preservationAllowance',
+        'preservationAllowanceAdd',
+        'studentGuidanceAllowance',
+        'researchDutyAllowance',
+        'annualLeave'
+    ];
+
+    const DEFAULT_PROFILE = {
+        schoolName: '',
+        personName: '',
+        birthDate: '',
+        phoneNumber: '',
+        address: '',
+        postalCode: '',
+        bankName: '',
+        accountNumber: '',
+        accountHolder: '',
+        employmentStart: '',
+        retirementDate: '',
+        performanceBonusB: '',
+        performanceBonusActual: ''
+    };
+
+    const DEFAULT_AVERAGE_KEYS = new Set([
+        ...DISPLAY_PRIORITY.filter((key) => key !== 'regularAllowanceAdd'),
+        'regularAllowance',
+        'holidayAllowance',
+        'overtimeExcess',
+        'annualLeave'
+    ]);
+
+    const DEFAULT_ORDINARY_KEYS = new Set([
+        'basePay',
+        'regularAllowance',
+        'regularAllowanceAdd',
+        'holidayAllowance',
+        'mealAllowance',
+        'teacherAllowance',
+        'teacherAllowanceExtra1',
+        'researchAllowance',
+        'remoteAreaAllowance'
+    ]);
+
+    const ORDINARY_ANNUALIZED_KEYS = new Set(['regularAllowance', 'holidayAllowance']);
+    const ORDINARY_TEACHER_EXTRA_KEYS = KNOWN_ROWS
+        .map((definition) => definition.key)
+        .filter((key) => /^teacherAllowanceExtra\d+$/.test(key));
+    const KNOWN_ROW_MAP = Object.fromEntries(KNOWN_ROWS.map((definition) => [definition.key, definition]));
+
+    const state = {
+        pdfFile: null,
+        templateFile: null,
+        parsed: null,
+        profile: { ...DEFAULT_PROFILE },
+        payrollSelections: {},
+        activeSheet: 'claim',
+        syncPerformanceBonusActual: false
+    };
+
+    const el = {
+        body: document.body,
+        themeBtn: document.getElementById('themeBtn'),
+        pdfInput: document.getElementById('pdfInput'),
+        templateInput: document.getElementById('templateInput'),
+        pdfDropzone: document.getElementById('pdfDropzone'),
+        templateDropzone: document.getElementById('templateDropzone'),
+        pdfFileName: document.getElementById('pdfFileName'),
+        templateFileName: document.getElementById('templateFileName'),
+        monthCount: document.getElementById('monthCount'),
+        rowCount: document.getElementById('rowCount'),
+        parseError: document.getElementById('parseError'),
+        metaList: document.getElementById('metaList'),
+        payrollTable: document.getElementById('payrollTable'),
+        emptyPreview: document.getElementById('emptyPreview'),
+        previewWrap: document.getElementById('previewWrap'),
+        claimPane: document.getElementById('claimPane'),
+        averagePane: document.getElementById('averagePane'),
+        ordinaryPane: document.getElementById('ordinaryPane'),
+        salaryPane: document.getElementById('salaryPane'),
+        resetBtn: document.getElementById('resetBtn'),
+        downloadBtn: document.getElementById('downloadBtn'),
+        sheetTabs: document.getElementById('sheetTabs'),
+        schoolName: document.getElementById('schoolName'),
+        personName: document.getElementById('personName'),
+        birthDate: document.getElementById('birthDate'),
+        phoneNumber: document.getElementById('phoneNumber'),
+        address: document.getElementById('address'),
+        postalCode: document.getElementById('postalCode'),
+        bankName: document.getElementById('bankName'),
+        accountNumber: document.getElementById('accountNumber'),
+        accountHolder: document.getElementById('accountHolder'),
+        employmentStart: document.getElementById('employmentStart'),
+        retirementDate: document.getElementById('retirementDate'),
+        performanceBonusB: document.getElementById('performanceBonusB'),
+        performanceBonusActual: document.getElementById('performanceBonusActual'),
+        performanceBonusSync: document.getElementById('performanceBonusSync')
+    };
+
+    init();
+
+    function init() {
+        hydrateTheme();
+        bindTheme();
+        bindInputs();
+        bindPerformanceBonusSync();
+        bindDropzone(el.pdfDropzone, el.pdfInput, onPdfSelected);
+        bindDropzone(el.templateDropzone, el.templateInput, onTemplateSelected);
+        el.pdfInput.addEventListener('change', () => onPdfSelected(el.pdfInput.files[0]));
+        el.templateInput.addEventListener('change', () => onTemplateSelected(el.templateInput.files[0]));
+        el.resetBtn.addEventListener('click', resetAll);
+        el.downloadBtn.addEventListener('click', downloadTemplate);
+        el.sheetTabs.addEventListener('click', onTabClick);
+        renderAll();
+    }
+
+    function hydrateTheme() {
+        const saved = localStorage.getItem('teacherRetirementTheme');
+        if (saved === 'dark') {
+            el.body.classList.add('dark');
+            el.themeBtn.textContent = '☀️';
+        } else {
+            el.themeBtn.textContent = '🌙';
+        }
+    }
+
+    function bindTheme() {
+        el.themeBtn.addEventListener('click', () => {
+            const isDark = el.body.classList.toggle('dark');
+            el.themeBtn.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('teacherRetirementTheme', isDark ? 'dark' : 'light');
+        });
+    }
+
+    function bindInputs() {
+        Object.keys(DEFAULT_PROFILE).forEach((key) => {
+            const target = el[key];
+            if (!target) return;
+            target.addEventListener('input', (event) => {
+                state.profile[key] = event.target.value.trim();
+                if (key === 'performanceBonusB' && state.syncPerformanceBonusActual) {
+                    state.profile.performanceBonusActual = state.profile.performanceBonusB;
+                    if (el.performanceBonusActual) {
+                        el.performanceBonusActual.value = state.profile.performanceBonusActual;
+                    }
+                }
+                if (key === 'performanceBonusActual' && state.syncPerformanceBonusActual) {
+                    state.profile.performanceBonusActual = state.profile.performanceBonusB;
+                    if (el.performanceBonusActual) {
+                        el.performanceBonusActual.value = state.profile.performanceBonusActual;
+                    }
+                }
+                renderAll();
+            });
+        });
+    }
+
+    function bindPerformanceBonusSync() {
+        if (!el.performanceBonusSync) return;
+        el.performanceBonusSync.addEventListener('change', (event) => {
+            state.syncPerformanceBonusActual = event.target.checked;
+            if (state.syncPerformanceBonusActual) {
+                state.profile.performanceBonusActual = state.profile.performanceBonusB || '';
+            }
+            syncProfileInputs();
+            renderAll();
+        });
+        applyPerformanceBonusSyncState();
+    }
+
+    function applyPerformanceBonusSyncState() {
+        if (!el.performanceBonusSync || !el.performanceBonusActual) return;
+        el.performanceBonusSync.checked = state.syncPerformanceBonusActual;
+        el.performanceBonusActual.readOnly = state.syncPerformanceBonusActual;
+        if (state.syncPerformanceBonusActual) {
+            state.profile.performanceBonusActual = state.profile.performanceBonusB || '';
+        }
+    }
+
+    function bindDropzone(zone, input, handler) {
+        ['dragenter', 'dragover'].forEach((type) => {
+            zone.addEventListener(type, (event) => {
+                event.preventDefault();
+                zone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach((type) => {
+            zone.addEventListener(type, (event) => {
+                event.preventDefault();
+                zone.classList.remove('dragover');
+            });
+        });
+
+        zone.addEventListener('drop', (event) => {
+            const file = event.dataTransfer.files[0];
+            if (!file) return;
+            handler(file);
+        });
+    }
+
+    async function onPdfSelected(file) {
+        if (!file) return;
+
+        state.pdfFile = file;
+        el.pdfFileName.textContent = file.name;
+        el.pdfFileName.style.background = 'var(--primary-light)';
+        el.pdfFileName.style.borderColor = 'transparent';
+        el.parseError.hidden = true;
+        el.parseError.textContent = '';
+
+        try {
+            const parsed = await parsePayrollPdf(file);
+            state.parsed = parsed;
+            state.payrollSelections = {};
+            seedProfileFromParsed(parsed);
+            renderAll();
+        } catch (error) {
+            console.error(error);
+            state.parsed = null;
+            state.payrollSelections = {};
+            el.parseError.hidden = false;
+            el.parseError.textContent = `PDF를 해석하지 못했습니다. ${error.message || '파일 형식을 확인하세요.'}`;
+            renderAll();
+        }
+    }
+
+    function onTemplateSelected(file) {
+        if (!file) return;
+        state.templateFile = file;
+        el.templateFileName.textContent = file.name;
+        el.templateFileName.style.background = 'var(--primary-light)';
+        el.templateFileName.style.borderColor = 'transparent';
+        renderAll();
+    }
+
+    function seedProfileFromParsed(parsed) {
+        const guessedStart = parsed.meta.firstAppointmentDate || state.profile.employmentStart;
+        const guessedRetire = parsed.meta.suggestedRetirementDate || lastMonthEndIso(parsed.months.at(-1));
+        state.profile = {
+            ...state.profile,
+            schoolName: state.profile.schoolName || parsed.meta.schoolName || '',
+            personName: state.profile.personName || parsed.meta.personName || '',
+            employmentStart: normalizeDateInput(state.profile.employmentStart || guessedStart || ''),
+            retirementDate: normalizeDateInput(state.profile.retirementDate || guessedRetire || ''),
+            performanceBonusB: state.profile.performanceBonusB || state.profile.performanceBonus || '',
+            performanceBonusActual: state.profile.performanceBonusActual || ''
+        };
+        if (state.syncPerformanceBonusActual) {
+            state.profile.performanceBonusActual = state.profile.performanceBonusB;
+        }
+        syncProfileInputs();
+    }
+
+    function syncProfileInputs() {
+        Object.entries(state.profile).forEach(([key, value]) => {
+            if (el[key]) el[key].value = value;
+        });
+        applyPerformanceBonusSyncState();
+    }
+
+    function resetAll() {
+        state.pdfFile = null;
+        state.templateFile = null;
+        state.parsed = null;
+        state.profile = { ...DEFAULT_PROFILE };
+        state.payrollSelections = {};
+        state.syncPerformanceBonusActual = false;
+        el.pdfInput.value = '';
+        el.templateInput.value = '';
+        el.pdfFileName.textContent = '선택된 PDF 없음';
+        el.pdfFileName.style.background = 'none';
+        el.templateFileName.textContent = '선택된 템플릿 없음';
+        el.templateFileName.style.background = 'none';
+        el.parseError.hidden = true;
+        el.parseError.textContent = '';
+        syncProfileInputs();
+        renderAll();
+    }
+
+    function onTabClick(event) {
+        const button = event.target.closest('.sheet-tab');
+        if (!button) return;
+        state.activeSheet = button.dataset.sheet;
+        renderSheetTabs();
+        renderPreview();
+    }
+
+    function renderAll() {
+        ensurePayrollSelections();
+        renderSummary();
+        renderMeta();
+        renderPayrollEditor();
+        renderSheetTabs();
+        renderPreview();
+    }
+
+    function renderSummary() {
+        el.monthCount.textContent = String(state.parsed ? state.parsed.months.length : 0);
+        el.rowCount.textContent = String(state.parsed ? Object.keys(state.parsed.rows).length : 0);
+    }
+
+    function renderMeta() {
+        if (!state.parsed) {
+            el.metaList.innerHTML = `
+                <div class="meta-item">
+                    <div class="meta-value" style="width:100%; text-align:center; color:var(--text-sub);">PDF를 업로드하면 추출 정보가 표시됩니다.</div>
+                </div>
+            `;
+            return;
+        }
+
+        const metadata = [
+            ['학교명', state.parsed.meta.schoolName || '-'],
+            ['성명', state.parsed.meta.personName || '-'],
+            ['최초임용일 추정', state.parsed.meta.firstAppointmentDate || '-'],
+            ['월 범위', `${formatMonthLabel(state.parsed.months[0])} ~ ${formatMonthLabel(state.parsed.months.at(-1))}`],
+            ['PDF 제목', state.parsed.meta.reportTitle || state.pdfFile?.name || '-'],
+            ['인식 실패 항목', state.parsed.unknownRows.length ? state.parsed.unknownRows.map((row) => row.originalLabel).join(', ') : '없음']
+        ];
+
+        el.metaList.innerHTML = metadata.map(([label, value]) => `
+            <div class="meta-item">
+                <div class="meta-label">${escapeHtml(label)}</div>
+                <div class="meta-value">${escapeHtml(String(value))}</div>
+            </div>
+        `).join('');
+    }
+
+    function renderPayrollEditor() {
+        if (!state.parsed) {
+            el.payrollTable.innerHTML = `
+                <thead><tr><th>평균</th><th>통상</th><th>항목</th><th>유형</th><th>안내</th></tr></thead>
+                <tbody><tr><td colspan="5" class="center" style="padding:40px; color:var(--text-sub);">PDF를 업로드하면 추출된 급여 표가 표시됩니다.</td></tr></tbody>
+            `;
+            return;
+        }
+
+        const months = state.parsed.months;
+        const rows = collectEditableRows();
+        const header = [
+            '<thead><tr>',
+            '<th class="sticky-cell sticky-average selection-cell">평균</th>',
+            '<th class="sticky-cell sticky-ordinary selection-cell">통상</th>',
+            '<th class="sticky-cell sticky-label">항목</th>',
+            '<th class="sticky-cell sticky-type">유형</th>',
+            ...months.map((month) => `<th>${escapeHtml(formatMonthLabelShort(month))}</th>`),
+            '<th>합계</th>',
+            '</tr></thead>'
+        ].join('');
+
+        const body = rows.map((row) => {
+            const total = months.reduce((sum, month) => sum + (row.values[month] || 0), 0);
+            const selection = getPayrollSelection(row.key);
+            const averageEnabled = isAverageSelectable(row);
+            const ordinaryEnabled = isOrdinarySelectable(row);
+            return `
+                <tr>
+                    <td class="sticky-cell sticky-average selection-cell">
+                        <input
+                            type="checkbox"
+                            class="selection-toggle"
+                            data-row-key="${escapeHtmlAttr(row.key)}"
+                            data-target="average"
+                            ${selection.average ? 'checked' : ''}
+                            ${averageEnabled ? '' : 'disabled'}
+                        >
+                    </td>
+                    <td class="sticky-cell sticky-ordinary selection-cell">
+                        <input
+                            type="checkbox"
+                            class="selection-toggle"
+                            data-row-key="${escapeHtmlAttr(row.key)}"
+                            data-target="ordinary"
+                            ${selection.ordinary ? 'checked' : ''}
+                            ${ordinaryEnabled ? '' : 'disabled'}
+                        >
+                    </td>
+                    <td class="sticky-cell sticky-label">${escapeHtml(row.label)}</td>
+                    <td class="sticky-cell sticky-type">${row.type === 'monthly' ? '월정액' : '비월정액'}</td>
+                    ${months.map((month) => `
+                        <td>
+                            <input class="money-input" data-row-key="${escapeHtmlAttr(row.key)}" data-month="${escapeHtmlAttr(month)}" value="${escapeHtmlAttr(formatNumber(row.values[month] || 0))}" inputmode="numeric">
+                        </td>
+                    `).join('')}
+                    <td style="font-weight:700;">${formatNumber(total)}</td>
+                </tr>
+            `;
+        }).join('');
+
+        el.payrollTable.innerHTML = `${header}<tbody>${body}</tbody>`;
+        el.payrollTable.querySelectorAll('.selection-toggle').forEach((input) => {
+            input.addEventListener('change', onSelectionToggle);
+        });
+        el.payrollTable.querySelectorAll('.money-input').forEach((input) => {
+            input.addEventListener('focus', onMoneyFocus);
+            input.addEventListener('blur', onMoneyBlur);
+        });
+    }
+
+    function collectEditableRows() {
+        return Object.values(state.parsed.rows).sort((left, right) => {
+            const leftOrder = getEditOrderIndex(left);
+            const rightOrder = getEditOrderIndex(right);
+            if (leftOrder !== rightOrder) return leftOrder - rightOrder;
+            if (left.type !== right.type) return left.type === 'monthly' ? -1 : 1;
+            return left.label.localeCompare(right.label, 'ko-KR');
+        });
+    }
+
+    function getEditOrderIndex(row) {
+        const referenceKey = getRowReferenceKey(row.key, row);
+        const order = EDIT_ORDER.indexOf(referenceKey);
+        return order === -1 ? Number.MAX_SAFE_INTEGER : order;
+    }
+
+    function getRowReferenceKey(rowKey, row = state.parsed?.rows?.[rowKey]) {
+        const canonicalKey = row?.canonicalKey || rowKey;
+        if (/^teacherAllowanceExtra\d+$/.test(canonicalKey)) {
+            return 'teacherAllowanceExtra1';
+        }
+        return canonicalKey;
+    }
+
+    function ensurePayrollSelections() {
+        if (!state.parsed?.rows) {
+            state.payrollSelections = {};
+            return;
+        }
+
+        const nextSelections = {};
+        Object.entries(state.parsed.rows).forEach(([key, row]) => {
+            const current = state.payrollSelections[key];
+            nextSelections[key] = {
+                average: typeof current?.average === 'boolean' ? current.average : isDefaultAverageSelected(key, row),
+                ordinary: typeof current?.ordinary === 'boolean' ? current.ordinary : isDefaultOrdinarySelected(key, row)
+            };
+        });
+        state.payrollSelections = nextSelections;
+    }
+
+    function getPayrollSelection(rowKey) {
+        return state.payrollSelections[rowKey] || {
+            average: isDefaultAverageSelected(rowKey, state.parsed?.rows?.[rowKey]),
+            ordinary: isDefaultOrdinarySelected(rowKey, state.parsed?.rows?.[rowKey])
+        };
+    }
+
+    function isDefaultAverageSelected(rowKey, row) {
+        return isAverageSelectable(row) && DEFAULT_AVERAGE_KEYS.has(getRowReferenceKey(rowKey, row));
+    }
+
+    function isDefaultOrdinarySelected(rowKey, row) {
+        return isOrdinarySelectable(row) && DEFAULT_ORDINARY_KEYS.has(getRowReferenceKey(rowKey, row));
+    }
+
+    function isAverageSelectable(row) {
+        if (!row) return false;
+        if (row.type === 'monthly') return true;
+        return ['regularAllowance', 'holidayAllowance', 'overtimeExcess', 'annualLeave'].includes(getRowReferenceKey(row.key, row));
+    }
+
+    function isOrdinarySelectable(row) {
+        if (!row) return false;
+        if (row.type === 'monthly') return true;
+        return ORDINARY_ANNUALIZED_KEYS.has(getRowReferenceKey(row.key, row));
+    }
+
+    function isSelectedFor(rowKey, target) {
+        return Boolean(getPayrollSelection(rowKey)[target]);
+    }
+
+    function onMoneyFocus(event) {
+        const value = parseMoney(event.target.value);
+        event.target.value = value ? String(value) : '';
+    }
+
+    function onMoneyBlur(event) {
+        const rowKey = event.target.dataset.rowKey;
+        const month = event.target.dataset.month;
+        const value = parseMoney(event.target.value);
+        if (state.parsed?.rows[rowKey]) {
+            state.parsed.rows[rowKey].values[month] = value;
+            state.parsed.rows[rowKey].total = computeRowTotal(state.parsed.rows[rowKey]);
+        }
+        event.target.value = formatNumber(value);
+        renderAll();
+    }
+
+    function onSelectionToggle(event) {
+        const rowKey = event.target.dataset.rowKey;
+        const target = event.target.dataset.target;
+        if (!rowKey || !target) return;
+        ensurePayrollSelections();
+        if (!state.payrollSelections[rowKey]) {
+            state.payrollSelections[rowKey] = { average: false, ordinary: false };
+        }
+        state.payrollSelections[rowKey][target] = event.target.checked;
+        renderAll();
+    }
+
+    function renderSheetTabs() {
+        el.sheetTabs.querySelectorAll('.sheet-tab').forEach((button) => {
+            button.classList.toggle('active', button.dataset.sheet === state.activeSheet);
+        });
+    }
+
+    function renderPreview() {
+        if (!state.parsed) {
+            el.emptyPreview.hidden = false;
+            el.previewWrap.hidden = true;
+            el.emptyPreview.style.display = 'flex';
+            el.previewWrap.style.display = 'none';
+            return;
+        }
+
+        const derived = buildDerivedModel();
+        el.emptyPreview.hidden = true;
+        el.previewWrap.hidden = false;
+        el.emptyPreview.style.display = 'none';
+        el.previewWrap.style.display = 'block';
+
+        el.claimPane.innerHTML = renderClaimSheet(derived);
+        el.averagePane.innerHTML = renderAverageSheet(derived);
+        el.ordinaryPane.innerHTML = renderOrdinarySheet(derived);
+        el.salaryPane.innerHTML = renderSalarySheet(derived);
+
+        [el.claimPane, el.averagePane, el.ordinaryPane, el.salaryPane].forEach((pane) => pane.classList.remove('active'));
+        const activePane = {
+            claim: el.claimPane,
+            average: el.averagePane,
+            ordinary: el.ordinaryPane,
+            salary: el.salaryPane
+        }[state.activeSheet];
+        if (activePane) activePane.classList.add('active');
+    }
+
+    async function downloadTemplate() {
+        if (!state.templateFile) {
+            alert('먼저 퇴직금 신청 서식 XLSX를 업로드하세요.');
+            return;
+        }
+        if (!state.parsed) {
+            alert('먼저 급여총지급현황 PDF를 업로드하세요.');
+            return;
+        }
+
+        try {
+            const workbook = new ExcelJS.Workbook();
+            await workbook.xlsx.load(await state.templateFile.arrayBuffer());
+            const derived = buildDerivedModel();
+            applyToWorkbook(workbook, derived);
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            triggerDownload(blob, buildDownloadName(derived));
+        } catch (error) {
+            console.error(error);
+            alert(`엑셀 파일 생성 중 오류가 발생했습니다: ${error.message || error}`);
+        }
+    }
+
+    function buildDownloadName(derived) {
+        const school = sanitizeFilename(derived.profile.schoolName || '학교');
+        const name = sanitizeFilename(derived.profile.personName || '퇴직금');
+        return `(${school}) 기간제교원 퇴직금 신청 서식(${school} ${name}).xlsx`;
+    }
+
+    function triggerDownload(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = filename;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+        URL.revokeObjectURL(url);
+    }
+
+    async function parsePayrollPdf(file) {
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+        const pages = [];
+
+        for (let index = 1; index <= pdf.numPages; index += 1) {
+            const page = await pdf.getPage(index);
+            const textContent = await page.getTextContent();
+            const items = textContent.items
+                .map((item) => ({ text: String(item.str || '').trim(), x: item.transform[4], y: item.transform[5] }))
+                .filter((item) => item.text);
+            pages.push({
+                number: index,
+                items,
+                lines: buildLines(items),
+                rawText: textContent.items.map((item) => String(item.str || '').trim()).filter(Boolean).join(' ')
+            });
+        }
+
+        const months = detectMonths(pages[0].items);
+        if (!months.length) {
+            throw new Error('월 헤더를 인식하지 못했습니다.');
+        }
+
+        const rawText = pages.map((page) => page.rawText).join(' ');
+        const rows = parseRowsFromPages(pages, months);
+        mergeLegacyRows(rows, parseRowsFromRawText(rawText, months), months);
+        const unknownRows = Object.values(rows)
+            .filter((row) => !row.canonicalKey)
+            .map((row) => ({ key: row.key, originalLabel: row.originalLabel }));
+        const metadataText = pages.map((page) => page.rawText).join(' ');
+        const meta = extractMetadata(metadataText, file.name, months);
+        return { months, rows, unknownRows, meta };
+    }
+
+    function buildLines(items) {
+        const sorted = [...items].sort((a, b) => (Math.abs(b.y - a.y) > 2 ? b.y - a.y : a.x - b.x));
+        const lines = [];
+        sorted.forEach((item) => {
+            let line = lines.find((entry) => Math.abs(entry.y - item.y) <= 2);
+            if (!line) {
+                line = { y: item.y, items: [] };
+                lines.push(line);
+            }
+            line.items.push(item);
+        });
+        return lines.sort((a, b) => b.y - a.y).map((line) => ({
+            y: line.y,
+            items: line.items.sort((a, b) => a.x - b.x),
+            text: joinLine(line.items)
+        }));
+    }
+
+    function joinLine(items) {
+        const parts = [];
+        items.forEach((item, index) => {
+            const previous = items[index - 1];
+            if (previous) parts.push(item.x - previous.x > 10 ? ' ' : '');
+            parts.push(item.text);
+        });
+        return parts.join('').replace(/\s+/g, ' ').trim();
+    }
+
+    function detectMonths(items) {
+        const yearItems = items.filter((item) => isYearToken(item.text));
+        const monthItems = items
+            .filter((item) => isMonthToken(item.text))
+            .sort((a, b) => b.y - a.y);
+
+        if (!yearItems.length || monthItems.length < 6) return [];
+
+        const seen = new Set();
+        const months = [];
+
+        monthItems.forEach((monthItem) => {
+            const nearestYear = yearItems.reduce((best, current) => {
+                if (!best) return current;
+                const currentScore = Math.abs(current.y - monthItem.y) + Math.abs(current.x - monthItem.x) * 0.5;
+                const bestScore = Math.abs(best.y - monthItem.y) + Math.abs(best.x - monthItem.x) * 0.5;
+                return currentScore < bestScore ? current : best;
+            }, null);
+            if (!nearestYear) return;
+            const year = nearestYear.text.replace(/[^\d]/g, '');
+            const month = monthItem.text.replace(/[^\d]/g, '').padStart(2, '0');
+            const iso = `${year}-${month}`;
+            if (!seen.has(iso)) {
+                seen.add(iso);
+                months.push(iso);
             }
         });
-    </script>
-</body>
-</html>
+
+        return months.sort();
+    }
+
+    function extractMetadata(text, filename, months) {
+        const normalized = text.replace(/\s+/g, ' ').trim();
+        const schoolMatch = normalized.match(/기관명\s*([가-힣A-Za-z0-9()·\-]+학교)/);
+        const appointmentMatch = text.match(/최초임용일\s*(\d{4}\.\d{2}\.\d{2})/);
+        const reportTitleMatch = text.match(/(\d{4}년도[^\n]*연도별\s*급여\s*총\s*지급현황)/);
+        const nameMatch = text.match(/\d{4}년도\s*([가-힣A-Za-z○O]+)\s*연도별\s*급여\s*총\s*지급현황/);
+        const filenameNameMatch = filename.match(/\(([^()]+)\)\.pdf$/);
+        const filenameSchoolMatch = filename.match(/^\(([^)]+)\)/);
+        return {
+            schoolName: schoolMatch?.[1] || filenameSchoolMatch?.[1] || '',
+            personName: nameMatch?.[1] || extractNameFromFilename(filenameNameMatch?.[1] || '') || '',
+            firstAppointmentDate: appointmentMatch?.[1].replace(/\./g, '-').replace(/-$/, '') || '',
+            reportTitle: reportTitleMatch?.[1] || filename,
+            suggestedRetirementDate: months.at(-1) ? lastMonthEndIso(months.at(-1)) : ''
+        };
+    }
+
+    function extractNameFromFilename(text) {
+        const parts = text.split(/\s+/).filter(Boolean);
+        return parts.at(-1) || '';
+    }
+
+    function parseRowsFromPages(pages, months) {
+        const rows = {};
+
+        pages.forEach((page) => {
+            page.lines.forEach((line) => {
+                const parsed = parsePayrollLine(line.text, months);
+                if (!parsed) return;
+
+                const existingRow = Object.values(rows).find((row) => row.originalLabel === parsed.originalLabel);
+                if (existingRow) {
+                    months.forEach((month) => {
+                        existingRow.values[month] += parsed.values[month] || 0;
+                    });
+                    existingRow.total = computeRowTotal(existingRow);
+                    return;
+                }
+
+                const canonicalKey = resolveCanonicalKey(parsed.originalLabel, parsed.classification, rows);
+                const rowKey = buildDynamicRowKey(parsed.originalLabel, canonicalKey, rows);
+                rows[rowKey] = {
+                    key: rowKey,
+                    canonicalKey,
+                    label: parsed.originalLabel,
+                    originalLabel: parsed.originalLabel,
+                    type: inferRowType(parsed.originalLabel, parsed.classification),
+                    values: Object.fromEntries(months.map((month) => [month, parsed.values[month] || 0])),
+                    total: parsed.total
+                };
+            });
+        });
+
+        return rows;
+    }
+
+    function parsePayrollLine(text, months) {
+        const normalized = String(text || '').replace(/\s+/g, ' ').trim();
+        if (!normalized || isNoiseLine(normalized)) return null;
+
+        const numericMatches = [...normalized.matchAll(/-?\d[\d,]*/g)];
+        if (numericMatches.length < months.length) return null;
+
+        let labelStartIndex = -1;
+        let monthValues = null;
+        let total = 0;
+
+        if (numericMatches.length >= months.length + 1) {
+            const sequenceWithTotal = numericMatches.slice(-(months.length + 1));
+            const candidateValues = sequenceWithTotal.slice(0, months.length).map((match) => parseMoney(match[0]));
+            const candidateTotal = parseMoney(sequenceWithTotal.at(-1)[0]);
+            const candidateSum = candidateValues.reduce((sum, value) => sum + value, 0);
+
+            if (candidateTotal === candidateSum) {
+                labelStartIndex = sequenceWithTotal[0].index ?? -1;
+                monthValues = candidateValues;
+                total = candidateTotal;
+            }
+        }
+
+        if (!monthValues) {
+            const monthMatches = numericMatches.slice(-months.length);
+            labelStartIndex = monthMatches[0].index ?? -1;
+            monthValues = monthMatches.map((match) => parseMoney(match[0]));
+            total = monthValues.reduce((sum, value) => sum + value, 0);
+        }
+
+        const originalLabel = normalized.slice(0, labelStartIndex).trim().replace(/\s+/g, ' ');
+        if (!originalLabel || !/[가-힣A-Za-z]/.test(originalLabel)) return null;
+        if (monthValues.every((value) => value === 0) && total === 0) return null;
+
+        const classification = classifyRow(originalLabel);
+        return {
+            originalLabel,
+            classification,
+            values: Object.fromEntries(months.map((month, index) => [month, monthValues[index] || 0])),
+            total
+        };
+    }
+
+    function resolveCanonicalKey(label, classification, rows) {
+        if (!classification) return null;
+        if (classification.key !== 'teacherAllowanceExtra1') return classification.key;
+
+        const existingRow = Object.values(rows)
+            .find((row) => row.originalLabel === label && /^teacherAllowanceExtra\d+$/.test(row.canonicalKey || ''));
+        if (existingRow) return existingRow.canonicalKey;
+
+        return ORDINARY_TEACHER_EXTRA_KEYS.find((key) => !Object.values(rows).some((row) => row.canonicalKey === key))
+            || classification.key;
+    }
+
+    function buildDynamicRowKey(label, canonicalKey, rows) {
+        const slug = slugifyLabel(label) || 'row';
+        const prefix = canonicalKey || 'custom';
+        const baseKey = `${prefix}__${slug}`;
+        let key = baseKey;
+        let suffix = 2;
+        while (rows[key]) {
+            key = `${baseKey}_${suffix}`;
+            suffix += 1;
+        }
+        return key;
+    }
+
+    function slugifyLabel(label) {
+        return String(label || '')
+            .trim()
+            .replace(/\s+/g, '_')
+            .replace(/[^0-9A-Za-z가-힣_]+/g, '')
+            .replace(/^_+|_+$/g, '')
+            .slice(0, 48);
+    }
+
+    function inferRowType(label, classification) {
+        if (classification?.type) return classification.type;
+        const compact = label.replace(/\s+/g, '');
+        if (/(명절휴가비\(BA\)|연가보상비\(YA\)|정근수당|명절휴가비|연가보상비|성과상여금|초과분)/.test(compact)) {
+            return 'nonMonthly';
+        }
+        return 'monthly';
+    }
+
+    function classifyRow(label) {
+        const compact = label.replace(/\s+/g, '').replace(/월급여\(AA\)|명절휴가비\(BA\)|연가보상비\(YA\)/g, '');
+        if (compact.includes('본봉')) return { key: 'basePay', label: '본봉', type: 'monthly' };
+        if (compact.includes('정근수당가산금')) return { key: 'regularAllowanceAdd', label: '정근수당가산금', type: 'monthly' };
+        if (compact.includes('정근수당')) return { key: 'regularAllowance', label: '정근수당', type: 'nonMonthly' };
+        if (compact.includes('정액급식비')) return { key: 'mealAllowance', label: '정액급식비', type: 'monthly' };
+        if (compact.includes('명절휴가비')) return { key: 'holidayAllowance', label: '명절휴가비', type: 'nonMonthly' };
+        if (compact === '연가보상비' || compact.endsWith('연가보상비')) return { key: 'annualLeave', label: '연가보상비', type: 'nonMonthly' };
+        if (compact.includes('시간외근무수당') && compact.includes('초과분')) return { key: 'overtimeExcess', label: '시간외근무수당(초과분)', type: 'nonMonthly' };
+        if (compact.includes('시간외근무수당') && compact.includes('정액분')) return { key: 'overtimeFixed', label: '시간외 근무수당(정액분)', type: 'monthly' };
+        if (compact.includes('교직수당가산금') || compact.includes('학급담당') || compact.includes('담임수당')) return { key: 'teacherAllowanceExtra1', label: '교직수당(가산금)', type: 'monthly' };
+        if (/교직수당(?!가산금)/.test(compact)) return { key: 'teacherAllowance', label: '교직수당', type: 'monthly' };
+        if (compact.includes('도서벽지수당')) return { key: 'remoteAreaAllowance', label: '도서벽지수당', type: 'monthly' };
+        if (compact.includes('보전수당가산금')) return { key: 'preservationAllowanceAdd', label: '보전수당가산금', type: 'monthly' };
+        if (compact.includes('보전수당')) return { key: 'preservationAllowance', label: '보전수당', type: 'monthly' };
+        if (compact.includes('교원연구비')) return { key: 'researchAllowance', label: '교원연구비', type: 'monthly' };
+        if (compact.includes('학생지도비')) return { key: 'studentGuidanceAllowance', label: '학생지도비', type: 'monthly' };
+        if (compact.includes('연구업무수당')) return { key: 'researchDutyAllowance', label: '연구업무수당', type: 'monthly' };
+        return null;
+    }
+
+    function parseRowsFromRawText(rawText, months) {
+        const normalized = rawText
+            .replace(/\s+/g, ' ')
+            .replace(/(\s)0(?=\d{1,3},\d{3})/g, '$10 ')
+            .trim();
+        const rows = {};
+        const sequence = String.raw`(-?[\d,]+(?:\s+-?[\d,]+){12})`;
+        const specs = [
+            { key: 'basePay', label: '본봉', type: 'monthly', patterns: [new RegExp(String.raw`월급여\s*\(AA\)\s*본봉\s*${sequence}`, 'g')] },
+            { key: 'regularAllowance', label: '정근수당', type: 'nonMonthly', patterns: [new RegExp(String.raw`정근수당(?!가산금)\s*${sequence}`, 'g')] },
+            { key: 'regularAllowanceAdd', label: '정근수당가산금', type: 'monthly', patterns: [new RegExp(String.raw`정근수당가산금\s*${sequence}`, 'g')] },
+            { key: 'mealAllowance', label: '정액급식비', type: 'monthly', patterns: [new RegExp(String.raw`정액급식비\s*${sequence}`, 'g')] },
+            { key: 'holidayAllowance', label: '명절휴가비', type: 'nonMonthly', patterns: [
+                new RegExp(String.raw`월급여\s*\(AA\)\s*명절휴가비\s*${sequence}`, 'g'),
+                new RegExp(String.raw`명절휴가비\s*\(BA\)\s*명절휴가비\s*${sequence}`, 'g'),
+                new RegExp(String.raw`명절휴가비\(BA\)\s*명절휴가비\s*${sequence}`, 'g')
+            ] },
+            { key: 'annualLeave', label: '연가보상비', type: 'nonMonthly', patterns: [new RegExp(String.raw`연가보상비\s*연가보상비\s*${sequence}`, 'g')] },
+            { key: 'teacherAllowance', label: '교직수당', type: 'monthly', patterns: [new RegExp(String.raw`월급여\s*\(AA\)\s*교직수당(?!가산금)\s*${sequence}`, 'g')] },
+            { key: 'teacherAllowanceExtra1', label: '교직수당(가산금)', type: 'monthly', patterns: [
+                new RegExp(String.raw`교직수당가산금\s*4?\s*\(?.*?학급담당\)?\s*${sequence}`, 'g'),
+                new RegExp(String.raw`교직수당가산금\s*${sequence}`, 'g')
+            ] },
+            { key: 'overtimeFixed', label: '시간외 근무수당(정액분)', type: 'monthly', patterns: [
+                new RegExp(String.raw`월급여\s*\(AA\)\s*시간외근무수당\s*\(정액분\)\s*${sequence}`, 'g'),
+                new RegExp(String.raw`연가보상비\s*\(YA\)\s*시간외근무수당\s*\(정액분\)\s*${sequence}`, 'g'),
+                new RegExp(String.raw`연가보상비\(YA\)\s*시간외근무수당\s*\(정액분\)\s*${sequence}`, 'g')
+            ] },
+            { key: 'overtimeExcess', label: '시간외근무수당(초과분)', type: 'nonMonthly', patterns: [
+                new RegExp(String.raw`월급여\s*\(AA\)\s*시간외근무수당\s*\(초과분\)\s*${sequence}`, 'g'),
+                new RegExp(String.raw`연가보상비\s*\(YA\)\s*시간외근무수당\s*\(초과분\)\s*${sequence}`, 'g'),
+                new RegExp(String.raw`연가보상비\(YA\)\s*시간외근무수당\s*\(초과분\)\s*${sequence}`, 'g')
+            ] },
+            { key: 'researchAllowance', label: '교원연구비', type: 'monthly', patterns: [new RegExp(String.raw`교원연구비(?:\([^)]+\))?\s*${sequence}`, 'g')] },
+            { key: 'remoteAreaAllowance', label: '도서벽지수당', type: 'monthly', patterns: [new RegExp(String.raw`도서벽지수당\s*${sequence}`, 'g')] },
+            { key: 'preservationAllowance', label: '보전수당', type: 'monthly', patterns: [new RegExp(String.raw`보전수당(?!가산금)\s*${sequence}`, 'g')] },
+            { key: 'preservationAllowanceAdd', label: '보전수당가산금', type: 'monthly', patterns: [new RegExp(String.raw`보전수당가산금\s*${sequence}`, 'g')] },
+            { key: 'studentGuidanceAllowance', label: '학생지도비', type: 'monthly', patterns: [new RegExp(String.raw`학생지도비\s*${sequence}`, 'g')] },
+            { key: 'researchDutyAllowance', label: '연구업무수당', type: 'monthly', patterns: [new RegExp(String.raw`연구업무수당\s*${sequence}`, 'g')] }
+        ];
+
+        specs.forEach((spec) => {
+            const baseRow = {
+                key: spec.key,
+                label: spec.label,
+                type: spec.type,
+                originalLabel: spec.label,
+                values: Object.fromEntries(months.map((month) => [month, 0])),
+                total: 0
+            };
+
+            spec.patterns.forEach((pattern) => {
+                pattern.lastIndex = 0;
+                let match;
+                while ((match = pattern.exec(normalized))) {
+                    const values = parseSequenceValues(match[1], months.length + 1);
+                    if (!values) continue;
+                    months.forEach((month, index) => {
+                        baseRow.values[month] += values[index] || 0;
+                    });
+                }
+            });
+
+            baseRow.total = computeRowTotal(baseRow);
+            if (baseRow.total > 0) {
+                rows[spec.key] = baseRow;
+            }
+        });
+
+        return rows;
+    }
+
+    function parseSequenceValues(text, expectedCount) {
+        const tokens = text.trim().split(/\s+/).map((token) => parseMoney(token));
+        if (tokens.length < expectedCount) return null;
+        return tokens.slice(0, expectedCount);
+    }
+
+    function mergeLegacyRows(rows, legacyRows, months) {
+        Object.values(legacyRows).forEach((legacyRow) => {
+            const hasCanonical = Object.values(rows).some((row) => row.canonicalKey === legacyRow.key);
+            if (hasCanonical) return;
+
+            const canonicalKey = legacyRow.key;
+            const label = legacyRow.originalLabel || legacyRow.label || KNOWN_ROW_MAP[canonicalKey]?.label || canonicalKey;
+            const rowKey = buildDynamicRowKey(label, canonicalKey, rows);
+            rows[rowKey] = {
+                key: rowKey,
+                canonicalKey,
+                label,
+                originalLabel: label,
+                type: legacyRow.type || KNOWN_ROW_MAP[canonicalKey]?.type || 'monthly',
+                values: Object.fromEntries(months.map((month) => [month, legacyRow.values?.[month] || 0])),
+                total: computeRowTotal(legacyRow)
+            };
+        });
+    }
+
+    function buildDerivedModel() {
+        const months = state.parsed.months;
+        const profile = normalizeProfile();
+        const service = computeServiceInfo(profile.employmentStart, profile.retirementDate);
+        const averageWindow = computeAverageWindow(profile.retirementDate);
+        const segmentColumns = ['C', 'D', 'E', 'F'].slice(4 - averageWindow.segments.length);
+        const referenceMonth = resolveReferenceMonth(profile.retirementDate);
+        const salaryHeaderMonths = buildSalaryHeaderMonths(referenceMonth);
+        const averageMonthlyRows = buildAverageMonthlyRows(averageWindow);
+        const nonMonthlyRows = buildAverageNonMonthlyRows(profile);
+        const ordinary = buildOrdinaryRows(referenceMonth, profile);
+        const salaryRows = buildSalaryRows(salaryHeaderMonths);
+        const averageMonthlySubtotal = sumMatrix(averageMonthlyRows.map((row) => row.amounts));
+        const nonMonthlyTotal = nonMonthlyRows.reduce((sum, row) => sum + row.total, 0);
+        const nonMonthlyConverted = nonMonthlyRows.reduce((sum, row) => sum + row.converted, 0);
+        const averageDaysTotal = averageWindow.segments.reduce((sum, segment) => sum + segment.days, 0);
+        const averageTotal = averageMonthlySubtotal + nonMonthlyConverted;
+        const averageDaily = averageDaysTotal ? floorTo(averageTotal / averageDaysTotal * 30, 10) : 0;
+        const retirementAverage = floorTo(averageDaily * service.totalDays / 365, 10);
+        const ordinaryHourly = Math.floor(ordinary.total / 209);
+        const ordinaryDaily = Math.floor(ordinaryHourly * 8);
+        const ordinaryMonthly = ordinaryDaily * 30;
+        const retirementOrdinary = floorTo(ordinaryMonthly * service.totalDays / 365, 10);
+
+        return {
+            profile,
+            months,
+            service,
+            referenceMonth,
+            averageWindow,
+            segmentColumns,
+            salaryHeaderMonths,
+            averageMonthlyRows,
+            averageMonthlySubtotal,
+            nonMonthlyRows,
+            nonMonthlyTotal,
+            nonMonthlyConverted,
+            averageDaysTotal,
+            averageTotal,
+            averageDaily,
+            retirementAverage,
+            ordinary,
+            ordinaryHourly,
+            ordinaryDaily,
+            ordinaryMonthly,
+            retirementOrdinary,
+            salaryRows
+        };
+    }
+
+    function normalizeProfile() {
+        return {
+            ...state.profile,
+            schoolName: state.profile.schoolName || state.parsed.meta.schoolName || '',
+            personName: state.profile.personName || state.parsed.meta.personName || '',
+            employmentStart: normalizeDateInput(state.profile.employmentStart || state.parsed.meta.firstAppointmentDate || ''),
+            retirementDate: normalizeDateInput(state.profile.retirementDate || state.parsed.meta.suggestedRetirementDate || ''),
+            performanceBonusB: parseMoney(state.profile.performanceBonusB || state.profile.performanceBonus || ''),
+            performanceBonusActual: parseMoney(state.syncPerformanceBonusActual ? (state.profile.performanceBonusB || '') : (state.profile.performanceBonusActual || ''))
+        };
+    }
+
+    function computeServiceInfo(startIso, endIso) {
+        const start = parseIsoDate(startIso);
+        const end = parseIsoDate(endIso);
+        if (!start || !end || end < start) {
+            return { totalDays: 0, displayYears: 0, periodText: '' };
+        }
+        const totalDays = Math.floor((end - start) / 86400000) + 1;
+        return {
+            totalDays,
+            displayYears: Math.floor(totalDays / 365),
+            periodText: `${formatDateDot(startIso)}~${formatDateDot(endIso)}`
+        };
+    }
+
+    function computeAverageWindow(retirementIso) {
+        const end = parseIsoDate(retirementIso);
+        if (!end) return { segments: [] };
+
+        const endMonthLastDay = new Date(end.getFullYear(), end.getMonth() + 1, 0).getDate();
+        const start = end.getDate() === endMonthLastDay
+            ? new Date(end.getFullYear(), end.getMonth() - 2, 1)
+            : new Date(end.getFullYear(), end.getMonth() - 3, end.getDate() + 1);
+        const segments = [];
+        let cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+
+        while (cursor <= end) {
+            const monthStart = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+            const monthEnd = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0);
+            const segmentStart = cursor > monthStart ? cursor : monthStart;
+            const segmentEnd = end < monthEnd ? end : monthEnd;
+            const days = Math.floor((segmentEnd - segmentStart) / 86400000) + 1;
+            segments.push({
+                monthIso: `${segmentStart.getFullYear()}-${String(segmentStart.getMonth() + 1).padStart(2, '0')}`,
+                monthLabel: `${segmentStart.getFullYear()}년 ${String(segmentStart.getMonth() + 1).padStart(2, '0')}월`,
+                days,
+                ratio: days / monthEnd.getDate()
+            });
+            cursor = new Date(segmentEnd.getFullYear(), segmentEnd.getMonth(), segmentEnd.getDate() + 1);
+        }
+
+        return { segments };
+    }
+
+    function buildAverageMonthlyRows(averageWindow) {
+        const rows = [];
+        collectEditableRows().forEach((row) => {
+            if (row.type !== 'monthly' || !isSelectedFor(row.key, 'average')) return;
+            const amounts = averageWindow.segments.map((segment) => Math.round((row.values[segment.monthIso] || 0) * segment.ratio));
+            const total = amounts.reduce((sum, value) => sum + value, 0);
+            if (total > 0 || row.key === 'basePay') {
+                rows.push({ key: row.key, label: row.label, amounts, total });
+            }
+        });
+        while (rows.length < 10) {
+            rows.push({ key: `blank-${rows.length}`, label: rows.length === 9 ? '-' : '', amounts: new Array(averageWindow.segments.length).fill(0), total: 0 });
+        }
+        return rows.slice(0, 10);
+    }
+
+    function getRowsByCanonicalKey(canonicalKey) {
+        return collectEditableRows().filter((row) => row.canonicalKey === canonicalKey);
+    }
+
+    function getSelectedRowsByCanonicalKey(canonicalKey, target) {
+        return getRowsByCanonicalKey(canonicalKey).filter((row) => isSelectedFor(row.key, target));
+    }
+
+    function getCanonicalMonthValue(canonicalKey, month, target) {
+        return getSelectedRowsByCanonicalKey(canonicalKey, target)
+            .reduce((sum, row) => sum + (row.values[month] || 0), 0);
+    }
+
+    function getCanonicalTotal(canonicalKey, target) {
+        return getSelectedRowsByCanonicalKey(canonicalKey, target)
+            .reduce((sum, row) => sum + computeRowTotal(row), 0);
+    }
+
+    function buildAverageNonMonthlyRows(profile) {
+        const regularSelected = getSelectedRowsByCanonicalKey('regularAllowance', 'average').length > 0;
+        const holidaySelected = getSelectedRowsByCanonicalKey('holidayAllowance', 'average').length > 0;
+        const overtimeSelected = getSelectedRowsByCanonicalKey('overtimeExcess', 'average').length > 0;
+        const annualLeaveRawTotal = getCanonicalTotal('annualLeave', 'average');
+        const annualLeaveSelected = getSelectedRowsByCanonicalKey('annualLeave', 'average').length > 0 && annualLeaveRawTotal > 0;
+        const regularDates = regularSelected ? extractPayoutMonths('regularAllowance', 'average') : [];
+        const holidayDates = holidaySelected ? extractPayoutMonths('holidayAllowance', 'average') : [];
+        const toConverted = (value) => floorTo(value * 3 / 12, 10);
+        const regularTotal = regularSelected ? getCanonicalTotal('regularAllowance', 'average') : 0;
+        const holidayTotal = holidaySelected ? getCanonicalTotal('holidayAllowance', 'average') : 0;
+        const performanceTotal = parseMoney(profile.performanceBonusActual);
+        const overtimeTotal = overtimeSelected ? getCanonicalTotal('overtimeExcess', 'average') : 0;
+        const annualLeaveTotal = annualLeaveSelected ? annualLeaveRawTotal : 0;
+
+        return [
+            {
+                label: '정근수당',
+                dates: regularDates.slice(0, 2),
+                amounts: regularDates.slice(0, 2).map((date) => getCanonicalMonthValue('regularAllowance', date, 'average')),
+                total: regularTotal,
+                converted: toConverted(regularTotal)
+            },
+            {
+                label: '명절휴가비',
+                dates: holidayDates.slice(0, 2),
+                amounts: holidayDates.slice(0, 2).map((date) => getCanonicalMonthValue('holidayAllowance', date, 'average')),
+                total: holidayTotal,
+                converted: toConverted(holidayTotal)
+            },
+            {
+                label: '성과상여금(실지급액)',
+                dates: [],
+                amounts: [],
+                total: performanceTotal,
+                converted: toConverted(performanceTotal)
+            },
+            {
+                label: '시간외수당초과분',
+                dates: [],
+                amounts: [],
+                total: overtimeTotal,
+                converted: toConverted(overtimeTotal)
+            },
+            {
+                label: '연가보상비',
+                dates: [],
+                amounts: [],
+                total: annualLeaveTotal,
+                converted: toConverted(annualLeaveTotal)
+            }
+        ];
+    }
+
+    function buildOrdinaryRows(retirementIso, profile) {
+        const referenceMonth = resolveReferenceMonth(retirementIso);
+        const getMonthValue = (key) => getCanonicalMonthValue(key, referenceMonth, 'ordinary');
+        const performanceBonusMonthly = Math.floor(parseMoney(profile.performanceBonusB) / 12);
+        const regularAllowanceMonthly = getSelectedRowsByCanonicalKey('regularAllowance', 'ordinary').length
+            ? Math.floor(getCanonicalTotal('regularAllowance', 'ordinary') / 12)
+            : 0;
+        const holidayAllowanceMonthly = getSelectedRowsByCanonicalKey('holidayAllowance', 'ordinary').length
+            ? Math.floor(getCanonicalTotal('holidayAllowance', 'ordinary') / 12)
+            : 0;
+        const teacherAllowanceExtra = collectEditableRows().reduce((sum, row) => {
+            if (!/^teacherAllowanceExtra\d+$/.test(row.canonicalKey || '') || !isSelectedFor(row.key, 'ordinary')) return sum;
+            return sum + (row.values[referenceMonth] || 0);
+        }, 0);
+        const additionalSelectedAllowance = collectEditableRows().reduce((sum, row) => {
+            if (row.type !== 'monthly' || !isSelectedFor(row.key, 'ordinary')) return sum;
+            const referenceKey = getRowReferenceKey(row.key, row);
+            if ([
+                'basePay',
+                'mealAllowance',
+                'teacherAllowance',
+                'researchAllowance',
+                'remoteAreaAllowance',
+                'regularAllowanceAdd'
+            ].includes(referenceKey) || /^teacherAllowanceExtra\d+$/.test(row.canonicalKey || '')) {
+                return sum;
+            }
+            return sum + (row.values[referenceMonth] || 0);
+        }, 0);
+        const ordinary = {
+            basicPay: getMonthValue('basePay'),
+            mealAllowance: getMonthValue('mealAllowance'),
+            teacherAllowance: getMonthValue('teacherAllowance'),
+            teacherAllowanceExtra,
+            homeroomAllowance: 0,
+            researchAllowance: getMonthValue('researchAllowance'),
+            remoteAreaAllowance: getMonthValue('remoteAreaAllowance'),
+            regularAllowanceAdd: getMonthValue('regularAllowanceAdd'),
+            additionalSelectedAllowance,
+            performanceBonusMonthly,
+            regularAllowanceMonthly,
+            holidayAllowanceMonthly
+        };
+        ordinary.total = Object.values(ordinary).reduce((sum, value) => sum + (typeof value === 'number' ? value : 0), 0);
+        return ordinary;
+    }
+
+    function buildSalaryHeaderMonths(referenceMonth) {
+        if (!referenceMonth) return [];
+        const end = parseMonthIso(referenceMonth);
+        const start = addMonths(end, -12);
+        return Array.from({ length: 13 }, (_, index) => formatMonthIso(addMonths(start, index)));
+    }
+
+    function resolveReferenceMonth(retirementIso) {
+        const target = retirementIso ? retirementIso.slice(0, 7) : '';
+        if (!state.parsed?.months?.length) return target;
+        if (target && state.parsed.months.includes(target)) return target;
+        if (target) {
+            const candidates = state.parsed.months.filter((month) => month <= target);
+            if (candidates.length) return candidates.at(-1);
+        }
+        return state.parsed.months.at(-1);
+    }
+
+    function buildSalaryRows(headerMonths) {
+        return KNOWN_ROWS.slice(0, 26).map((definition) => {
+            const source = state.parsed.rows[definition.key];
+            return {
+                key: definition.key,
+                label: source?.label || definition.label,
+                type: definition.type,
+                values: Object.fromEntries(headerMonths.map((month) => [month, source?.values?.[month] || 0])),
+                total: source ? computeRowTotal(source) : 0
+            };
+        });
+    }
+
+    function renderClaimSheet(derived) {
+        return `
+            <div class="sheet-surface">
+                <table class="sheet">
+                    <tr class="title-row"><td colspan="11">퇴직금 청구서</td></tr>
+                    <tr>
+                        <td class="cell-label" rowspan="2">신청인</td>
+                        <td class="cell-label" colspan="2">소 속</td>
+                        <td colspan="2">${escapeHtml(derived.profile.schoolName || '')}</td>
+                        <td class="cell-label">생년월일</td>
+                        <td colspan="2">${escapeHtml(derived.profile.birthDate || '')}</td>
+                        <td class="cell-label" colspan="2">연락처</td>
+                        <td>${escapeHtml(derived.profile.phoneNumber || '')}</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-label" colspan="2">성 명</td>
+                        <td colspan="2">${escapeHtml(derived.profile.personName || '')}</td>
+                        <td class="cell-label">주 소</td>
+                        <td colspan="5">${escapeHtml(derived.profile.address || '')}</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-label" colspan="3">퇴직금지급 근로기간</td>
+                        <td colspan="3">${escapeHtml(derived.service.periodText || '')}</td>
+                        <td class="cell-label">퇴직일자</td>
+                        <td colspan="4">${escapeHtml(formatDateDot(derived.profile.retirementDate))}</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-label" colspan="2">신 청 인</td>
+                        <td class="cell-label" colspan="2">수취희망금융기관</td>
+                        <td class="cell-label" colspan="5">계 좌 번 호</td>
+                        <td class="cell-label" colspan="2">예금주</td>
+                    </tr>
+                    <tr>
+                        <td class="cell-label" colspan="2">예금통장</td>
+                        <td colspan="2">${escapeHtml(derived.profile.bankName || '')}</td>
+                        <td colspan="5">${escapeHtml(derived.profile.accountNumber || '')}</td>
+                        <td colspan="2">${escapeHtml(derived.profile.accountHolder || derived.profile.personName || '')}</td>
+                    </tr>
+                    <tr><td colspan="11">위의 근로기간에 대하여 근로기준법 제34조에 의거 퇴직금을 청구합니다.</td></tr>
+                    <tr><td colspan="11">${escapeHtml(derived.profile.postalCode || '')}</td></tr>
+                    <tr><td colspan="11" class="center">청구인 ${escapeHtml(derived.profile.personName || '')} (인)</td></tr>
+                    <tr><td colspan="11" class="center">${escapeHtml(derived.profile.schoolName || '')}장 귀하</td></tr>
+                </table>
+            </div>
+        `;
+    }
+
+    function renderAverageSheet(derived) {
+        const monthCells = ['C', 'D', 'E', 'F'];
+        const segmentMap = {};
+        monthCells.forEach((column) => { segmentMap[column] = { monthLabel: '', days: 0, index: -1 }; });
+        derived.segmentColumns.forEach((column, index) => {
+            segmentMap[column] = {
+                monthLabel: derived.averageWindow.segments[index].monthLabel,
+                days: derived.averageWindow.segments[index].days,
+                index
+            };
+        });
+
+        return `
+            <div class="sheet-surface">
+                <table class="sheet average-sheet">
+                    <tr class="title-row"><td colspan="8">퇴직금 산정서(평균임금)</td></tr>
+                    <tr><td class="cell-label">성명</td><td>${escapeHtml(derived.profile.personName || '')}</td><td class="cell-label">생년월일</td><td>${escapeHtml(derived.profile.birthDate || '')}</td><td class="cell-label">직종</td><td colspan="3">기간제교사</td></tr>
+                    <tr><td class="cell-label">퇴직일자</td><td>${escapeHtml(formatDateDot(derived.profile.retirementDate))}</td><td class="cell-label">채용일자</td><td>${escapeHtml(formatDateDot(derived.profile.employmentStart))}</td><td class="cell-label">휴대전화</td><td colspan="3">${escapeHtml(derived.profile.phoneNumber || '')}</td></tr>
+                    <tr><td class="cell-label">근무기간</td><td colspan="3">${escapeHtml(derived.service.periodText || '')}</td><td class="cell-label">근무년수(**년)</td><td>${derived.service.displayYears}</td><td class="cell-label">총근무일(숫자)</td><td>${derived.service.totalDays}</td></tr>
+                    <tr><td class="cell-label" colspan="2">지급월(퇴직직전3개월)</td><td>${escapeHtml(segmentMap.C.monthLabel)}</td><td>${escapeHtml(segmentMap.D.monthLabel)}</td><td>${escapeHtml(segmentMap.E.monthLabel)}</td><td>${escapeHtml(segmentMap.F.monthLabel)}</td><td class="cell-label">계</td><td>${derived.averageDaysTotal ? '자동 계산' : ''}</td></tr>
+                    <tr><td class="cell-label" colspan="2">근무일수</td><td class="num">${formatNumber(segmentMap.C.days)}</td><td class="num">${formatNumber(segmentMap.D.days)}</td><td class="num">${formatNumber(segmentMap.E.days)}</td><td class="num">${formatNumber(segmentMap.F.days)}</td><td class="cell-label">합계</td><td class="num">${formatNumber(derived.averageDaysTotal)}</td></tr>
+                    <tr><th colspan="2">퇴직직전 3개월 월정금액</th><th>${escapeHtml(segmentMap.C.monthLabel)}</th><th>${escapeHtml(segmentMap.D.monthLabel)}</th><th>${escapeHtml(segmentMap.E.monthLabel)}</th><th>${escapeHtml(segmentMap.F.monthLabel)}</th><th colspan="2">계</th></tr>
+                    ${derived.averageMonthlyRows.map((row) => `
+                        <tr>
+                            <td colspan="2">${escapeHtml(row.label)}</td>
+                            ${monthCells.map((column) => {
+                                const segment = segmentMap[column];
+                                const amount = segment.index >= 0 ? row.amounts[segment.index] || 0 : 0;
+                                return `<td class="num">${amount ? formatNumber(amount) : ''}</td>`;
+                            }).join('')}
+                            <td colspan="2" class="num">${row.total ? formatNumber(row.total) : ''}</td>
+                        </tr>
+                    `).join('')}
+                    <tr><td colspan="6" class="cell-label">소계</td><td colspan="2" class="num">${formatNumber(derived.averageMonthlySubtotal)}</td></tr>
+                    <tr><th colspan="2">퇴직이전 1년간 비월정금액</th><th colspan="2">지급월</th><th>금액</th><th>기간계</th><th colspan="2">비월정*3/12</th></tr>
+                    ${renderAverageNonMonthlyRows(derived.nonMonthlyRows)}
+                    <tr><td colspan="5" class="cell-label">소계</td><td class="num">${formatNumber(derived.nonMonthlyTotal)}</td><td colspan="2" class="num">${formatNumber(derived.nonMonthlyConverted)}</td></tr>
+                    <tr>
+                        <td colspan="7" class="cell-label center">합 계</td>
+                        <td class="num avg-result">${formatNumber(derived.averageTotal)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="avg-formula-label center">평균임금</td>
+                        <td class="num">${formatCurrencyCell(derived.averageTotal)}</td>
+                        <td class="avg-op">÷</td>
+                        <td class="center">${formatNumber(derived.averageDaysTotal)}일</td>
+                        <td class="avg-op">×</td>
+                        <td class="avg-focus">30=</td>
+                        <td class="num avg-result">${formatNumber(derived.averageDaily)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="avg-formula-label center">퇴직금 총액</td>
+                        <td class="num">${formatCurrencyCell(derived.averageDaily)}</td>
+                        <td class="avg-op">×</td>
+                        <td class="center">${formatNumber(derived.service.totalDays)}일</td>
+                        <td class="avg-op">÷</td>
+                        <td class="avg-focus">365일=</td>
+                        <td class="num avg-result">${formatNumber(derived.retirementAverage)}</td>
+                    </tr>
+                    <tr class="note-row"><td colspan="8">성과상여금은 PDF에 없는 경우가 많아 좌측 입력란의 별도 값으로 반영합니다. 통상임금은 B등급, 평균임금은 실지급액을 사용합니다. 부분월이 끼면 월정금액은 일수 비율로 안분합니다.</td></tr>
+                </table>
+            </div>
+        `;
+    }
+
+    function renderAverageNonMonthlyRows(rows) {
+        const [regular, holiday, performance, overtime, annualLeave] = rows;
+        return `
+            <tr><td colspan="2" rowspan="2">${escapeHtml(regular.label)}</td><td colspan="2">${escapeHtml(formatMonthLabel(regular.dates[0] || ''))}</td><td class="num">${regular.amounts[0] ? formatNumber(regular.amounts[0]) : ''}</td><td class="num" rowspan="2">${formatNumber(regular.total)}</td><td colspan="2" class="num" rowspan="2">${formatNumber(regular.converted)}</td></tr>
+            <tr><td colspan="2">${escapeHtml(formatMonthLabel(regular.dates[1] || ''))}</td><td class="num">${regular.amounts[1] ? formatNumber(regular.amounts[1]) : ''}</td></tr>
+            <tr><td colspan="2" rowspan="2">${escapeHtml(holiday.label)}</td><td colspan="2">${escapeHtml(formatMonthLabel(holiday.dates[0] || ''))}</td><td class="num">${holiday.amounts[0] ? formatNumber(holiday.amounts[0]) : ''}</td><td class="num" rowspan="2">${formatNumber(holiday.total)}</td><td colspan="2" class="num" rowspan="2">${formatNumber(holiday.converted)}</td></tr>
+            <tr><td colspan="2">${escapeHtml(formatMonthLabel(holiday.dates[1] || ''))}</td><td class="num">${holiday.amounts[1] ? formatNumber(holiday.amounts[1]) : ''}</td></tr>
+            <tr><td colspan="2">${escapeHtml(performance.label)}</td><td colspan="2"></td><td class="num">${performance.total ? formatNumber(performance.total) : ''}</td><td class="num">${performance.total ? formatNumber(performance.total) : ''}</td><td colspan="2" class="num">${performance.converted ? formatNumber(performance.converted) : ''}</td></tr>
+            <tr><td colspan="2">${escapeHtml(overtime.label)}</td><td colspan="2">${escapeHtml(state.parsed.months[0] && state.parsed.months.at(-1) ? `${state.parsed.months[0]}~${state.parsed.months.at(-1)}` : '')}</td><td class="num">${overtime.total ? formatNumber(overtime.total) : ''}</td><td class="num">${overtime.total ? formatNumber(overtime.total) : ''}</td><td colspan="2" class="num">${overtime.converted ? formatNumber(overtime.converted) : ''}</td></tr>
+            <tr><td colspan="2"></td><td colspan="2"></td><td class="num">${annualLeave.total ? formatNumber(annualLeave.total) : ''}</td><td class="num">${annualLeave.total ? formatNumber(annualLeave.total) : ''}</td><td colspan="2" class="num">${annualLeave.converted ? formatNumber(annualLeave.converted) : ''}</td></tr>
+        `;
+    }
+
+    function renderOrdinarySheet(derived) {
+        return `
+            <div class="sheet-surface">
+                <table class="sheet ordinary-sheet">
+                    <tr class="title-row"><td colspan="7">퇴직금 산정서(통상임금)</td></tr>
+                    <tr>
+                        <td class="ord-muted center">성명</td>
+                        <td class="center">${escapeHtml(derived.profile.personName || '')}</td>
+                        <td class="ord-muted center">생년월일</td>
+                        <td class="center">${escapeHtml(derived.profile.birthDate || '')}</td>
+                        <td class="ord-muted center">직종</td>
+                        <td class="center">기간제교사</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="ord-muted center">퇴직일자</td>
+                        <td class="center">${escapeHtml(formatDateDot(derived.profile.retirementDate))}</td>
+                        <td class="ord-muted center">채용일자</td>
+                        <td class="center">${escapeHtml(formatDateDot(derived.profile.employmentStart))}</td>
+                        <td class="ord-muted center">휴대전화</td>
+                        <td class="center">${escapeHtml(derived.profile.phoneNumber || '')}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="ord-muted center">근무기간</td>
+                        <td class="center" colspan="3">${escapeHtml(derived.service.periodText || '')}</td>
+                        <td class="ord-muted center" rowspan="2">퇴직금지급<br>산정기간</td>
+                        <td class="ord-muted center">근무년수(**년)</td>
+                        <td class="ord-warn center">총근무일(숫자)</td>
+                    </tr>
+                    <tr>
+                        <td class="ord-muted center">임금지급방법</td>
+                        <td class="center" colspan="3">월급</td>
+                        <td class="center">${derived.service.displayYears}년</td>
+                        <td class="center">(총:${formatNumber(derived.service.totalDays)}일간)</td>
+                    </tr>
+                    <tr>
+                        <td class="ord-label">기본급</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.basicPay)}</td>
+                        <td class="ord-label">정액급식비</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.mealAllowance)}</td>
+                        <td class="ord-label">교직수당</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.teacherAllowance)}</td>
+                        <td class="ord-label center" rowspan="4">통상임금<br>(1시간)<br><br><span class="ord-strong">${formatNumber(derived.ordinaryHourly)} 원</span></td>
+                    </tr>
+                    <tr>
+                        <td class="ord-label">교직수당가산금</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.teacherAllowanceExtra)}</td>
+                        <td class="ord-label">담임수당</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.homeroomAllowance)}</td>
+                        <td class="ord-label">교원연구비</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.researchAllowance)}</td>
+                    </tr>
+                    <tr>
+                        <td class="ord-label">도서벽지수당</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.remoteAreaAllowance)}</td>
+                        <td class="ord-label">정근수당가산금</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.regularAllowanceAdd)}</td>
+                        <td class="ord-label">선택추가수당</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.additionalSelectedAllowance)}</td>
+                    </tr>
+                    <tr>
+                        <td class="ord-note">성과상여금(B등급, 1/12)</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.performanceBonusMonthly)}</td>
+                        <td class="ord-warn">정근수당(1/12)</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.regularAllowanceMonthly)}</td>
+                        <td class="ord-note">명절휴가비(1/12)</td>
+                        <td class="num">${formatCurrencyCell(derived.ordinary.holidayAllowanceMonthly)}</td>
+                    </tr>
+                    <tr>
+                        <td class="ord-label" colspan="4">일일 통상임금 단가①</td>
+                        <td class="num" colspan="3">${formatCurrencyCell(derived.ordinaryDaily)}</td>
+                    </tr>
+                    <tr>
+                        <td class="ord-label" colspan="4">월 통상임금(② = ①*30)</td>
+                        <td class="num" colspan="3">${formatCurrencyCell(derived.ordinaryMonthly)}</td>
+                    </tr>
+                    <tr>
+                        <td class="ord-label" colspan="4">퇴 직 금 [③= ②×계속근로년수]</td>
+                        <td class="num ord-green ord-strong" colspan="3">${formatNumber(derived.retirementOrdinary)} 원</td>
+                    </tr>
+                </table>
+            </div>
+        `;
+    }
+
+    function renderSalarySheet(derived) {
+        return `
+            <div class="sheet-surface">
+                <table class="sheet">
+                    <tr class="title-row"><td colspan="16">퇴직 1년간 보수 내역</td></tr>
+                    <tr>
+                        <th rowspan="2">구분</th>
+                        <th rowspan="2">월정/비월정</th>
+                        <th colspan="13">퇴직전 1년간 보수</th>
+                        <th rowspan="2">소계</th>
+                    </tr>
+                    <tr>
+                        ${derived.salaryHeaderMonths.map((month) => `<th>${escapeHtml(formatMonthLabelShort(month))}</th>`).join('')}
+                    </tr>
+                    ${derived.salaryRows.map((row) => `
+                        <tr>
+                            <td>${escapeHtml(row.label)}</td>
+                            <td>${row.type === 'monthly' ? '월정액' : '비월정액'}</td>
+                            ${derived.salaryHeaderMonths.map((month) => `<td class="num">${row.values[month] ? formatNumber(row.values[month]) : ''}</td>`).join('')}
+                            <td class="num">${row.total ? formatNumber(row.total) : ''}</td>
+                        </tr>
+                    `).join('')}
+                    <tr class="note-row">
+                        <td colspan="16">
+                            범위는 퇴직월을 포함한 최근 13개월(${escapeHtml(formatMonthLabel(derived.salaryHeaderMonths[0] || ''))} ~ ${escapeHtml(formatMonthLabel(derived.salaryHeaderMonths.at(-1) || ''))})입니다.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        `;
+    }
+
+    function applyToWorkbook(workbook, derived) {
+        fillClaimSheet(workbook.getWorksheet('퇴직금청구서'), derived);
+        fillAverageSheet(workbook.getWorksheet('퇴직금 산정서(평균임금)'), derived);
+        fillOrdinarySheet(workbook.getWorksheet('퇴직금 산정서(통상임금)'), derived);
+        fillSalarySheet(workbook.getWorksheet('보수내역'), derived);
+    }
+
+    function fillClaimSheet(sheet, derived) {
+        if (!sheet) return;
+        sheet.getCell('D3').value = derived.profile.schoolName || '';
+        sheet.getCell('G3').value = derived.profile.birthDate || '';
+        sheet.getCell('K3').value = derived.profile.phoneNumber || '';
+        sheet.getCell('D6').value = derived.profile.personName || '';
+        sheet.getCell('G6').value = derived.profile.address || '';
+        sheet.getCell('D8').value = derived.service.periodText || '';
+        sheet.getCell('H8').value = excelDateOrText(derived.profile.retirementDate);
+        sheet.getCell('C11').value = derived.profile.bankName || '';
+        sheet.getCell('E11').value = derived.profile.accountNumber || '';
+        sheet.getCell('J11').value = derived.profile.accountHolder || derived.profile.personName || '';
+        sheet.getCell('A14').value = derived.profile.postalCode || '';
+        sheet.getCell('A16').value = `청구인   ${derived.profile.personName || ''} (인)`;
+        sheet.getCell('A17').value = `${derived.profile.schoolName || ''}장 귀하`;
+    }
+
+    function fillAverageSheet(sheet, derived) {
+        if (!sheet) return;
+        sheet.getCell('B3').value = derived.profile.personName || '';
+        sheet.getCell('E3').value = derived.profile.birthDate || '';
+        sheet.getCell('B4').value = excelDateOrText(derived.profile.retirementDate);
+        sheet.getCell('E4').value = excelDateOrText(derived.profile.employmentStart);
+        sheet.getCell('G4').value = derived.profile.phoneNumber || '';
+        sheet.getCell('B5').value = derived.service.periodText || '';
+        sheet.getCell('F6').value = derived.service.displayYears;
+        sheet.getCell('G6').value = derived.service.totalDays;
+
+        ['C', 'D', 'E', 'F'].forEach((column) => {
+            sheet.getCell(`${column}7`).value = '';
+            sheet.getCell(`${column}8`).value = '';
+        });
+        derived.segmentColumns.forEach((column, index) => {
+            sheet.getCell(`${column}7`).value = derived.averageWindow.segments[index].monthLabel;
+            sheet.getCell(`${column}8`).value = derived.averageWindow.segments[index].days;
+        });
+        derived.averageMonthlyRows.forEach((row, index) => {
+            const rowNumber = 9 + index;
+            sheet.getCell(`B${rowNumber}`).value = row.label || '';
+            ['C', 'D', 'E', 'F'].forEach((column) => { sheet.getCell(`${column}${rowNumber}`).value = ''; });
+            derived.segmentColumns.forEach((column, segmentIndex) => {
+                sheet.getCell(`${column}${rowNumber}`).value = row.amounts[segmentIndex] || 0;
+            });
+        });
+
+        const [regular, holiday, performance, overtime, annualLeave] = derived.nonMonthlyRows;
+        sheet.getCell('B21').value = regular.label;
+        sheet.getCell('D21').value = regular.dates[0] ? excelDateFromMonth(regular.dates[0]) : '';
+        sheet.getCell('E21').value = regular.amounts[0] || '';
+        sheet.getCell('D22').value = regular.dates[1] ? excelDateFromMonth(regular.dates[1]) : '';
+        sheet.getCell('E22').value = regular.amounts[1] || '';
+        sheet.getCell('B23').value = holiday.label;
+        sheet.getCell('D23').value = holiday.dates[0] ? excelDateFromMonth(holiday.dates[0]) : '';
+        sheet.getCell('E23').value = holiday.amounts[0] || '';
+        sheet.getCell('D24').value = holiday.dates[1] ? excelDateFromMonth(holiday.dates[1]) : '';
+        sheet.getCell('E24').value = holiday.amounts[1] || '';
+        sheet.getCell('B25').value = performance.label;
+        sheet.getCell('E25').value = performance.total || '';
+        sheet.getCell('B26').value = overtime.label;
+        sheet.getCell('D26').value = state.parsed.months.length ? `${state.parsed.months[0]}~${state.parsed.months.at(-1)}` : '';
+        sheet.getCell('E26').value = overtime.total || '';
+        sheet.getCell('B27').value = '';
+        sheet.getCell('E27').value = annualLeave.total || 0;
+        sheet.getCell('F27').value = annualLeave.total || 0;
+    }
+
+    function fillOrdinarySheet(sheet, derived) {
+        if (!sheet) return;
+        sheet.getCell('B3').value = derived.profile.personName || '';
+        sheet.getCell('E3').value = derived.profile.birthDate || '';
+        sheet.getCell('B4').value = excelDateOrText(derived.profile.retirementDate);
+        sheet.getCell('E4').value = excelDateOrText(derived.profile.employmentStart);
+        sheet.getCell('G4').value = derived.profile.phoneNumber || '';
+        sheet.getCell('B5').value = derived.service.periodText || '';
+        sheet.getCell('F6').value = derived.service.displayYears;
+        sheet.getCell('G6').value = derived.service.totalDays;
+        sheet.getCell('B7').value = derived.ordinary.basicPay;
+        sheet.getCell('D7').value = derived.ordinary.mealAllowance;
+        sheet.getCell('F7').value = derived.ordinary.teacherAllowance;
+        sheet.getCell('B8').value = derived.ordinary.teacherAllowanceExtra;
+        sheet.getCell('D8').value = derived.ordinary.homeroomAllowance;
+        sheet.getCell('F8').value = derived.ordinary.researchAllowance;
+        sheet.getCell('B9').value = derived.ordinary.remoteAreaAllowance;
+        sheet.getCell('D9').value = derived.ordinary.regularAllowanceAdd;
+        sheet.getCell('E9').value = '선택추가수당';
+        sheet.getCell('F9').value = derived.ordinary.additionalSelectedAllowance;
+        sheet.getCell('B10').value = derived.ordinary.performanceBonusMonthly;
+        sheet.getCell('D10').value = derived.ordinary.regularAllowanceMonthly;
+        sheet.getCell('F10').value = derived.ordinary.holidayAllowanceMonthly;
+    }
+
+    function fillSalarySheet(sheet, derived) {
+        if (!sheet) return;
+        const columns = 'CDEFGHIJKLMNO'.split('');
+        derived.salaryHeaderMonths.forEach((month, index) => {
+            sheet.getCell(`${columns[index]}4`).value = excelDateFromMonth(month);
+        });
+        derived.salaryRows.forEach((row, index) => {
+            const rowNumber = 5 + index;
+            sheet.getCell(`A${rowNumber}`).value = row.label;
+            sheet.getCell(`B${rowNumber}`).value = row.type === 'monthly' ? '월정액' : '비월정액';
+            columns.forEach((column, columnIndex) => {
+                sheet.getCell(`${column}${rowNumber}`).value = row.values[derived.salaryHeaderMonths[columnIndex]] || '';
+            });
+        });
+    }
+    function extractPayoutMonths(canonicalKey, target = 'average') {
+        return state.parsed.months.filter((month) => getCanonicalMonthValue(canonicalKey, month, target) > 0);
+    }
+
+    function computeRowTotal(row) {
+        if (!row) return 0;
+        return Object.values(row.values || {}).reduce((sum, value) => sum + parseMoney(value), 0);
+    }
+
+    function sumMatrix(rows) {
+        return rows.flat().reduce((sum, value) => sum + value, 0);
+    }
+
+    function isNoiseLine(text) {
+        return [
+            '급여구분', '항목명', '기관명', '수당합계', '비과세합계',
+            '공제합계', '지급액', '*작은 크기는', '*나의메뉴에서는', '연도별 급여 총 지급현황'
+        ].some((keyword) => text.includes(keyword));
+    }
+
+    function isMoneyToken(text) {
+        return /^-?\d[\d,]*$/.test(text);
+    }
+
+    function isYearToken(text) {
+        return /^\d{4}년$/.test(text);
+    }
+
+    function isMonthToken(text) {
+        return /^\d{1,2}월$/.test(text);
+    }
+
+    function parseMoney(value) {
+        if (value == null) return 0;
+        if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+        const cleaned = String(value).replace(/[^\d-]/g, '');
+        return cleaned ? Number(cleaned) : 0;
+    }
+
+    function formatNumber(value) {
+        const numeric = Number(value) || 0;
+        return numeric.toLocaleString('ko-KR');
+    }
+
+    function formatCurrencyCell(value) {
+        const numeric = Number(value) || 0;
+        return numeric ? `${formatNumber(numeric)} 원` : '';
+    }
+
+    function floorTo(value, unit) {
+        if (!value || !unit) return 0;
+        return Math.floor(value / unit) * unit;
+    }
+
+    function normalizeDateInput(value) {
+        if (!value) return '';
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+        const cleaned = value.replace(/\./g, '-').replace(/-$/, '');
+        const parts = cleaned.split('-').filter(Boolean);
+        if (parts.length === 3) {
+            return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+        }
+        return '';
+    }
+
+    function parseIsoDate(value) {
+        const normalized = normalizeDateInput(value);
+        if (!normalized) return null;
+        const [year, month, day] = normalized.split('-').map(Number);
+        return new Date(year, month - 1, day);
+    }
+
+    function formatDateDot(value) {
+        const normalized = normalizeDateInput(value);
+        if (!normalized) return value || '';
+        const [year, month, day] = normalized.split('-');
+        return `${year}.${month}.${day}.`;
+    }
+
+    function formatMonthLabel(value) {
+        if (!value) return '';
+        const [year, month] = value.split('-');
+        return `${year}년 ${month}월`;
+    }
+
+    function formatMonthLabelShort(value) {
+        if (!value) return '';
+        const [year, month] = value.split('-');
+        return `${year.slice(2)}.${month}`;
+    }
+
+    function lastMonthEndIso(monthIso) {
+        if (!monthIso) return '';
+        const [year, month] = monthIso.split('-').map(Number);
+        return toIsoDate(new Date(year, month, 0));
+    }
+
+    function toIsoDate(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    function parseMonthIso(monthIso) {
+        const [year, month] = monthIso.split('-').map(Number);
+        return new Date(year, month - 1, 1);
+    }
+
+    function addMonths(date, count) {
+        return new Date(date.getFullYear(), date.getMonth() + count, 1);
+    }
+
+    function formatMonthIso(date) {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function excelDateOrText(value) {
+        const date = parseIsoDate(value);
+        return date || value || '';
+    }
+
+    function excelDateFromMonth(monthIso) {
+        if (!monthIso) return '';
+        const [year, month] = monthIso.split('-').map(Number);
+        return new Date(year, month - 1, 1);
+    }
+
+    function sanitizeFilename(value) {
+        return String(value || '').replace(/[\\/:*?"<>|]/g, '').trim() || '파일';
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function escapeHtmlAttr(value) {
+        return escapeHtml(value);
+    }
+</script>
+
+
+```
+</body></html>
