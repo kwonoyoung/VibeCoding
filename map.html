@@ -6,13 +6,22 @@
 <meta name="theme-color" content="#ffffff">
 <title>교육행정 업무 흐름지도</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f6f0;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif}.map-frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}.home-btn{position:fixed;z-index:99999;top:16px;right:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid rgba(15,23,42,.14);border-radius:999px;background:rgba(255,255,255,.96);color:#1f2937;text-decoration:none;font-size:13px;font-weight:800;letter-spacing:-.02em;box-shadow:0 8px 24px rgba(15,23,42,.14);backdrop-filter:blur(10px);transition:.18s ease}.home-btn:hover{transform:translateY(-1px);background:#fff;box-shadow:0 11px 28px rgba(15,23,42,.18)}.home-icon{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:#111827;color:#fff;font-size:14px}.fallback{position:fixed;z-index:99998;left:50%;bottom:18px;transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:rgba(17,24,39,.88);color:#fff;font-size:12px;text-decoration:none;opacity:0;pointer-events:none;transition:.2s}.fallback.show{opacity:1;pointer-events:auto}@media(max-width:700px){.home-btn{top:10px;right:10px;padding:8px 12px;font-size:12px}.home-icon{width:22px;height:22px}}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f6f0;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif}
+.map-frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
+.home-btn{position:fixed;z-index:100002;top:16px;right:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid rgba(15,23,42,.14);border-radius:999px;background:rgba(255,255,255,.96);color:#1f2937;text-decoration:none;font-size:13px;font-weight:800;letter-spacing:-.02em;box-shadow:0 8px 24px rgba(15,23,42,.14);backdrop-filter:blur(10px);transition:.18s ease}
+.home-btn:hover{transform:translateY(-1px);background:#fff;box-shadow:0 11px 28px rgba(15,23,42,.18)}
+.home-icon{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:#111827;color:#fff;font-size:14px}
+.fallback{position:fixed;z-index:100001;left:50%;bottom:78px;transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:rgba(17,24,39,.88);color:#fff;font-size:12px;text-decoration:none;opacity:0;pointer-events:none;transition:.2s}.fallback.show{opacity:1;pointer-events:auto}
+.copyright-bar{position:fixed;z-index:100003;left:0;right:0;bottom:0;min-height:64px;display:flex;align-items:center;justify-content:center;padding:18px 20px;background:linear-gradient(180deg,rgba(255,255,255,.97),#fff);border-top:1px solid #e5e7eb;box-shadow:0 -8px 28px rgba(15,23,42,.08);color:#6b7280;font-size:13px;font-weight:600;text-align:center;letter-spacing:-.01em}
+@media(max-width:700px){.home-btn{top:10px;right:10px;padding:8px 12px;font-size:12px}.home-icon{width:22px;height:22px}.copyright-bar{min-height:56px;padding:15px 12px;font-size:11.5px}.fallback{bottom:68px}}
 </style>
 </head>
 <body>
 <a class="home-btn" href="index.html" aria-label="홈으로 이동"><span class="home-icon">⌂</span><span>홈</span></a>
 <iframe id="mapFrame" class="map-frame" src="https://gyohaeng.pages.dev/workflow-map#overview" title="교육행정 업무 흐름지도" loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe>
 <a id="fallback" class="fallback" href="https://gyohaeng.pages.dev/workflow-map#overview" target="_blank" rel="noopener">원본 업무 흐름지도 새 창에서 열기</a>
+<footer class="copyright-bar">Copyright © 2026 오춘기 권오영 All rights reserved.</footer>
 <script>
 (function(){
  const frame=document.getElementById('mapFrame');
