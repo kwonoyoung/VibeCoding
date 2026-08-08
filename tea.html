@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기간제교원 퇴직금 자동계산</title>
+    <style>
+       body { font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; background-color: #f3f4f6; margin: 0; padding: 20px; color: #333; }
+       .container { max-width: 1100px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+       header { border-bottom: 3px solid #2563eb; padding-bottom: 15px; margin-bottom: 25px; }
+       header div.year-badge { display: inline-block; background-color: #e0e7ff; color: #4338ca; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-bottom: 8px;}
+       h1 { color: #1e3a8a; margin: 0; font-size: 1.8rem; display: inline-block; margin-left: 10px; }
+       p.desc { color: #4b5563; font-size: 0.95rem; margin-top: 10px; line-height: 1.5; }
+       
+       .layout-grid { display: grid; grid-template-columns: 350px 1fr; gap: 25px; }
+       
+       .section-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+       .section-card h2 { margin-top: 0; font-size: 1.1rem; color: #1f2937; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; display: flex; align-items: center; }
+       .section-card h2 span.step { background: #2563eb; color: white; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 0.9rem; margin-right: 10px; }
+       
+       .form-group { margin-bottom: 15px; }
+       label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.85rem; color: #374151; }
+       input[type="text"], input[type="date"], input[type="number"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 0.9rem; transition: border-color 0.2s; }
+       input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+       
+       .info-box { background-color: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; color: #475569; }
+       
+       table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+       th, td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+       th { background-color: #f9fafb; font-weight: 600; color: #4b5563; }
+       td.center { text-align: center; }
+       
+       .preview-area { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #64748b; padding: 20px; text-align: center; }
+       
+       .btn-primary { background-color: #2563eb; color: white; font-weight: bold; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 20px; font-size: 1rem; transition: background-color 0.2s; }
+       .btn-primary:hover { background-color: #1d4ed8; }
+       
+       .badge-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #4b5563; background: #f3f4f6; padding: 10px; border-radius: 6px; margin-top: 15px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="year-badge">2026 기준</div>
+            <h1>기간제교원 퇴직금 자동계산</h1>
+            <p class="desc">PDF 급여총지급현황에서 월정액·비월정액을 자동 추출하고, 부족한 정보만 보완해 웹에서 퇴직금 산정서를 바로 확인하세요. 템플릿 XLSX를 함께 올리면 채워진 서식을 즉시 다운로드할 수 있습니다.</p>
+        </header>
+
+        <div class="layout-grid">
+            <!-- 좌측 사이드바 -->
+            <aside>
+                <div class="section-card">
+                    <h2><span class="step">1</span> 파일 업로드</h2>
+                    
+                    <div class="form-group">
+                        <label>📄 PDF 급여총지급현황</label>
+                        <input type="file" id="pdfUpload" accept=".pdf">
+                    </div>
+                    <div class="form-group">
+                        <label>📊 템플릿 XLSX (선택)</label>
+                        <input type="file" id="excelUpload" accept=".xlsx">
+                    </div>
+                    
+                    <div class="badge-row">
+                        <div>추출된 월 수: <strong id="monthCount">0</strong>개월</div>
+                        <div>인식된 급여 항목: <strong id="itemCount">0</strong>개</div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h2><span class="step">2</span> 인적사항 및 기본정보</h2>
+                    <div class="info-box">
+                        PDF에 없는 생년월일, 계좌번호, 성과상여금 등을 보완해 주세요. 입력값은 우측 서식에 즉시 반영됩니다.
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>성명</label>
+                        <input type="text" placeholder="예: 홍길동">
+                    </div>
+                    <div class="form-group">
+                        <label>생년월일</label>
+                        <input type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>채용일자</label>
+                        <input type="date">
+                    </div>
+                    <div class="form-group">
+                        <label>퇴직일자</label>
+                        <input type="date">
+                    </div>
+                    
+                    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+                    
+                    <div class="form-group">
+                        <label>성과상여금 (B등급 기준)</label>
+                        <input type="number" placeholder="통상임금 계산에 반영됩니다.">
+                    </div>
+                    <div class="form-group">
+                        <label>성과상여금 (실지급액)</label>
+                        <input type="number" placeholder="평균임금 계산에 반영됩니다.">
+                    </div>
+                    
+                    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+                    
+                    <div class="form-group">
+                        <label>지급 은행</label>
+                        <input type="text" placeholder="예: 농협">
+                    </div>
+                    <div class="form-group">
+                        <label>계좌번호</label>
+                        <input type="text" placeholder="- 없이 입력">
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 우측 메인 영역 -->
+            <main>
+                <div class="section-card">
+                    <h2><span class="step">3</span> 급여 데이터 확인 및 수정</h2>
+                    <div style="display: flex; gap: 15px; font-size: 0.85rem; color: #059669; background: #ecfdf5; padding: 10px; border-radius: 6px;">
+                        <span>✅ 평균/통상 임금 포함 여부 체크</span>
+                        <span>✏️ 금액 클릭하여 직접 수정 가능</span>
+                        <span>💡 총액은 수정된 금액으로 즉시 재계산</span>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="center" style="width: 60px;">평균</th>
+                                <th class="center" style="width: 60px;">통상</th>
+                                <th>항목</th>
+                                <th>유형</th>
+                                <th>안내</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salaryTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px; color: #9ca3af;">
+                                    좌측에서 PDF를 업로드하면 추출된 급여 표가 표시됩니다.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-card">
+                    <h2><span class="step">4</span> 최종 서식 미리보기</h2>
+                    
+                    <div class="preview-area" id="previewArea">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">📄</div>
+                        <div>1단계에서 PDF를 업로드하면 이곳에 서식 미리보기가 나타납니다.</div>
+                    </div>
+                    
+                    <button class="btn-primary" onclick="alert('데이터가 채워진 엑셀 파일을 다운로드합니다. (실제 환경에서는 파일이 생성됩니다)')">
+                        ⬇️ 퇴직금 산정서 엑셀 다운로드
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // 간단한 UI 시뮬레이션
+        document.getElementById('pdfUpload').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) {
+                document.getElementById('monthCount').innerText = '12';
+                document.getElementById('itemCount').innerText = '4';
+                
+                document.getElementById('salaryTableBody').innerHTML = `
+                    <tr>
+                        <td class="center"><input type="checkbox" checked></td>
+                        <td class="center"><input type="checkbox" checked></td>
+                        <td><strong>기본급</strong></td>
+                        <td>월정액</td>
+                        <td style="color: #6b7280; font-size: 0.85rem;">기본 수당</td>
+                    </tr>
+                    <tr>
+                        <td class="center"><input type="checkbox" checked></td>
+                        <td class="center"><input type="checkbox" checked></td>
+                        <td><strong>정근수당</strong></td>
+                        <td>비월정액</td>
+                        <td style="color: #6b7280; font-size: 0.85rem;">정기 수당</td>
+                    </tr>
+                    <tr>
+                        <td class="center"><input type="checkbox" checked></td>
+                        <td class="center"><input type="checkbox"></td>
+                        <td><strong>시간외근무수당</strong></td>
+                        <td>비월정액</td>
+                        <td style="color: #6b7280; font-size: 0.85rem;">변동 수당</td>
+                    </tr>
+                    <tr>
+                        <td class="center"><input type="checkbox" checked></td>
+                        <td class="center"><input type="checkbox" checked></td>
+                        <td><strong>가족수당</strong></td>
+                        <td>월정액</td>
+                        <td style="color: #6b7280; font-size: 0.85rem;">부양가족</td>
+                    </tr>
+                `;
+                
+                document.getElementById('previewArea').innerHTML = `
+                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center;">
+                        <h3 style="color: #1e40af;">퇴직금 산정 내역서 미리보기</h3>
+                        <table style="width: 80%; text-align: left; margin-top: 10px; background: white;">
+                            <tr><th style="width: 30%">산정 대상자</th><td>입력 대기중</td></tr>
+                            <tr><th>평균임금 총계</th><td style="color: #059669; font-weight: bold;">산출 중...</td></tr>
+                            <tr><th>통상임금 총계</th><td style="color: #059669; font-weight: bold;">산출 중...</td></tr>
+                            <tr><th>예상 퇴직금</th><td style="color: #dc2626; font-weight: bold; font-size: 1.1rem;">산출 중...</td></tr>
+                        </table>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
