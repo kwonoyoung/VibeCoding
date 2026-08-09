@@ -1,0 +1,75 @@
+name: Weekly AI directory review
+
+on:
+  schedule:
+    # Every Monday at 07:00 Korea Standard Time (Sunday 22:00 UTC)
+    - cron: "0 22 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  create-review-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create weekly review issue when none is open
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const label = "ai-directory-weekly-review";
+            const { data: labels } = await github.rest.issues.listLabelsForRepo({ owner, repo, per_page: 100 });
+            if (!labels.some(item => item.name === label)) {
+              await github.rest.issues.createLabel({
+                owner,
+                repo,
+                name: label,
+                color: "0E8A16",
+                description: "Weekly review of AI, cloud and app development directory"
+              });
+            }
+
+            const { data: openIssues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: "open",
+              labels: label,
+              per_page: 100
+            });
+            if (openIssues.length) {
+              core.notice(`Open weekly review issue already exists: #${openIssues[0].number}`);
+              return;
+            }
+
+            const kstDate = new Intl.DateTimeFormat("en-CA", {
+              timeZone: "Asia/Seoul",
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit"
+            }).format(new Date());
+
+            const body = [
+              "## 주간 AI 디렉터리 현행화 점검",
+              "",
+              "`ai.html`의 공식 링크와 서비스 정보를 확인해 주세요.",
+              "",
+              "- [ ] 글로벌 주요 AI 기업 및 AI 에이전트 신규·변경·종료 서비스 확인",
+              "- [ ] 글로벌 클라우드 서비스 기업 신규·변경·종료 서비스 확인",
+              "- [ ] 웹앱 생성 AI 및 클라우드 개발 플랫폼 신규·변경·종료 서비스 확인",
+              "- [ ] 공식 사이트 링크 접속 여부 확인",
+              "- [ ] 검토 완료 후 `REVIEWED_AT`을 실제 검토일로 변경",
+              "- [ ] 공개 `ai.html`에서 최근 검토일과 다음 검토일 확인",
+              "",
+              "> 날짜만 변경하지 말고 공식 사이트의 실제 내용을 확인한 뒤 갱신합니다."
+            ].join("\n");
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title: `[AI 디렉터리 주간 점검] ${kstDate}`,
+              body,
+              labels: [label]
+            });
