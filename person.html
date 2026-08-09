@@ -404,8 +404,8 @@
     <section class="hero">
       <h1>업무담당자 명단 추출 · 검색 도구</h1>
       <p>
-        엑셀 파일을 브라우저에서만 읽어 <strong>기관명 / 담당자 / 연락처</strong>를 추출하고, 기관명 검색으로 바로 조회할 수 있습니다.
-        모든 처리는 <strong>100% 클라이언트(브라우저) 내</strong>에서만 수행됩니다.
+        엑셀 파일은 브라우저에서 읽어 <strong>기관명 / 담당자 / 연락처</strong>만 추출하고, 기관명 검색으로 바로 조회할 수 있습니다.
+        관리자가 등록한 세 항목만 기기 간 조회를 위해 보안 저장소에 동기화됩니다.
       </p>
     </section>
 
@@ -600,7 +600,7 @@
       }
 
       async function saveCloudRows(payload) {
-        if (!authUser) throw new Error('관리자 로그인이 ��요합니다.');
+        if (!authUser) throw new Error('관리자 로그인이 필요합니다.');
         await cloudRequest('person_directory_public?owner_email=eq.kwonoyoung77%40gmail.com', { method: 'DELETE' });
         if (!payload.rows.length) return;
         return cloudRequest('person_directory_public', {
