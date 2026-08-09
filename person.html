@@ -439,6 +439,9 @@
             <button class="btn btn-success" id="btnExtract" type="button" disabled>추출하기</button>
             <button class="btn btn-danger" id="btnClear" type="button">입력 지우기</button>
           </div>
+          <div class="note" style="margin-top:10px">
+            추출된 명단은 외부 서버로 전송하지 않고 <strong>현재 기기와 브라우저에 자동 저장</strong>됩니다. 페이지를 닫거나 다시 접속해도 조회할 수 있으며, <strong>입력 지우기</strong>를 누르면 저장된 명단도 삭제됩니다.
+          </div>
 
           <div class="status-bar" aria-live="polite">
             <div id="statusText"><strong>대기 중</strong>입니다. 엑셀 파일을 먼저 불러오세요.</div>
@@ -501,6 +504,70 @@
 
       const requiredHeaders = ['기관명', '담당자', '연락처'];
       const optionalHeaders = ['주민등록번호', '주민번호'];
+      const CACHE_DB_NAME = 'person-directory-cache';
+      const CACHE_STORE_NAME = 'directory';
+      const CACHE_KEY = 'latest';
+
+      function openCacheDb() {
+        return new Promise((resolve, reject) => {
+          if (!('indexedDB' in window)) {
+            reject(new Error('IndexedDB를 지원하지 않는 브라우저입니다.'));
+            return;
+          }
+          const request = indexedDB.open(CACHE_DB_NAME, 1);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(CACHE_STORE_NAME)) {
+              db.createObjectStore(CACHE_STORE_NAME);
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error || new Error('저장소를 열 수 없습니다.'));
+        });
+      }
+
+      async function savePersistedRows(payload) {
+        const db = await openCacheDb();
+        try {
+          await new Promise((resolve, reject) => {
+            const transaction = db.transaction(CACHE_STORE_NAME, 'readwrite');
+            transaction.objectStore(CACHE_STORE_NAME).put(payload, CACHE_KEY);
+            transaction.oncomplete = resolve;
+            transaction.onerror = () => reject(transaction.error || new Error('명단 저장에 실패했습니다.'));
+            transaction.onabort = () => reject(transaction.error || new Error('명단 저장이 중단되었습니다.'));
+          });
+        } finally {
+          db.close();
+        }
+      }
+
+      async function loadPersistedRows() {
+        const db = await openCacheDb();
+        try {
+          return await new Promise((resolve, reject) => {
+            const request = db.transaction(CACHE_STORE_NAME, 'readonly').objectStore(CACHE_STORE_NAME).get(CACHE_KEY);
+            request.onsuccess = () => resolve(request.result || null);
+            request.onerror = () => reject(request.error || new Error('저장된 명단을 읽을 수 없습니다.'));
+          });
+        } finally {
+          db.close();
+        }
+      }
+
+      async function clearPersistedRows() {
+        const db = await openCacheDb();
+        try {
+          await new Promise((resolve, reject) => {
+            const transaction = db.transaction(CACHE_STORE_NAME, 'readwrite');
+            transaction.objectStore(CACHE_STORE_NAME).delete(CACHE_KEY);
+            transaction.oncomplete = resolve;
+            transaction.onerror = () => reject(transaction.error || new Error('저장된 명단 삭제에 실패했습니다.'));
+            transaction.onabort = () => reject(transaction.error || new Error('저장된 명단 삭제가 중단되었습니다.'));
+          });
+        } finally {
+          db.close();
+        }
+      }
 
       function normalizeHeader(value) {
         return String(value ?? '')
@@ -603,7 +670,7 @@
         resultCount.textContent = '결과 0건';
       }
 
-      function resetAll() {
+      function resetUi() {
         state.file = null;
         state.rows = [];
         state.extracted = false;
@@ -618,6 +685,40 @@
         setStatus('<strong>대기 중</strong>입니다. 엑셀 파일을 먼저 불러오세요.', 'info');
         resetTable();
         updateOutputEnabled();
+      }
+
+      async function resetAll() {
+        resetUi();
+        try {
+          await clearPersistedRows();
+          setStatus('<strong>입력 자료와 저장된 담당자 명단을 모두 지웠습니다.</strong> 새 엑셀 파일을 불러올 수 있습니다.', 'success');
+        } catch (error) {
+          console.error('저장 명단 삭제 오류:', error);
+          setStatus('<strong>화면 자료는 지웠지만 브라우저 저장 명단 삭제에 실패했습니다.</strong> 브라우저 저장소 설정을 확인해 주세요.', 'error');
+        }
+      }
+
+      async function restorePersistedRows() {
+        resetUi();
+        try {
+          const saved = await loadPersistedRows();
+          if (!saved || !Array.isArray(saved.rows) || !saved.rows.length) return;
+
+          state.rows = saved.rows;
+          state.extracted = true;
+          fileName.textContent = saved.fileName ? `저장된 명단: ${saved.fileName}` : '저장된 담당자 명단';
+          updateOutputEnabled();
+          renderRows(state.rows);
+
+          const savedAt = saved.savedAt ? new Date(saved.savedAt).toLocaleString('ko-KR') : '저장 시각 미확인';
+          setStatus(
+            `<strong>저장된 담당자 명단 ${state.rows.length}건을 불러왔습니다.</strong> ${escapeHtml(savedAt)} 저장 · [입력 지우기] 전까지 같은 기기와 브라우저에서 계속 조회할 수 있습니다.`,
+            'success'
+          );
+        } catch (error) {
+          console.error('저장 명단 복원 오류:', error);
+          setStatus('<strong>저장된 명단을 불러오지 못했습니다.</strong> 새 엑셀 파일은 정상적으로 불러올 수 있습니다.', 'error');
+        }
       }
 
       async function extractFromFile() {
@@ -725,11 +826,17 @@
 
           state.rows = extracted;
           state.extracted = true;
+          await savePersistedRows({
+            rows: state.rows,
+            fileName: state.file ? state.file.name : '',
+            savedAt: new Date().toISOString(),
+            version: 1
+          });
           updateOutputEnabled();
           renderRows(state.rows);
 
           setStatus(
-            `<strong>추출 완료</strong>되었습니다. 총 ${state.rows.length}건의 자료를 불러왔습니다. 기관명으로 검색해 보세요.`,
+            `<strong>추출 및 자동 저장 완료</strong>되었습니다. 총 ${state.rows.length}건을 불러왔습니다. [입력 지우기] 전까지 다시 접속해도 조회할 수 있습니다.`,
             'success'
           );
         } catch (err) {
@@ -768,6 +875,8 @@
         }
 
         state.file = file;
+        state.rows = [];
+        state.extracted = false;
         fileName.textContent = file.name;
         setStatus('<strong>파일 선택 완료</strong>입니다. 이제 [추출하기]를 눌러 주세요.', 'info');
         btnExtract.disabled = false;
@@ -785,11 +894,10 @@
         renderRows(state.rows);
       });
 
-      btnClear.addEventListener('click', resetAll);
+      btnClear.addEventListener('click', () => resetAll());
 
-      // 초기 상태
-      resetAll();
-      updateOutputEnabled();
+      // 초기 상태: 저장된 명단이 있으면 자동 복원하고, [입력 지우기]에서만 삭제합니다.
+      restorePersistedRows();
     })();
   </script>
 
