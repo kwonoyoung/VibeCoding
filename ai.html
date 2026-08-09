@@ -8,7 +8,7 @@
   <style>
     :root{--navy:#0b3657;--blue:#1769aa;--cyan:#0b8fa1;--ink:#172b3a;--muted:#657987;--line:#d8e5eb;--bg:#eef4f7;--card:#fff;--soft:#eaf4fb;--green:#0e766e;--purple:#7354b4;--orange:#b56820}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#e9f3f7 0,#f4f7f9 460px,#eef3f6 100%);letter-spacing:-.02em}
-    a{color:inherit}.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(125deg,#082f4d,#0d5e80 58%,#078b83);padding:54px 20px 46px}.hero:after{content:"";position:absolute;width:420px;height:420px;border:68px solid rgba(255,255,255,.06);border-radius:50%;right:-180px;top:-245px}.hero-inner{position:relative;z-index:1;width:min(1260px,100%);margin:auto}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.1);font-size:12px;font-weight:800;letter-spacing:.08em}.hero h1{max-width:900px;margin:18px 0 12px;font-size:clamp(32px,5vw,54px);line-height:1.12;letter-spacing:-.055em}.hero p{max-width:860px;margin:0;color:#d8edf2;font-size:15px;line-height:1.8}.updated{margin-top:18px;color:#bce8e3;font-size:12px;font-weight:800}
+    a{color:inherit}.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(125deg,#082f4d,#0d5e80 58%,#078b83);padding:54px 20px 46px}.hero:after{content:"";position:absolute;width:420px;height:420px;border:68px solid rgba(255,255,255,.06);border-radius:50%;right:-180px;top:-245px}.hero-inner{position:relative;z-index:1;width:min(1260px,100%);margin:auto}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.1);font-size:12px;font-weight:800;letter-spacing:.08em}.hero h1{max-width:900px;margin:18px 0 12px;font-size:clamp(32px,5vw,54px);line-height:1.12;letter-spacing:-.055em}.hero p{max-width:860px;margin:0;color:#d8edf2;font-size:15px;line-height:1.8}.updated{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px;color:#d9f2ef;font-size:12px;font-weight:800}.freshness{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.1)}.freshness-dot{width:8px;height:8px;border-radius:50%;background:#5ce0c4;box-shadow:0 0 0 4px rgba(92,224,196,.15)}.freshness.review .freshness-dot{background:#ffd166}.freshness.overdue .freshness-dot{background:#ff7b7b}.review-policy{margin-top:12px;max-width:900px;color:#bde3e8;font-size:11px;line-height:1.7}
     .wrap{width:min(1260px,calc(100% - 28px));margin:auto;padding:26px 0 58px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-48px;position:relative;z-index:2}.summary-card{padding:19px 20px;border:1px solid rgba(213,229,236,.9);border-radius:18px;background:rgba(255,255,255,.96);box-shadow:0 15px 38px rgba(21,61,83,.1)}.summary-card b{display:block;font-size:26px;color:var(--navy)}.summary-card span{color:var(--muted);font-size:12px;font-weight:700}
     .toolbar{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;margin:22px 0;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(18,54,75,.07)}.search{flex:1;min-width:0;border:1px solid #cadbe3;border-radius:12px;padding:12px 14px;font:inherit;color:var(--ink);background:#fff}.search:focus{outline:3px solid rgba(23,105,170,.14);border-color:var(--blue)}.tabs{display:flex;gap:7px}.tab{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--muted);font-weight:800;cursor:pointer}.tab.active{border-color:var(--blue);background:var(--blue);color:#fff}
     .section{margin:34px 0 48px;scroll-margin-top:90px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:14px}.section-title{display:flex;gap:12px;align-items:center}.section-no{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--blue);font-weight:900}.section h2{margin:0;font-size:23px;letter-spacing:-.045em}.section-desc{margin:4px 0 0;color:var(--muted);font-size:12px}.count{color:#7e929e;font-size:12px;font-weight:900}.table-box{overflow:auto;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 12px 32px rgba(23,58,78,.07)}table{width:100%;min-width:940px;border-collapse:collapse}thead{background:#edf4f7}th{position:sticky;top:0;padding:14px 16px;color:#526a78;text-align:left;font-size:11px;letter-spacing:.04em}td{padding:14px 16px;border-top:1px solid #e5edf1;vertical-align:middle;font-size:13px;line-height:1.55}tbody tr:hover{background:#f8fbfc}.company{font-weight:900;color:#152f40;white-space:nowrap}.product{font-weight:800;color:#245b7c}.country{white-space:nowrap;color:var(--muted)}.tags{display:flex;flex-wrap:wrap;gap:5px}.tag{display:inline-flex;padding:4px 7px;border-radius:7px;background:#edf4f8;color:#486372;font-size:10px;font-weight:800}.tag.agent{background:#e8f6f2;color:#0d7068}.tag.build{background:#f1ecfb;color:#6845a4}.tag.media{background:#fff1e3;color:#9b581c}.visit{display:inline-flex;align-items:center;justify-content:center;min-width:76px;padding:8px 10px;border-radius:9px;background:var(--navy);color:#fff;text-decoration:none;font-size:11px;font-weight:900;white-space:nowrap}.visit:hover{background:var(--blue)}.note{margin-top:12px;padding:13px 15px;border:1px solid #d9e6ec;border-radius:12px;background:#f8fbfc;color:#5c7380;font-size:11px;line-height:1.7}.empty{display:none;padding:28px;text-align:center;color:var(--muted)}
@@ -21,7 +21,12 @@
     <div class="eyebrow">GLOBAL AI DIRECTORY · 2026</div>
     <h1>글로벌 AI·에이전트·클라우드 플랫폼 현황</h1>
     <p>주요 생성형 AI와 자율형 에이전트, 글로벌 클라우드 서비스, 자연어 기반 웹앱 생성 및 클라우드 개발 플랫폼을 공식 서비스 링크 중심으로 정리했습니다.</p>
-    <div class="updated">업데이트 기준: 2026년 8월 9일 · 서비스 명칭과 제공 범위는 변경될 수 있습니다.</div>
+    <div class="updated">
+      <span id="freshness" class="freshness"><span class="freshness-dot"></span><span id="freshnessText">검토 상태 확인 중</span></span>
+      <span class="freshness">최근 검토: <strong id="lastReviewed">-</strong></span>
+      <span class="freshness">다음 검토: <strong id="nextReview">-</strong></span>
+    </div>
+    <div class="review-policy">매주 월요일에 공식 사이트 기준 점검 작업이 자동 등록됩니다. 날짜만 자동 변경하지 않고, 기업·서비스·링크를 실제 검토한 뒤 검토 기준일을 갱신하도록 구성했습니다.</div>
   </div></header>
 
   <main class="wrap">
@@ -51,6 +56,8 @@
   <a class="home" href="index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
 
   <script>
+    const REVIEWED_AT = "2026-08-09";
+    const REVIEW_INTERVAL_DAYS = 7;
     const groups = {
       ai: {
         no: "01", title: "글로벌 주요 AI 기업 및 에이전트 현황",
@@ -153,6 +160,26 @@
         note: "Firebase Studio는 현재 제공 중이지만 Google은 2027년 3월 22일 종료 계획을 공지했습니다. 신규 장기 프로젝트는 Google AI Studio·Firebase·Google Cloud의 최신 이전 지침을 함께 확인하세요."
       }
     };
+
+    const formatKoreanDate = date => new Intl.DateTimeFormat("ko-KR", {year:"numeric",month:"long",day:"numeric",timeZone:"Asia/Seoul"}).format(date);
+    const reviewedDate = new Date(`${REVIEWED_AT}T00:00:00+09:00`);
+    const nextReviewDate = new Date(reviewedDate.getTime() + REVIEW_INTERVAL_DAYS * 86400000);
+    const todayKst = new Date(new Date().toLocaleString("en-US", {timeZone:"Asia/Seoul"}));
+    todayKst.setHours(0,0,0,0);
+    document.getElementById("lastReviewed").textContent = formatKoreanDate(reviewedDate);
+    document.getElementById("nextReview").textContent = formatKoreanDate(nextReviewDate);
+    const freshness = document.getElementById("freshness");
+    const freshnessText = document.getElementById("freshnessText");
+    const daysUntil = Math.ceil((nextReviewDate - todayKst) / 86400000);
+    if (todayKst > nextReviewDate) {
+      freshness.classList.add("overdue");
+      freshnessText.textContent = `검토 기한 ${Math.abs(daysUntil)}일 경과 · 현행화 필요`;
+    } else if (daysUntil <= 2) {
+      freshness.classList.add("review");
+      freshnessText.textContent = `다음 검토까지 ${daysUntil}일`;
+    } else {
+      freshnessText.textContent = `최신 검토 완료 · ${daysUntil}일 후 재검토`;
+    }
 
     const sectionsEl = document.getElementById("sections");
     const tagClass = text => /에이전트|자동화|워크플로|오케스트/.test(text) ? "agent" : /코딩|개발|앱|배포|프레임워크|IDE/.test(text) ? "build" : /이미지|영상|음성|음악|아바타/.test(text) ? "media" : "";
