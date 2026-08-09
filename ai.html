@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="글로벌 AI 기업, AI 에이전트, 클라우드 서비스 및 웹앱 생성·클라우드 개발 플랫폼 현황">
+  <meta name="description" content="글로벌 AI 기업, AI 에이전트, 클라우드 서비스, 웹앱 개발 및 AI 보이스·음악 커버 플랫폼 현황">
   <title>글로벌 AI·에이전트·클라우드 플랫폼 현황</title>
   <style>
     :root{--navy:#0b3657;--blue:#1769aa;--cyan:#0b8fa1;--ink:#172b3a;--muted:#657987;--line:#d8e5eb;--bg:#eef4f7;--card:#fff;--soft:#eaf4fb;--green:#0e766e;--purple:#7354b4;--orange:#b56820}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#e9f3f7 0,#f4f7f9 460px,#eef3f6 100%);letter-spacing:-.02em}
     a{color:inherit}.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(125deg,#082f4d,#0d5e80 58%,#078b83);padding:54px 20px 46px}.hero:after{content:"";position:absolute;width:420px;height:420px;border:68px solid rgba(255,255,255,.06);border-radius:50%;right:-180px;top:-245px}.hero-inner{position:relative;z-index:1;width:min(1260px,100%);margin:auto}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.1);font-size:12px;font-weight:800;letter-spacing:.08em}.hero h1{max-width:900px;margin:18px 0 12px;font-size:clamp(32px,5vw,54px);line-height:1.12;letter-spacing:-.055em}.hero p{max-width:860px;margin:0;color:#d8edf2;font-size:15px;line-height:1.8}.updated{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px;color:#d9f2ef;font-size:12px;font-weight:800}.freshness{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.1)}.freshness-dot{width:8px;height:8px;border-radius:50%;background:#5ce0c4;box-shadow:0 0 0 4px rgba(92,224,196,.15)}.freshness.review .freshness-dot{background:#ffd166}.freshness.overdue .freshness-dot{background:#ff7b7b}.review-policy{margin-top:12px;max-width:900px;color:#bde3e8;font-size:11px;line-height:1.7}
-    .wrap{width:min(1260px,calc(100% - 28px));margin:auto;padding:26px 0 58px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-48px;position:relative;z-index:2}.summary-card{padding:19px 20px;border:1px solid rgba(213,229,236,.9);border-radius:18px;background:rgba(255,255,255,.96);box-shadow:0 15px 38px rgba(21,61,83,.1)}.summary-card b{display:block;font-size:26px;color:var(--navy)}.summary-card span{color:var(--muted);font-size:12px;font-weight:700}
+    .wrap{width:min(1260px,calc(100% - 28px));margin:auto;padding:26px 0 58px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:-48px;position:relative;z-index:2}.summary-card{padding:19px 20px;border:1px solid rgba(213,229,236,.9);border-radius:18px;background:rgba(255,255,255,.96);box-shadow:0 15px 38px rgba(21,61,83,.1)}.summary-card b{display:block;font-size:26px;color:var(--navy)}.summary-card span{color:var(--muted);font-size:12px;font-weight:700}
     .toolbar{position:sticky;top:0;z-index:20;display:flex;gap:10px;align-items:center;margin:22px 0;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(18,54,75,.07)}.search{flex:1;min-width:0;border:1px solid #cadbe3;border-radius:12px;padding:12px 14px;font:inherit;color:var(--ink);background:#fff}.search:focus{outline:3px solid rgba(23,105,170,.14);border-color:var(--blue)}.tabs{display:flex;gap:7px}.tab{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--muted);font-weight:800;cursor:pointer}.tab.active{border-color:var(--blue);background:var(--blue);color:#fff}
     .section{margin:34px 0 48px;scroll-margin-top:90px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:14px}.section-title{display:flex;gap:12px;align-items:center}.section-no{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--blue);font-weight:900}.section h2{margin:0;font-size:23px;letter-spacing:-.045em}.section-desc{margin:4px 0 0;color:var(--muted);font-size:12px}.count{color:#7e929e;font-size:12px;font-weight:900}.table-box{overflow:auto;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 12px 32px rgba(23,58,78,.07)}table{width:100%;min-width:940px;border-collapse:collapse}thead{background:#edf4f7}th{position:sticky;top:0;padding:14px 16px;color:#526a78;text-align:left;font-size:11px;letter-spacing:.04em}td{padding:14px 16px;border-top:1px solid #e5edf1;vertical-align:middle;font-size:13px;line-height:1.55}tbody tr:hover{background:#f8fbfc}.company{font-weight:900;color:#152f40;white-space:nowrap}.product{font-weight:800;color:#245b7c}.country{white-space:nowrap;color:var(--muted)}.tags{display:flex;flex-wrap:wrap;gap:5px}.tag{display:inline-flex;padding:4px 7px;border-radius:7px;background:#edf4f8;color:#486372;font-size:10px;font-weight:800}.tag.agent{background:#e8f6f2;color:#0d7068}.tag.build{background:#f1ecfb;color:#6845a4}.tag.media{background:#fff1e3;color:#9b581c}.visit{display:inline-flex;align-items:center;justify-content:center;min-width:76px;padding:8px 10px;border-radius:9px;background:var(--navy);color:#fff;text-decoration:none;font-size:11px;font-weight:900;white-space:nowrap}.visit:hover{background:var(--blue)}.note{margin-top:12px;padding:13px 15px;border:1px solid #d9e6ec;border-radius:12px;background:#f8fbfc;color:#5c7380;font-size:11px;line-height:1.7}.empty{display:none;padding:28px;text-align:center;color:var(--muted)}
     footer{border-top:1px solid #ccdce4;padding:26px 14px 34px;text-align:center;color:#687c88;font-size:12px;line-height:1.8}.home{position:fixed;right:16px;bottom:16px;z-index:30;padding:11px 16px;border-radius:999px;background:#0a486b;color:#fff;text-decoration:none;font-size:12px;font-weight:900;box-shadow:0 10px 26px rgba(8,47,75,.24)}
@@ -20,7 +20,7 @@
   <header class="hero"><div class="hero-inner">
     <div class="eyebrow">GLOBAL AI DIRECTORY · 2026</div>
     <h1>글로벌 AI·에이전트·클라우드 플랫폼 현황</h1>
-    <p>주요 생성형 AI와 자율형 에이전트, 글로벌 클라우드 서비스, 자연어 기반 웹앱 생성 및 클라우드 개발 플랫폼을 공식 서비스 링크 중심으로 정리했습니다.</p>
+    <p>주요 생성형 AI와 자율형 에이전트, 글로벌 클라우드, 웹앱 개발, AI 보이스·음악 커버 제작 플랫폼을 공식 서비스 링크 중심으로 정리했습니다.</p>
     <div class="updated">
       <span id="freshness" class="freshness"><span class="freshness-dot"></span><span id="freshnessText">검토 상태 확인 중</span></span>
       <span class="freshness">최근 검토: <strong id="lastReviewed">-</strong></span>
@@ -34,6 +34,7 @@
       <div class="summary-card"><b id="aiTotal">0</b><span>AI·에이전트 기업 및 서비스</span></div>
       <div class="summary-card"><b id="cloudTotal">0</b><span>글로벌 클라우드 서비스</span></div>
       <div class="summary-card"><b id="buildTotal">0</b><span>웹앱 생성·개발 플랫폼</span></div>
+      <div class="summary-card"><b id="coverTotal">0</b><span>AI 보이스·음악 커버 플랫폼</span></div>
     </div>
 
     <div class="toolbar" aria-label="목록 검색 및 영역 선택">
@@ -43,6 +44,7 @@
         <button class="tab" data-target="ai">AI·에이전트</button>
         <button class="tab" data-target="cloud">클라우드</button>
         <button class="tab" data-target="build">웹앱·개발</button>
+        <button class="tab" data-target="cover">AI 커버</button>
       </div>
     </div>
 
@@ -158,6 +160,25 @@
           ["Glitch","Glitch","미국","브라우저 코딩|프로토타입·웹앱 호스팅","https://glitch.com/"]
         ],
         note: "Firebase Studio는 현재 제공 중이지만 Google은 2027년 3월 22일 종료 계획을 공지했습니다. 신규 장기 프로젝트는 Google AI Studio·Firebase·Google Cloud의 최신 이전 지침을 함께 확인하세요."
+      },
+      cover: {
+        no: "04", title: "AI 보이스·음악 커버 제작 웹 플랫폼",
+        desc: "AI 노래 커버·보컬 변환·음성 모델 학습·보컬 분리 및 음악 제작 보조",
+        columns: ["플랫폼", "주요 도구·서비스", "제공 형태", "주요 기능", "공식 사이트"],
+        rows: [
+          ["Covers.ai","AI Music Covers · Custom AI Voices","웹 플랫폼","AI 노래 커버|사용자 음성 모델|가사·언어·장르 변환","https://covers.ai/"],
+          ["Kits AI","AI Voice Generator · Voice Cloning","웹 플랫폼","보컬 변환|사용자 음성 학습|로열티 프리 보이스|보컬 분리","https://www.kits.ai/"],
+          ["Musicfy","AI Voice Song Generator","웹 플랫폼","AI 노래 커버|사용자 음성 모델|음성 변환|음악 생성","https://musicfy.lol/"],
+          ["Jammable","AI Cover Generator · Voice Changer","웹 플랫폼","AI 노래 커버|음성 모델 탐색|사용자 음성 학습|듀엣","https://www.jammable.com/ai-cover"],
+          ["Audimee","AI Vocal Conversion","웹 플랫폼","보컬 변환|로열티 프리 보이스|사용자 음성 학습|보컬 분리·하모니","https://audimee.com/"],
+          ["FineShare Singify","AI Song Cover Generator","웹 플랫폼","AI 노래 커버|음원 업로드·녹음|사용자 음성 모델|음악 제작","https://singify.fineshare.com/ai-song-cover"],
+          ["Controlla Voice","AI Singing Voice","웹 플랫폼","노래 음성 변환|음성 복제|합창 생성|다국어 보컬","https://voice.controlla.xyz/"],
+          ["Voice-Swap","AI Voice Transformation","웹 플랫폼","스튜디오급 보컬 변환|보컬 분리|사용자 모델|아티스트 라이선스 보이스","https://voice-swap.ai/"],
+          ["TopMediai","AI Cover Generator","웹 플랫폼","AI 노래 커버|음성 모델|사용자 음성 학습|보컬 변환","https://www.topmediai.com/app/ai-cover/"],
+          ["LALAL.AI","Voice Changer","웹 플랫폼","노래·말소리 음성 변환|보컬 모델 선택|오디오 업로드|스템 처리","https://www.lalal.ai/voice-changer/"],
+          ["Musicful","AI Cover Generator","웹 플랫폼","AI 노래 커버|사용자 음성 모델|음원·링크 입력|음성 변환","https://www.musicful.ai/ai-cover/"]
+        ],
+        note: "자신의 목소리 또는 명시적으로 허가받은 음성·음원을 사용하세요. AI 커버를 공개하거나 수익화하기 전에 원곡 저작권, 음성·초상권, 퍼블리시티권, 해당 플랫폼의 약관과 라이선스를 반드시 확인해야 합니다."
       }
     };
 
@@ -195,6 +216,7 @@
       document.getElementById("aiTotal").textContent=groups.ai.rows.length;
       document.getElementById("cloudTotal").textContent=groups.cloud.rows.length;
       document.getElementById("buildTotal").textContent=groups.build.rows.length;
+      document.getElementById("coverTotal").textContent=groups.cover.rows.length;
     };
     render();
 
