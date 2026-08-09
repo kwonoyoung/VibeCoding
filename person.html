@@ -347,6 +347,13 @@
       .search-row .btn { width: 100%; }
     }
 
+    [hidden] { display: none !important; }
+    .auth-card { margin: 18px 0; }
+    .auth-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+    .auth-copy { min-width: 240px; flex: 1 1 420px; }
+    .auth-email { display: inline-block; margin-top: 6px; font-weight: 800; color: #075985; word-break: break-all; }
+    .auth-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
     @media (max-width: 520px) {
       .wrap { width: min(100% - 12px, 1200px); margin-top: 10px; }
       .hero, .card { border-radius: 18px; }
@@ -402,7 +409,21 @@
       </p>
     </section>
 
-    <div class="grid">
+    <section class="card auth-card" id="authCard">
+      <div class="card-body auth-row">
+        <div class="auth-copy">
+          <div class="label">기기 간 명단 동기화</div>
+          <div id="authStatus">등록된 담당자 명단은 로그인 없이 컴퓨터와 스마트폰에서 누구나 조회할 수 있습니다. 명단 등록·삭제는 관리자만 가능합니다.</div>
+          <span class="auth-email">kwonoyoung77@gmail.com</span>
+        </div>
+        <div class="auth-actions">
+          <button class="btn btn-primary" id="btnSendLoginLink" type="button">관리자 로그인</button>
+          <button class="btn btn-ghost" id="btnLogout" type="button" hidden>로그아웃</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid" id="directoryWorkspace">
       <section class="card">
         <div class="card-header">
           <h2>1. 파일 불러오기 및 처리</h2>
@@ -440,7 +461,7 @@
             <button class="btn btn-danger" id="btnClear" type="button">입력 지우기</button>
           </div>
           <div class="note" style="margin-top:10px">
-            추출된 명단은 외부 서버로 전송하지 않고 <strong>현재 기기와 브라우저에 자동 저장</strong>됩니다. 페이지를 닫거나 다시 접속해도 조회할 수 있으며, <strong>입력 지우기</strong>를 누르면 저장된 명단도 삭제됩니다.
+            명단 조회는 <strong>로그인 없이 누구나</strong> 컴퓨터·스마트폰에서 할 수 있습니다. 엑셀 등록·갱신과 <strong>입력 지우기</strong>는 승인된 관리자 이메일로 로그인한 경우에만 가능합니다.
           </div>
 
           <div class="status-bar" aria-live="polite">
@@ -501,12 +522,108 @@
       const statusText = document.getElementById('statusText');
       const resultCount = document.getElementById('resultCount');
       const resultBody = document.getElementById('resultBody');
+      const authCard = document.getElementById('authCard');
+      const authStatus = document.getElementById('authStatus');
+      const btnSendLoginLink = document.getElementById('btnSendLoginLink');
+      const btnLogout = document.getElementById('btnLogout');
+      const directoryWorkspace = document.getElementById('directoryWorkspace');
 
       const requiredHeaders = ['기관명', '담당자', '연락처'];
       const optionalHeaders = ['주민등록번호', '주민번호'];
       const CACHE_DB_NAME = 'person-directory-cache';
       const CACHE_STORE_NAME = 'directory';
       const CACHE_KEY = 'latest';
+      const SUPABASE_URL = 'https://eqpiuszmgrwituwprgdc.supabase.co';
+      const SUPABASE_KEY = 'sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+      const ALLOWED_EMAIL = 'kwonoyoung77@gmail.com';
+      const SESSION_KEY = 'person-directory-supabase-session';
+      let authSession = null;
+      let authUser = null;
+
+      function saveSession(session) {
+        authSession = session;
+        if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        else localStorage.removeItem(SESSION_KEY);
+      }
+
+      function readSession() {
+        try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
+        catch (_) { return null; }
+      }
+
+      async function authFetch(path, options = {}) {
+        const headers = Object.assign({ apikey: SUPABASE_KEY, 'Content-Type': 'application/json' }, options.headers || {});
+        const response = await fetch(`${SUPABASE_URL}/auth/v1/${path}`, Object.assign({}, options, { headers }));
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.msg || data.message || data.error_description || '인증 요청에 실패했습니다.');
+        return data;
+      }
+
+      async function refreshSession() {
+        if (!authSession || !authSession.refresh_token) throw new Error('로그인이 필요합니다.');
+        const refreshed = await authFetch('token?grant_type=refresh_token', {
+          method: 'POST', body: JSON.stringify({ refresh_token: authSession.refresh_token })
+        });
+        saveSession(refreshed);
+        return refreshed.access_token;
+      }
+
+      async function getAccessToken() {
+        if (!authSession) throw new Error('로그인이 필요합니다.');
+        const expiresAt = Number(authSession.expires_at || 0);
+        if (expiresAt && expiresAt * 1000 > Date.now() + 60000) return authSession.access_token;
+        return refreshSession();
+      }
+
+      async function getCurrentUser() {
+        let token = await getAccessToken();
+        try {
+          return await authFetch('user', { headers: { Authorization: `Bearer ${token}` } });
+        } catch (_) {
+          token = await refreshSession();
+          return authFetch('user', { headers: { Authorization: `Bearer ${token}` } });
+        }
+      }
+
+      async function cloudRequest(query, options = {}) {
+        const token = authSession ? await getAccessToken() : SUPABASE_KEY;
+        const headers = Object.assign({
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }, options.headers || {});
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/${query}`, Object.assign({}, options, { headers }));
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : null;
+        if (!response.ok) throw new Error((data && (data.message || data.hint)) || '클라우드 저장 요청에 실패했습니다.');
+        return data;
+      }
+
+      async function saveCloudRows(payload) {
+        if (!authUser) throw new Error('관리자 로그인이 ��요합니다.');
+        await cloudRequest('person_directory_public?owner_email=eq.kwonoyoung77%40gmail.com', { method: 'DELETE' });
+        if (!payload.rows.length) return;
+        return cloudRequest('person_directory_public', {
+          method: 'POST', headers: { Prefer: 'return=minimal' },
+          body: JSON.stringify(payload.rows.map(item => ({
+            owner_email: ALLOWED_EMAIL,
+            institution: String(item.institution || ''),
+            person: String(item.person || ''),
+            contact: String(item.contact || ''),
+            updated_at: payload.savedAt
+          })))
+        });
+      }
+
+      async function loadCloudRows() {
+        const rows = await cloudRequest('person_directory_public?select=institution,person,contact,updated_at&order=id.asc');
+        return rows && rows.length ? { rows: rows.map(({ institution, person, contact }) => ({ institution, person, contact })), fileName: '공개 담당자 명단', savedAt: rows[0].updated_at } : null;
+      }
+
+      async function clearCloudRows() {
+        if (!authUser) throw new Error('관리자 로그인이 필요합니다.');
+        await cloudRequest('person_directory_public?owner_email=eq.kwonoyoung77%40gmail.com', { method: 'DELETE' });
+      }
 
       function openCacheDb() {
         return new Promise((resolve, reject) => {
@@ -688,20 +805,30 @@
       }
 
       async function resetAll() {
-        resetUi();
         try {
+          if (!authUser) throw new Error('로그인이 필요합니다.');
+          await clearCloudRows();
           await clearPersistedRows();
-          setStatus('<strong>입력 자료와 저장된 담당자 명단을 모두 지웠습니다.</strong> 새 엑셀 파일을 불러올 수 있습니다.', 'success');
+          resetUi();
+          setStatus('<strong>입력 자료와 클라우드 담당자 명단을 모두 지웠습니다.</strong> 모든 기기에서 더 이상 조회되지 않습니다.', 'success');
         } catch (error) {
-          console.error('저장 명단 삭제 오류:', error);
-          setStatus('<strong>화면 자료는 지웠지만 브라우저 저장 명단 삭제에 실패했습니다.</strong> 브라우저 저장소 설정을 확인해 주세요.', 'error');
+          console.error('명단 삭제 오류:', error);
+          setStatus(`<strong>명단을 지우지 못했습니다.</strong> ${escapeHtml(error.message || '로그인과 인터넷 연결을 확인해 주세요.')}`, 'error');
         }
       }
 
       async function restorePersistedRows() {
         resetUi();
         try {
-          const saved = await loadPersistedRows();
+          let saved = null;
+          try {
+            saved = await loadCloudRows();
+            if (saved && Array.isArray(saved.rows)) await savePersistedRows(Object.assign({ version: 2 }, saved));
+          } catch (cloudError) {
+            console.error('클라우드 명단 복원 오류:', cloudError);
+            saved = await loadPersistedRows();
+            if (saved) setStatus('<strong>클라우드 연결이 원활하지 않아 이 기기에 저장된 명단을 표시합니다.</strong>', 'error');
+          }
           if (!saved || !Array.isArray(saved.rows) || !saved.rows.length) return;
 
           state.rows = saved.rows;
@@ -712,7 +839,7 @@
 
           const savedAt = saved.savedAt ? new Date(saved.savedAt).toLocaleString('ko-KR') : '저장 시각 미확인';
           setStatus(
-            `<strong>저장된 담당자 명단 ${state.rows.length}건을 불러왔습니다.</strong> ${escapeHtml(savedAt)} 저장 · [입력 지우기] 전까지 같은 기기와 브라우저에서 계속 조회할 수 있습니다.`,
+            `<strong>클라우드 담당자 명단 ${state.rows.length}건을 불러왔습니다.</strong> ${escapeHtml(savedAt)} 저장 · [입력 지우기] 전까지 로그인한 컴퓨터와 스마트폰에서 계속 조회할 수 있습니다.`,
             'success'
           );
         } catch (error) {
@@ -826,17 +953,19 @@
 
           state.rows = extracted;
           state.extracted = true;
-          await savePersistedRows({
+          const savedPayload = {
             rows: state.rows,
             fileName: state.file ? state.file.name : '',
             savedAt: new Date().toISOString(),
-            version: 1
-          });
+            version: 2
+          };
+          await saveCloudRows(savedPayload);
+          await savePersistedRows(savedPayload);
           updateOutputEnabled();
           renderRows(state.rows);
 
           setStatus(
-            `<strong>추출 및 자동 저장 완료</strong>되었습니다. 총 ${state.rows.length}건을 불러왔습니다. [입력 지우기] 전까지 다시 접속해도 조회할 수 있습니다.`,
+            `<strong>추출 및 클라우드 저장 완료</strong>되었습니다. 총 ${state.rows.length}건을 불러왔습니다. [입력 지우기] 전까지 로그인한 컴퓨터와 스마트폰에서 조회할 수 있습니다.`,
             'success'
           );
         } catch (err) {
@@ -858,6 +987,105 @@
           setStatus(`<strong>출력 완료</strong>되었습니다. 기관명 "${escapeHtml(term)}" 검색 결과를 표시합니다.`, 'success');
         } else {
           setStatus(`<strong>출력 완료</strong>되었습니다. 전체 결과를 표시합니다.`, 'success');
+        }
+      }
+
+      function showSignedOut(message) {
+        authUser = null;
+        directoryWorkspace.hidden = false;
+        btnLogout.hidden = true;
+        btnSendLoginLink.hidden = false;
+        btnSendLoginLink.disabled = false;
+        btnChooseFile.disabled = true;
+        btnExtract.disabled = true;
+        btnClear.disabled = true;
+        authStatus.textContent = message || '명단은 로그인 없이 누구나 조회할 수 있습니다. 등록·갱신·삭제는 관리자만 가능합니다.';
+      }
+
+      async function showSignedIn(user) {
+        if (!user || String(user.email || '').toLowerCase() !== ALLOWED_EMAIL) {
+          saveSession(null);
+          showSignedOut('이 페이지에 승인되지 않은 계정입니다.');
+          return;
+        }
+        authUser = user;
+        directoryWorkspace.hidden = false;
+        btnLogout.hidden = false;
+        btnSendLoginLink.hidden = true;
+        btnChooseFile.disabled = false;
+        btnClear.disabled = false;
+        authStatus.textContent = `${ALLOWED_EMAIL} 계정으로 로그인되었습니다. 명단이 모든 기기에 동기화됩니다.`;
+        await restorePersistedRows();
+      }
+
+      async function sendLoginLink() {
+        btnSendLoginLink.disabled = true;
+        authStatus.textContent = '로그인 링크를 보내는 중입니다...';
+        try {
+          const redirectTo = `${location.origin}${location.pathname}`;
+          await authFetch(`otp?redirect_to=${encodeURIComponent(redirectTo)}`, {
+            method: 'POST',
+            body: JSON.stringify({ email: ALLOWED_EMAIL, create_user: true })
+          });
+          authStatus.textContent = `${ALLOWED_EMAIL}로 로그인 링크를 보냈습니다. 이메일에서 링크를 누르면 이 페이지로 돌아옵니다.`;
+        } catch (error) {
+          authStatus.textContent = `로그인 링크를 보내지 못했습니다: ${error.message}`;
+          btnSendLoginLink.disabled = false;
+        }
+      }
+
+      async function logout() {
+        try {
+          if (authSession && authSession.access_token) {
+            await authFetch('logout', { method: 'POST', headers: { Authorization: `Bearer ${authSession.access_token}` } });
+          }
+        } catch (error) {
+          console.error('로그아웃 오류:', error);
+        }
+        saveSession(null);
+        resetUi();
+        showSignedOut('로그아웃했습니다. 공개 명단 조회는 계속 가능하며, 등록·삭제하려면 다시 관리자 로그인해 주세요.');
+        await restorePersistedRows();
+        btnChooseFile.disabled = true;
+        btnExtract.disabled = true;
+        btnClear.disabled = true;
+      }
+
+      async function initializeAuth() {
+        const hash = new URLSearchParams(location.hash.replace(/^#/, ''));
+        if (hash.get('access_token')) {
+          const expiresIn = Number(hash.get('expires_in') || 3600);
+          saveSession({
+            access_token: hash.get('access_token'),
+            refresh_token: hash.get('refresh_token'),
+            token_type: hash.get('token_type') || 'bearer',
+            expires_in: expiresIn,
+            expires_at: Math.floor(Date.now() / 1000) + expiresIn
+          });
+          history.replaceState(null, '', `${location.pathname}${location.search}`);
+        } else {
+          saveSession(readSession());
+        }
+
+        if (!authSession) {
+          showSignedOut();
+          await restorePersistedRows();
+          btnChooseFile.disabled = true;
+          btnExtract.disabled = true;
+          btnClear.disabled = true;
+          return;
+        }
+        try {
+          const user = await getCurrentUser();
+          await showSignedIn(user);
+        } catch (error) {
+          console.error('로그인 확인 오류:', error);
+          saveSession(null);
+          showSignedOut('로그인 시간이 만료되었습니다. 공개 명단은 계속 조회할 수 있습니다.');
+          await restorePersistedRows();
+          btnChooseFile.disabled = true;
+          btnExtract.disabled = true;
+          btnClear.disabled = true;
         }
       }
 
@@ -895,9 +1123,11 @@
       });
 
       btnClear.addEventListener('click', () => resetAll());
+      btnSendLoginLink.addEventListener('click', sendLoginLink);
+      btnLogout.addEventListener('click', logout);
 
-      // 초기 상태: 저장된 명단이 있으면 자동 복원하고, [입력 지우기]에서만 삭제합니다.
-      restorePersistedRows();
+      // 승인 이메일 로그인 후 클라우드 명단을 자동 복원합니다.
+      initializeAuth();
     })();
   </script>
 
