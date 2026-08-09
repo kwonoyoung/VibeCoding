@@ -274,7 +274,7 @@
           tbody.appendChild(row);
           const count=counts[row.dataset.serviceKey]||0;
           const rank=row.querySelector(".rank");
-          rank.textContent=index+1;
+          rank.textContent=count?index+1:"-";
           rank.classList.toggle("top",index<3&&count>0);
           row.querySelector(".clicks").textContent=`${popularityPeriod==="all"?"누적":`최근 ${popularityPeriod}일`} ${count.toLocaleString("ko-KR")}회 클릭`;
         });
