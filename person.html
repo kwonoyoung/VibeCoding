@@ -14,8 +14,13 @@
     const source = await new Response(stream).text();
     (0, eval)(source);
     if (typeof XLSX === "undefined") throw new Error("엑셀 처리 모듈 초기화에 실패했습니다.");
+    document.documentElement.dataset.xlsxReady = "true";
     return XLSX;
-  })();
+  })().catch(error => {
+    document.documentElement.dataset.xlsxReady = "error";
+    console.error("XLSX 초기화 실패:", error);
+    throw error;
+  });
   </script>
 
   <style>
