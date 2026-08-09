@@ -66,8 +66,8 @@
 
     <div id="sections"></div>
     <div class="export-area" aria-label="전체 목록 엑셀 다운로드">
-      <button id="downloadExcel" class="export-button" type="button">전체 목록 엑셀 파일 다운로드</button>
-      <span class="export-help">전체 <span id="exportCount">0</span>개 항목과 MAU 순위·기준월·출처·공식 링크를 Excel 호환 파일로 저장합니다.</span>
+      <button id="downloadExcel" class="export-button" type="button">전체 목록 XLSX 다운로드</button>
+      <span class="export-help">전체 <span id="exportCount">0</span>개 항목과 MAU 순위·기준월·출처·공식 링크를 정식 XLSX 파일로 저장합니다.</span>
     </div>
   </main>
 
@@ -309,7 +309,20 @@
     document.querySelectorAll(".country-filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".country-filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");activeCountry=btn.dataset.country;applyFilter()}));
     document.querySelectorAll(".service-filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".service-filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");activeService=btn.dataset.service;applyFilter()}));
     const xmlEscape=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[char]));
-    const excelCell=(value,style="")=>`<Cell${style?` ss:StyleID="${style}"`:""}><Data ss:Type="String">${xmlEscape(value)}</Data></Cell>`;
+    const utf8=new TextEncoder();
+    const crcTable=(()=>{const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;table[n]=c>>>0}return table})();
+    const crc32=bytes=>{let crc=0xffffffff;for(const byte of bytes)crc=crcTable[(crc^byte)&0xff]^(crc>>>8);return (crc^0xffffffff)>>>0};
+    const write16=(view,offset,value)=>view.setUint16(offset,value,true);
+    const write32=(view,offset,value)=>view.setUint32(offset,value>>>0,true);
+    const joinBytes=parts=>{const total=parts.reduce((sum,part)=>sum+part.length,0);const output=new Uint8Array(total);let offset=0;for(const part of parts){output.set(part,offset);offset+=part.length}return output};
+    const makeXlsxZip=files=>{
+      const localParts=[],centralParts=[];let localOffset=0;
+      const now=new Date();const dosTime=(now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1);const dosDate=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+      files.forEach(file=>{const name=utf8.encode(file.name),data=utf8.encode(file.content),crc=crc32(data);const local=new Uint8Array(30+name.length);const lv=new DataView(local.buffer);write32(lv,0,0x04034b50);write16(lv,4,20);write16(lv,6,0x0800);write16(lv,8,0);write16(lv,10,dosTime);write16(lv,12,dosDate);write32(lv,14,crc);write32(lv,18,data.length);write32(lv,22,data.length);write16(lv,26,name.length);write16(lv,28,0);local.set(name,30);localParts.push(local,data);
+        const central=new Uint8Array(46+name.length);const cv=new DataView(central.buffer);write32(cv,0,0x02014b50);write16(cv,4,20);write16(cv,6,20);write16(cv,8,0x0800);write16(cv,10,0);write16(cv,12,dosTime);write16(cv,14,dosDate);write32(cv,16,crc);write32(cv,20,data.length);write32(cv,24,data.length);write16(cv,28,name.length);write16(cv,30,0);write16(cv,32,0);write16(cv,34,0);write16(cv,36,0);write32(cv,38,0);write32(cv,42,localOffset);central.set(name,46);centralParts.push(central);localOffset+=local.length+data.length});
+      const centralData=joinBytes(centralParts);const end=new Uint8Array(22);const ev=new DataView(end.buffer);write32(ev,0,0x06054b50);write16(ev,4,0);write16(ev,6,0);write16(ev,8,files.length);write16(ev,10,files.length);write32(ev,12,centralData.length);write32(ev,16,localOffset);write16(ev,20,0);return joinBytes([...localParts,centralData,end]);
+    };
+    const xlsxCell=(value,column,row,header=false)=>`<c r="${column}${row}" t="inlineStr"${header?' s="1"':""}><is><t xml:space="preserve">${xmlEscape(value)}</t></is></c>`;
     const downloadExcel=()=>{
       const headers=["영역","MAU 순위","기업·플랫폼","주요 도구·서비스","국가·지역","주요 기능","MAU","MAU 기준월","MAU 출처","공식 사이트"];
       const rows=[];
@@ -317,16 +330,21 @@
         const mau=key==="ai"?mauData[row[1]]:null;
         rows.push([`${group.no} ${group.title}`,mau?index+1:"",row[0],row[1],row[2],row[3].replaceAll("|"," · "),mau?mau.label:key==="ai"?"비공개":"순위 미적용",mau?.asOf||"",mau?.source||"",row[4]]);
       }));
-      const workbook=`<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?>
-<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
-<Styles><Style ss:ID="Default"><Alignment ss:Vertical="Center"/><Font ss:FontName="맑은 고딕" ss:Size="10"/></Style><Style ss:ID="Header"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/><Font ss:FontName="맑은 고딕" ss:Size="10" ss:Bold="1"/><Interior ss:Color="#DCEAF2" ss:Pattern="Solid"/></Style></Styles>
-<Worksheet ss:Name="AI 플랫폼 현황"><Table>${[130,70,130,260,90,320,100,90,130,280].map(width=>`<Column ss:Width="${width}"/>`).join("")}<Row>${headers.map(value=>excelCell(value,"Header")).join("")}</Row>${rows.map(row=>`<Row>${row.map(value=>excelCell(value)).join("")}</Row>`).join("")}</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane><ProtectObjects>False</ProtectObjects><ProtectScenarios>False</ProtectScenarios></WorksheetOptions></Worksheet>
-</Workbook>`;
-      const blob=new Blob([workbook],{type:"application/vnd.ms-excel;charset=utf-8"});
+      const columns="ABCDEFGHIJ";
+      const sheetRows=[`<row r="1">${headers.map((value,index)=>xlsxCell(value,columns[index],1,true)).join("")}</row>`,...rows.map((row,rowIndex)=>`<row r="${rowIndex+2}">${row.map((value,columnIndex)=>xlsxCell(value,columns[columnIndex],rowIndex+2)).join("")}</row>`)].join("");
+      const files=[
+        {name:"[Content_Types].xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`},
+        {name:"_rels/.rels",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+        {name:"xl/workbook.xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="AI 플랫폼 현황" sheetId="1" r:id="rId1"/></sheets></workbook>`},
+        {name:"xl/_rels/workbook.xml.rels",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`},
+        {name:"xl/styles.xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="10"/><name val="Malgun Gothic"/></font><font><b/><sz val="10"/><color rgb="FF173B55"/><name val="Malgun Gothic"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFDCEAF2"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`},
+        {name:"xl/worksheets/sheet1.xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:J${rows.length+1}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${[22,10,22,40,14,52,16,14,22,44].map((width,index)=>`<col min="${index+1}" max="${index+1}" width="${width}" customWidth="1"/>`).join("")}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:J${rows.length+1}"/></worksheet>`}
+      ];
+      const blob=new Blob([makeXlsxZip(files)],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
       const url=URL.createObjectURL(blob);
       const link=document.createElement("a");
       link.href=url;
-      link.download=`글로벌_AI_플랫폼_현황_${REVIEWED_AT}.xls`;
+      link.download=`글로벌_AI_플랫폼_현황_${REVIEWED_AT}.xlsx`;
       document.body.appendChild(link);
       link.click();
       link.remove();
