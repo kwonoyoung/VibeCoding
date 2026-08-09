@@ -27,7 +27,7 @@
       <span class="freshness">최근 검토: <strong id="lastReviewed">-</strong></span>
       <span class="freshness">다음 검토: <strong id="nextReview">-</strong></span>
     </div>
-    <div class="review-policy">매주 월요일에 공식 사이트 기준 점검 작업이 자동 등록됩니다. 날짜만 자동 변경하지 않고, 기업·서비스·링크를 실제 검토한 뒤 검토 기준일을 갱신하도록 구성했습니다.</div>
+    <div class="review-policy">MAU 순위는 매월 1일과 15일에 공식 발표·기업 공시·신뢰할 수 있는 시장조사 자료를 확인해 갱신합니다. 확인할 수 없는 수치는 추정하지 않고 ‘MAU 비공개’로 표시합니다.</div>
   </div></header>
 
   <main class="wrap">
@@ -55,13 +55,8 @@
         <div id="countries" class="countries" aria-label="국가별 항목 필터"></div>
       </div>
       <div class="filter-row">
-        <span class="filter-label">클릭 인기순</span>
-        <div class="periods" aria-label="인기순위 집계 기간">
-          <button class="period-filter active" data-period="7">최근 7일</button>
-          <button class="period-filter" data-period="30">최근 30일</button>
-          <button class="period-filter" data-period="all">누적</button>
-        </div>
-        <span id="popularityStatus" class="popularity-status">인기순위 불러오는 중</span>
+        <span class="filter-label">MAU 인기순</span>
+        <span class="popularity-status">최신 공개 월간 활성 사용자 수 기준 · 매월 1일·15일 갱신</span>
       </div>
     </div>
 
@@ -76,9 +71,6 @@
 
   <script>
     const REVIEWED_AT = "2026-08-09";
-    const REVIEW_INTERVAL_DAYS = 7;
-    const SUPABASE_URL = "https://eqpiuszmgrwituwprgdc.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ";
     const groups = {
       ai: {
         no: "01", title: "글로벌 주요 AI 기업 및 에이전트 현황",
@@ -129,7 +121,8 @@
           ["ByteDance","CapCut (캡컷)","중국","AI 영상·사진 편집|AI 영상·이미지 생성|자동 자막·더빙·TTS|배경 제거·업스케일|긴 영상→숏폼","https://www.capcut.com/"],
           ["Google","Google Flow (구글 플로우)","미국","AI 영화·영상 제작|Veo·Imagen·Gemini 연동|텍스트·이미지→영상|장면·캐릭터 일관성|카메라 제어·네이티브 오디오","https://labs.google/fx/tools/flow"],
           ["TapNow","TapNow (탭나우)","미국","에이전틱 크리에이티브 캔버스|텍스트·이미지·오디오·영상 모델 통합|AI 광고·영화 제작|스크립트·스토리보드 워크플로|팀 협업·공유","https://www.tapnow.ai/"]
-        ]
+        ],
+        note: "MAU는 최신 공개치 기준이며 집계 범위(독립 앱·통합 서비스·모바일 앱)가 서로 달라 완전히 동일한 모집단 비교는 아닙니다. 공개 수치가 없는 서비스는 순위에서 제외했습니다. 근거: <a href='https://about.fb.com/news/2025/10/improving-your-recommendations-apps-ai-meta/' target='_blank' rel='noopener noreferrer'>Meta</a> · <a href='https://www.reuters.com/technology/chatgpt-app-hits-1-billion-monthly-active-users-record-time-data-shows-2026-06-02/' target='_blank' rel='noopener noreferrer'>ChatGPT·Claude</a> · <a href='https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx' target='_blank' rel='noopener noreferrer'>Gemini</a> · <a href='https://www.ft.com/content/e9c28d31-a962-4684-8b58-c9e6bc68401f' target='_blank' rel='noopener noreferrer'>Perplexity</a>. Grok 수치는 2026년 3월 SpaceX 공시를 인용한 최신 공개 보도 기준입니다."
       },
       cloud: {
         no: "02", title: "글로벌 주요 클라우드 서비스 기업 현황",
@@ -214,9 +207,24 @@
       }
     };
 
+    const mauData = {
+      "Meta AI · Llama": {value:1000000001, label:"10억+명", asOf:"2025-10", source:"Meta 공식 발표"},
+      "ChatGPT · Codex · Sora · DALL·E": {value:1000000000, label:"10억명", asOf:"2026-06", source:"Sensor Tower·Reuters"},
+      "Gemini · Veo · Imagen · NotebookLM": {value:950000000, label:"9억 5,000만명", asOf:"2026-07", source:"Alphabet 실적 발표"},
+      "Grok · SuperGrok · Grok Imagine · Grok Voice": {value:117000000, label:"1억 1,700만명", asOf:"2026-03", source:"SpaceX 공시"},
+      "Perplexity": {value:100000000, label:"1억+명", asOf:"2026-03", source:"회사 발표·FT"},
+      "Claude · Claude Code": {value:56000000, label:"5,600만명", asOf:"2026-Q2", source:"Sensor Tower·Reuters"}
+    };
+    groups.ai.rows.sort((a,b)=>(mauData[b[1]]?.value||-1)-(mauData[a[1]]?.value||-1));
+
     const formatKoreanDate = date => new Intl.DateTimeFormat("ko-KR", {year:"numeric",month:"long",day:"numeric",timeZone:"Asia/Seoul"}).format(date);
     const reviewedDate = new Date(`${REVIEWED_AT}T00:00:00+09:00`);
-    const nextReviewDate = new Date(reviewedDate.getTime() + REVIEW_INTERVAL_DAYS * 86400000);
+    const nextScheduledReview = date => {
+      const year=date.getFullYear(), month=date.getMonth(), day=date.getDate();
+      if(day<15)return new Date(year,month,15);
+      return new Date(year,month+1,1);
+    };
+    const nextReviewDate = nextScheduledReview(reviewedDate);
     const todayKst = new Date(new Date().toLocaleString("en-US", {timeZone:"Asia/Seoul"}));
     todayKst.setHours(0,0,0,0);
     document.getElementById("lastReviewed").textContent = formatKoreanDate(reviewedDate);
@@ -241,7 +249,7 @@
         <section class="section" id="${key}" data-group="${key}">
           <div class="section-head"><div class="section-title"><div class="section-no">${group.no}</div><div><h2>${group.title}</h2><p class="section-desc">${group.desc}</p></div></div><div class="count"><span class="visible-count">${group.rows.length}</span>개 항목</div></div>
           <div class="table-box"><table><thead><tr>${group.columns.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
-            ${group.rows.map((row,index)=>`<tr data-service-key="${key}:${index}" data-original-index="${index}" data-search="${row.join(" ").toLowerCase()}"><td class="company"><span class="rank">-</span><span class="company-name">${row[0]}</span><small class="clicks">집계 중</small></td><td class="product">${row[1]}</td><td class="country">${row[2]}</td><td><div class="tags">${row[3].split("|").map(t=>`<span class="tag ${tagClass(t)}">${t}</span>`).join("")}</div></td><td><a class="visit" data-group="${key}" data-service-key="${key}:${index}" href="${row[4]}" target="_blank" rel="noopener noreferrer">공식 사이트 ↗</a></td></tr>`).join("")}
+            ${group.rows.map((row,index)=>{const mau=key==="ai"?mauData[row[1]]:null;return `<tr data-search="${row.join(" ").toLowerCase()}"><td class="company"><span class="rank ${mau&&index<3?"top":""}">${mau?index+1:"-"}</span><span class="company-name">${row[0]}</span><small class="clicks">${key!=="ai"?"MAU 순위 미적용":mau?`MAU ${mau.label} · ${mau.asOf} · ${mau.source}`:"MAU 비공개 · 순위 제외"}</small></td><td class="product">${row[1]}</td><td class="country">${row[2]}</td><td><div class="tags">${row[3].split("|").map(t=>`<span class="tag ${tagClass(t)}">${t}</span>`).join("")}</div></td><td><a class="visit" href="${row[4]}" target="_blank" rel="noopener noreferrer">공식 사이트 ↗</a></td></tr>`}).join("")}
           </tbody></table><div class="empty">검색 조건과 일치하는 항목이 없습니다.</div></div>
           ${group.note?`<div class="note">※ ${group.note}</div>`:""}
         </section>`).join("");
@@ -255,65 +263,11 @@
 
     let active="all";
     let activeCountry="all";
-    let popularityPeriod="7";
-    let popularityRows=[];
     const allRows=Object.values(groups).flatMap(group=>group.rows);
     const countryCounts={};
     allRows.forEach(row=>row[2].split("/").forEach(country=>{country=country.trim();countryCounts[country]=(countryCounts[country]||0)+1}));
     const countryOrder=Object.keys(countryCounts).sort((a,b)=>countryCounts[b]-countryCounts[a]||a.localeCompare(b,"ko"));
     document.getElementById("countries").innerHTML=`<button class="country-filter active" data-country="all">전체 (${allRows.length})</button>${countryOrder.map(country=>`<button class="country-filter" data-country="${country}">${country} (${countryCounts[country]})</button>`).join("")}`;
-    const kstDateString=()=>new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Seoul",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
-    const getVisitorId=()=>{
-      const storageKey="ai-directory-visitor-id";
-      let id=localStorage.getItem(storageKey);
-      if(!id){id=crypto.randomUUID();localStorage.setItem(storageKey,id)}
-      return id;
-    };
-    const popularityCounts=()=>{
-      const today=new Date(`${kstDateString()}T00:00:00+09:00`);
-      const cutoff=popularityPeriod==="all"?null:new Date(today.getTime()-(Number(popularityPeriod)-1)*86400000);
-      return popularityRows.reduce((counts,row)=>{
-        const date=new Date(`${row.click_date}T00:00:00+09:00`);
-        if(!cutoff||date>=cutoff)counts[row.service_key]=(counts[row.service_key]||0)+Number(row.click_count||0);
-        return counts;
-      },{});
-    };
-    const sortByPopularity=()=>{
-      const counts=popularityCounts();
-      document.querySelectorAll(".section").forEach(section=>{
-        const tbody=section.querySelector("tbody");
-        const rows=[...tbody.querySelectorAll("tr")].sort((a,b)=>(counts[b.dataset.serviceKey]||0)-(counts[a.dataset.serviceKey]||0)||Number(a.dataset.originalIndex)-Number(b.dataset.originalIndex));
-        rows.forEach((row,index)=>{
-          tbody.appendChild(row);
-          const count=counts[row.dataset.serviceKey]||0;
-          const rank=row.querySelector(".rank");
-          rank.textContent=count?index+1:"-";
-          rank.classList.toggle("top",index<3&&count>0);
-          row.querySelector(".clicks").textContent=`${popularityPeriod==="all"?"누적":`최근 ${popularityPeriod}일`} ${count.toLocaleString("ko-KR")}회 클릭`;
-        });
-      });
-      applyFilter();
-    };
-    const loadPopularity=async()=>{
-      const status=document.getElementById("popularityStatus");
-      try{
-        const response=await fetch(`${SUPABASE_URL}/rest/v1/ai_directory_daily_counts?select=service_key,click_date,click_count&order=click_date.desc`,{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});
-        if(!response.ok)throw new Error(`HTTP ${response.status}`);
-        popularityRows=await response.json();
-        sortByPopularity();
-        status.textContent=`실시간 클릭 통계 · ${new Date().toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit"})} 갱신`;
-      }catch(error){
-        status.textContent="인기순위 연결 지연 · 기본순서 표시";
-        sortByPopularity();
-        console.warn("Popularity data unavailable",error);
-      }
-    };
-    const recordClick=async(link)=>{
-      try{
-        await fetch(`${SUPABASE_URL}/rest/v1/ai_directory_clicks`,{method:"POST",keepalive:true,headers:{apikey:SUPABASE_PUBLISHABLE_KEY,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify({service_key:link.dataset.serviceKey,group_key:link.dataset.group,visitor_id:getVisitorId()})});
-        setTimeout(loadPopularity,500);
-      }catch(error){console.warn("Click count unavailable",error)}
-    };
     const applyFilter=()=>{
       const q=document.getElementById("search").value.trim().toLowerCase();
       document.querySelectorAll(".section").forEach(section=>{
@@ -329,9 +283,6 @@
     document.getElementById("search").addEventListener("input",applyFilter);
     document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");active=btn.dataset.target;applyFilter();if(active!=="all")document.getElementById(active).scrollIntoView({behavior:"smooth",block:"start"})}));
     document.querySelectorAll(".country-filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".country-filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");activeCountry=btn.dataset.country;applyFilter()}));
-    document.querySelectorAll(".period-filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".period-filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");popularityPeriod=btn.dataset.period;sortByPopularity()}));
-    document.querySelectorAll(".visit").forEach(link=>link.addEventListener("click",()=>recordClick(link)));
-    loadPopularity();
   </script>
 </body>
 </html>
