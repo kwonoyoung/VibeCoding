@@ -537,8 +537,11 @@
       const SUPABASE_KEY = 'sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
       const ALLOWED_EMAIL = 'kwonoyoung77@gmail.com';
       const SESSION_KEY = 'person-directory-supabase-session';
+      const LOGIN_COOLDOWN_KEY = 'person-directory-login-link-cooldown';
+      const LOGIN_COOLDOWN_SECONDS = 60;
       let authSession = null;
       let authUser = null;
+      let loginCooldownTimer = null;
 
       function saveSession(session) {
         authSession = session;
@@ -555,7 +558,13 @@
         const headers = Object.assign({ apikey: SUPABASE_KEY, 'Content-Type': 'application/json' }, options.headers || {});
         const response = await fetch(`${SUPABASE_URL}/auth/v1/${path}`, Object.assign({}, options, { headers }));
         const data = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(data.msg || data.message || data.error_description || '인증 요청에 실패했습니다.');
+        if (!response.ok) {
+          const error = new Error(data.msg || data.message || data.error_description || '인증 요청에 실패했습니다.');
+          error.status = response.status;
+          error.code = data.error_code || data.code || '';
+          error.retryAfter = Number(response.headers.get('retry-after') || 0);
+          throw error;
+        }
         return data;
       }
 
@@ -990,16 +999,55 @@
         }
       }
 
+      function getLoginCooldownSeconds() {
+        const cooldownUntil = Number(localStorage.getItem(LOGIN_COOLDOWN_KEY) || 0);
+        return Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000));
+      }
+
+      function setLoginCooldown(seconds = LOGIN_COOLDOWN_SECONDS) {
+        const cooldownUntil = Date.now() + Math.max(1, Number(seconds) || LOGIN_COOLDOWN_SECONDS) * 1000;
+        localStorage.setItem(LOGIN_COOLDOWN_KEY, String(cooldownUntil));
+        updateLoginCooldown();
+      }
+
+      function updateLoginCooldown() {
+        if (loginCooldownTimer) {
+          clearTimeout(loginCooldownTimer);
+          loginCooldownTimer = null;
+        }
+        if (authUser || btnSendLoginLink.hidden) return;
+        const seconds = getLoginCooldownSeconds();
+        if (seconds > 0) {
+          btnSendLoginLink.disabled = true;
+          btnSendLoginLink.textContent = `다시 받기 (${seconds}초)`;
+          loginCooldownTimer = setTimeout(updateLoginCooldown, 1000);
+          return;
+        }
+        localStorage.removeItem(LOGIN_COOLDOWN_KEY);
+        btnSendLoginLink.disabled = false;
+        btnSendLoginLink.textContent = '관리자 로그인';
+      }
+
+      function getRateLimitSeconds(error) {
+        const match = String(error && error.message || '').match(/after\s+(\d+)\s+seconds?/i);
+        return Number(error && error.retryAfter) || (match ? Number(match[1]) : LOGIN_COOLDOWN_SECONDS);
+      }
+
+      function isRateLimitError(error) {
+        const details = `${error && error.code || ''} ${error && error.message || ''}`.toLowerCase();
+        return Number(error && error.status) === 429 || details.includes('rate limit') || details.includes('only request this after');
+      }
+
       function showSignedOut(message) {
         authUser = null;
         directoryWorkspace.hidden = false;
         btnLogout.hidden = true;
         btnSendLoginLink.hidden = false;
-        btnSendLoginLink.disabled = false;
         btnChooseFile.disabled = true;
         btnExtract.disabled = true;
         btnClear.disabled = true;
         authStatus.textContent = message || '명단은 로그인 없이 누구나 조회할 수 있습니다. 등록·갱신·삭제는 관리자만 가능합니다.';
+        updateLoginCooldown();
       }
 
       async function showSignedIn(user) {
@@ -1019,18 +1067,32 @@
       }
 
       async function sendLoginLink() {
+        const remainingSeconds = getLoginCooldownSeconds();
+        if (remainingSeconds > 0) {
+          authStatus.textContent = `로그인 링크가 이미 요청되었습니다. 받은편지함과 스팸함을 확인해 주세요. ${remainingSeconds}초 후 다시 요청할 수 있습니다.`;
+          updateLoginCooldown();
+          return;
+        }
         btnSendLoginLink.disabled = true;
         authStatus.textContent = '로그인 링크를 보내는 중입니다...';
         try {
           const redirectTo = `${location.origin}${location.pathname}`;
           await authFetch(`otp?redirect_to=${encodeURIComponent(redirectTo)}`, {
             method: 'POST',
-            body: JSON.stringify({ email: ALLOWED_EMAIL, create_user: true })
+            body: JSON.stringify({ email: ALLOWED_EMAIL, create_user: false })
           });
-          authStatus.textContent = `${ALLOWED_EMAIL}로 로그인 링크를 보냈습니다. 이메일에서 링크를 누르면 이 페이지로 돌아옵니다.`;
+          setLoginCooldown(LOGIN_COOLDOWN_SECONDS);
+          authStatus.textContent = `${ALLOWED_EMAIL}로 로그인 링크를 보냈습니다. 받은편지함 또는 스팸함의 최신 링크를 눌러 주세요.`;
         } catch (error) {
-          authStatus.textContent = `로그인 링크를 보내지 못했습니다: ${error.message}`;
-          btnSendLoginLink.disabled = false;
+          if (isRateLimitError(error)) {
+            const seconds = getRateLimitSeconds(error);
+            setLoginCooldown(seconds);
+            authStatus.textContent = `로그인 링크가 이미 발송되었거나 요청 제한 중입니다. 받은편지함과 스팸함을 확인해 주세요. 약 ${seconds}초 후 다시 요청할 수 있습니다.`;
+          } else {
+            authStatus.textContent = `로그인 링크를 보내지 못했습니다. 잠시 후 다시 시도해 주세요. (${error.message})`;
+            btnSendLoginLink.disabled = false;
+            btnSendLoginLink.textContent = '관리자 로그인';
+          }
         }
       }
 
