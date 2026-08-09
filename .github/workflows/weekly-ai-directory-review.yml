@@ -28,7 +28,7 @@ jobs:
                 repo,
                 name: label,
                 color: "0E8A16",
-                description: "Weekly review of AI, cloud and app development directory"
+                description: "Weekly review of AI, cloud, app development and AI cover directory"
               });
             }
 
@@ -59,6 +59,7 @@ jobs:
               "- [ ] 글로벌 주요 AI 기업 및 AI 에이전트 신규·변경·종료 서비스 확인",
               "- [ ] 글로벌 클라우드 서비스 기업 신규·변경·종료 서비스 확인",
               "- [ ] 웹앱 생성 AI 및 클라우드 개발 플랫폼 신규·변경·종료 서비스 확인",
+              "- [ ] AI 보이스·음악 커버 제작 플랫폼 신규·변경·종료 서비스 확인",
               "- [ ] 공식 사이트 링크 접속 여부 확인",
               "- [ ] 검토 완료 후 `REVIEWED_AT`을 실제 검토일로 변경",
               "- [ ] 공개 `ai.html`에서 최근 검토일과 다음 검토일 확인",
