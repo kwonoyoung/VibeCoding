@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <meta name="theme-color" content="#2563a8">
-  <title>역에 의한 계산기 | 공무원 경력기간 계산</title>
+  <title>경력기간 계산기 | 공무원 경력기간 계산</title>
   <style>
     :root{--bg:#f0f3f7;--card:#fff;--text:#1a2735;--sub:#536475;--muted:#748394;--line:#dce4ec;--input:#f8fafc;--primary:#3182ce;--primary-hover:#2569aa;--radio:#f1f5f9;--blue-bg:#ebf8ff;--blue-line:#bee3f8;--blue-text:#2c5282;--green-bg:#f0fff4;--green-line:#c6f6d5;--green-text:#276749;--info:#f8fafc;--alert-bg:#fff5f5;--alert:#cf3f3f;--shadow:0 22px 65px rgba(42,62,84,.12)}
     html.dark{--bg:#0b1437;--card:#111c44;--text:#f3f6fb;--sub:#b6c3d3;--muted:#8795a8;--line:#2b3674;--input:#182450;--primary:#4299e1;--primary-hover:#63b3ed;--radio:#182450;--blue-bg:#17365c;--blue-line:#2c5282;--blue-text:#c7e7ff;--green-bg:#173e35;--green-line:#276749;--green-text:#c6f6d5;--info:#182450;--alert-bg:#4a2020;--alert:#feb2b2;--shadow:0 22px 65px rgba(0,0,0,.28)}
@@ -21,12 +21,12 @@
 <body>
   <div class="top-actions"><button class="theme" id="theme-btn" type="button" aria-label="화면 테마 전환">🌙</button></div>
   <main class="container">
-    <h1 class="title">역에 의한 계산기</h1>
+    <h1 class="title">경력기간 계산기</h1>
     <p class="subtitle">공무원 경력기간 및 환산 경력을 계산합니다.</p>
     <div class="input-group">
       <span class="label">계산 구분</span>
       <div class="radio-group">
-        <label class="radio-option selected" id="opt-include"><input type="radio" name="calcType" value="include" checked>역에 의한 계산</label>
+        <label class="radio-option selected" id="opt-include"><input type="radio" name="calcType" value="include" checked>경력 계산</label>
         <label class="radio-option" id="opt-exclude"><input type="radio" name="calcType" value="exclude">퇴직일 제외</label>
       </div>
       <div class="calc-alert" id="exclude-alert">※ 퇴직일은 근무일수에서 제외합니다. (종료일 - 1일)</div>
