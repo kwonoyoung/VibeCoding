@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>엑셀 취합 방식 선택 - 오춘기 권오영</title>
+<style>
+:root {
+  --navy: #16324f;
+  --navy-deep: #0c2136;
+  --blue: #2563eb;
+  --blue-soft: #eff6ff;
+  --green: #16844a;
+  --green-soft: #eefbf3;
+  --orange: #d35a17;
+  --orange-soft: #fff5ed;
+  --purple: #7c3aed;
+  --bg: #f3f6fa;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --line: #d7e0ea;
+  --line-strong: #b7c4d2;
+  --text: #172133;
+  --muted: #65758a;
+  --shadow: 0 18px 48px rgba(22, 50, 79, 0.1);
+  --row-source-a: #dbeafe;
+  --row-source-b: #dcfce7;
+  --fixed-key: #e8eef6;
+  --fixed-value: #ffedd5;
+}
+
+html.dark {
+  color-scheme: dark;
+  --navy: #dcecff;
+  --navy-deep: #eff7ff;
+  --blue: #7db1ff;
+  --blue-soft: #152b4d;
+  --green: #73d49a;
+  --green-soft: #153628;
+  --orange: #ffad78;
+  --orange-soft: #432719;
+  --purple: #b99aff;
+  --bg: #091329;
+  --surface: #101d39;
+  --surface-2: #152544;
+  --line: #2b3e62;
+  --line-strong: #4a6087;
+  --text: #eef4ff;
+  --muted: #a8b6cc;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.34);
+  --row-source-a: #18345f;
+  --row-source-b: #16412e;
+  --fixed-key: #263a5d;
+  --fixed-value: #51301e;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 15% 0%, color-mix(in srgb, var(--blue) 9%, transparent), transparent 32rem),
+    radial-gradient(circle at 90% 15%, color-mix(in srgb, var(--orange) 8%, transparent), transparent 28rem),
+    var(--bg);
+  color: var(--text);
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+button, a { font: inherit; }
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 72px;
+  padding: 14px clamp(18px, 4vw, 52px);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 800;
+}
+.brand-mark {
+  display: grid;
+  grid-template-columns: repeat(2, 8px);
+  grid-template-rows: repeat(2, 8px);
+  gap: 2px;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--navy);
+}
+.brand-mark i { display: block; border-radius: 2px; background: #fff; }
+.header-actions { display: flex; align-items: center; gap: 9px; }
+.home-link,
+.theme-button {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+.home-link { display: inline-flex; align-items: center; padding: 0 14px; }
+.theme-button { width: 40px; cursor: pointer; }
+
+main {
+  width: min(1240px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 58px 0 64px;
+}
+.hero { max-width: 850px; margin: 0 auto; text-align: center; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 7px 12px;
+  border: 1px solid color-mix(in srgb, var(--blue) 25%, var(--line));
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 800;
+}
+.eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.hero h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(30px, 5vw, 50px);
+  line-height: 1.16;
+  letter-spacing: -1.9px;
+}
+.hero p {
+  max-width: 650px;
+  margin: 18px auto 0;
+  color: var(--muted);
+  font-size: clamp(14px, 2vw, 17px);
+  line-height: 1.75;
+}
+
+.decision-rule {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 12px;
+  margin: 36px 0 22px;
+}
+.rule-answer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  min-height: 78px;
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: 0 9px 26px rgba(22, 50, 79, 0.06);
+  text-align: center;
+}
+.rule-answer strong { display: block; color: var(--navy); font-size: 16px; line-height: 1.5; }
+.rule-answer small { display: block; margin-top: 3px; color: var(--muted); }
+.rule-answer.row .rule-icon { background: var(--green-soft); color: var(--green); }
+.rule-answer.fixed .rule-icon { background: var(--orange-soft); color: var(--orange); }
+.rule-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 900;
+}
+.rule-divider {
+  display: grid;
+  place-items: center;
+  min-width: 70px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.choice-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.choice-card:hover { transform: translateY(-3px); }
+.choice-card.row-card:hover { border-color: color-mix(in srgb, var(--green) 50%, var(--line)); }
+.choice-card.fixed-card:hover { border-color: color-mix(in srgb, var(--orange) 50%, var(--line)); }
+.choice-accent { height: 6px; }
+.row-card .choice-accent { background: linear-gradient(90deg, var(--green), var(--blue)); }
+.fixed-card .choice-accent { background: linear-gradient(90deg, var(--orange), var(--purple)); }
+.choice-head { padding: 24px 25px 17px; }
+.type-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+}
+.row-card .type-tag { color: var(--green); background: var(--green-soft); }
+.fixed-card .type-tag { color: var(--orange); background: var(--orange-soft); }
+.choice-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 13px;
+}
+.choice-title h2 { margin: 0; color: var(--navy); font-size: 25px; letter-spacing: -0.7px; }
+.choice-title p { margin: 7px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.result-badge {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+.result-badge b { display: block; margin-top: 2px; font-size: 15px; }
+.row-card .result-badge b { color: var(--green); }
+.fixed-card .result-badge b { color: var(--orange); }
+
+.flow-diagram {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) 38px minmax(0, 1.1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 250px;
+  margin: 0 20px;
+  padding: 21px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background:
+    linear-gradient(var(--surface-2), var(--surface-2)) padding-box,
+    repeating-linear-gradient(0deg, transparent 0 27px, color-mix(in srgb, var(--line) 25%, transparent) 28px) border-box;
+}
+.flow-arrow {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: 0 4px 14px rgba(22, 50, 79, 0.1);
+  font-size: 21px;
+  font-weight: 900;
+}
+.diagram-label {
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.source-files { display: grid; gap: 9px; }
+.mini-sheet {
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 5px 12px rgba(22, 50, 79, 0.07);
+}
+.mini-sheet-title {
+  padding: 5px 7px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+.mini-row {
+  display: grid;
+  grid-template-columns: 24px 1fr 0.72fr;
+  min-height: 23px;
+  border-bottom: 1px solid var(--line);
+  font-size: 9px;
+}
+.mini-row:last-child { border-bottom: 0; }
+.mini-row span {
+  display: flex;
+  align-items: center;
+  padding: 3px 5px;
+  border-right: 1px solid var(--line);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.mini-row span:last-child { border-right: 0; }
+.source-a .data-row { background: var(--row-source-a); }
+.source-b .data-row { background: var(--row-source-b); }
+.stack-result .mini-row { grid-template-columns: 24px 1fr 0.72fr; }
+.stack-result .from-a { background: var(--row-source-a); }
+.stack-result .from-b { background: var(--row-source-b); }
+.stack-brace {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 7px;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+}
+.stack-brace::before,
+.stack-brace::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.45; }
+
+.fixed-sources { display: grid; gap: 10px; }
+.answer-slip {
+  padding: 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  background: var(--surface);
+  box-shadow: 0 5px 12px rgba(22, 50, 79, 0.07);
+}
+.answer-slip strong { display: block; color: var(--muted); font-size: 9px; }
+.answer-line {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 9px;
+}
+.answer-line span { padding: 5px 6px; border-radius: 5px; background: var(--fixed-key); }
+.answer-line b { padding: 5px 6px; border-radius: 5px; background: var(--fixed-value); color: var(--orange); }
+.master-sheet .mini-row { grid-template-columns: 28px 1fr 0.85fr; }
+.master-sheet .key-cell { background: var(--fixed-key); font-weight: 700; }
+.master-sheet .filled-cell { background: var(--fixed-value); color: var(--orange); font-weight: 800; }
+.match-note {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 7px;
+  color: var(--orange);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.choice-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 20px 25px 8px;
+}
+.use-block {
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+.use-block h3 { margin: 0 0 9px; color: var(--navy); font-size: 13px; }
+.use-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.use-list li {
+  position: relative;
+  padding-left: 17px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.use-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--green);
+  font-weight: 900;
+}
+.fixed-card .use-list li::before { color: var(--orange); }
+.example-box {
+  padding: 14px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 12px;
+}
+.example-box h3 { margin: 0 0 8px; color: var(--muted); font-size: 11px; }
+.example-box strong { display: block; color: var(--navy); font-size: 13px; line-height: 1.55; }
+.choice-footer { margin-top: auto; padding: 17px 25px 25px; }
+.choice-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 50px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.choice-link:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.choice-link:focus-visible { outline: 3px solid color-mix(in srgb, var(--blue) 35%, transparent); outline-offset: 3px; }
+.row-card .choice-link { background: linear-gradient(135deg, #167947, #2563a9); }
+.fixed-card .choice-link { background: linear-gradient(135deg, #c64f13, #7c3aed); }
+.choice-link span:last-child { font-size: 19px; }
+
+.comparison {
+  margin-top: 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--surface);
+}
+.comparison-title {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+.compare-grid {
+  display: grid;
+  grid-template-columns: 0.65fr 1fr 1fr;
+}
+.compare-cell {
+  display: flex;
+  align-items: center;
+  min-height: 51px;
+  padding: 11px 15px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.compare-cell:nth-child(3n) { border-right: 0; }
+.compare-cell:nth-last-child(-n+3) { border-bottom: 0; }
+.compare-cell.label { background: var(--surface-2); color: var(--muted); font-weight: 800; }
+.compare-cell.row-value strong { color: var(--green); }
+.compare-cell.fixed-value strong { color: var(--orange); }
+
+.privacy-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.privacy-note::before { content: "🔒"; }
+
+@media (max-width: 900px) {
+  main { padding-top: 42px; }
+  .decision-rule { grid-template-columns: 1fr; }
+  .rule-divider { min-height: 30px; }
+  .choice-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .site-header { min-height: 62px; padding: 11px 14px; }
+  .home-link { display: none; }
+  main { width: min(100% - 22px, 1240px); padding: 34px 0 44px; }
+  .hero h1 { letter-spacing: -1.1px; }
+  .decision-rule { margin-top: 25px; }
+  .rule-answer { justify-content: flex-start; text-align: left; }
+  .choice-head { padding: 20px 17px 15px; }
+  .choice-title { flex-direction: column; }
+  .result-badge { text-align: left; }
+  .flow-diagram {
+    grid-template-columns: 1fr;
+    margin: 0 12px;
+    padding: 16px;
+  }
+  .flow-arrow { margin: 0 auto; transform: rotate(90deg); }
+  .choice-body { grid-template-columns: 1fr; padding: 16px 17px 4px; }
+  .choice-footer { padding: 15px 17px 20px; }
+  .compare-grid { grid-template-columns: 0.78fr 1fr 1fr; }
+  .compare-cell { padding: 9px 8px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <span>오춘기 권오영 · 엑셀 취합</span>
+  </a>
+  <div class="header-actions">
+    <a class="home-link" href="index.html">오춘기 권오영 홈</a>
+    <button class="theme-button" id="themeButton" type="button" aria-label="다크 모드 전환">🌙</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">취합 방식부터 선택하세요</div>
+    <h1>제출받은 파일,<br>어떤 방식으로 합칠까요?</h1>
+    <p>결과 파일의 <strong>행 수가 늘어나는지</strong>, 기존 행 수를 유지한 채 <strong>정해진 칸만 채우는지</strong>를 보면 바로 선택할 수 있습니다.</p>
+  </section>
+
+  <section class="decision-rule" aria-label="빠른 선택 기준">
+    <div class="rule-answer row">
+      <span class="rule-icon" aria-hidden="true">↧</span>
+      <span><strong>여러 파일의 행을 아래로 계속 쌓는다</strong><small>결과 행 수가 늘어남</small></span>
+    </div>
+    <div class="rule-divider">둘 중 하나</div>
+    <div class="rule-answer fixed">
+      <span class="rule-icon" aria-hidden="true">⌖</span>
+      <span><strong>기준 목록의 같은 행을 찾아 값만 채운다</strong><small>결과 행 수가 그대로</small></span>
+    </div>
+  </section>
+
+  <section class="choice-grid" aria-label="엑셀 취합 도구 선택">
+    <article class="choice-card row-card">
+      <div class="choice-accent"></div>
+      <div class="choice-head">
+        <span class="type-tag">↧ 행을 이어 붙이는 방식</span>
+        <div class="choice-title">
+          <div>
+            <h2>행 추가형 취합</h2>
+            <p>학교별 표 내용을 한 시트 아래쪽으로 차례로 연결합니다.</p>
+          </div>
+          <div class="result-badge">결과 행 수<b>증가 ↑</b></div>
+        </div>
+      </div>
+
+      <div class="flow-diagram" role="img" aria-label="학교 A와 학교 B의 여러 행이 결과 파일 아래로 이어 붙는 그림">
+        <div>
+          <div class="diagram-label">학교별 제출 파일</div>
+          <div class="source-files">
+            <div class="mini-sheet source-a">
+              <div class="mini-sheet-title">학교 A.xlsx</div>
+              <div class="mini-row data-row"><span>1</span><span>도서 구입</span><span>120,000</span></div>
+              <div class="mini-row data-row"><span>2</span><span>교구 구입</span><span>80,000</span></div>
+            </div>
+            <div class="mini-sheet source-b">
+              <div class="mini-sheet-title">학교 B.xlsx</div>
+              <div class="mini-row data-row"><span>1</span><span>수리 비용</span><span>95,000</span></div>
+              <div class="mini-row data-row"><span>2</span><span>운영 용품</span><span>40,000</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div>
+          <div class="diagram-label">취합 결과.xlsx</div>
+          <div class="mini-sheet stack-result">
+            <div class="mini-sheet-title">전체 학교 자료</div>
+            <div class="mini-row from-a"><span>1</span><span>도서 구입</span><span>120,000</span></div>
+            <div class="mini-row from-a"><span>2</span><span>교구 구입</span><span>80,000</span></div>
+            <div class="mini-row from-b"><span>3</span><span>수리 비용</span><span>95,000</span></div>
+            <div class="mini-row from-b"><span>4</span><span>운영 용품</span><span>40,000</span></div>
+          </div>
+          <div class="stack-brace">A 다음에 B 행 추가</div>
+        </div>
+      </div>
+
+      <div class="choice-body">
+        <div class="use-block">
+          <h3>이런 파일이면 선택</h3>
+          <ul class="use-list">
+            <li>학교마다 제출 행 수가 다름</li>
+            <li>모든 제출 행을 한 표로 모아야 함</li>
+            <li>결과에서 학교별 행이 계속 늘어남</li>
+          </ul>
+        </div>
+        <div class="example-box">
+          <h3>대표 예시</h3>
+          <strong>학교별 신청 목록<br>예산 요구 자료<br>실적·현황 제출표</strong>
+        </div>
+      </div>
+      <div class="choice-footer">
+        <a class="choice-link" href="https://gyohaeng.pages.dev/tools/common/excel_collect_merge.html" target="_blank" rel="noopener">
+          <span>행 추가형 취합 도구로 이동</span><span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </article>
+
+    <article class="choice-card fixed-card">
+      <div class="choice-accent"></div>
+      <div class="choice-head">
+        <span class="type-tag">⌖ 키로 같은 행을 찾는 방식</span>
+        <div class="choice-title">
+          <div>
+            <h2>고정 서식형 취합</h2>
+            <p>기준 목록은 그대로 두고 학교가 작성한 칸만 맞는 행에 채웁니다.</p>
+          </div>
+          <div class="result-badge">결과 행 수<b>그대로 =</b></div>
+        </div>
+      </div>
+
+      <div class="flow-diagram" role="img" aria-label="학교가 작성한 검토 결과가 문서 제목 키와 일치하는 기준 서식 행에 채워지는 그림">
+        <div>
+          <div class="diagram-label">학교가 작성한 값</div>
+          <div class="fixed-sources">
+            <div class="answer-slip">
+              <strong>학교 A.xlsx</strong>
+              <div class="answer-line"><span>문서 A2</span><b>비공개 유지</b></div>
+            </div>
+            <div class="answer-slip">
+              <strong>학교 B.xlsx</strong>
+              <div class="answer-line"><span>문서 A4</span><b>공개 전환</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-arrow" aria-hidden="true">→</div>
+        <div>
+          <div class="diagram-label">기준 서식.xlsx</div>
+          <div class="mini-sheet master-sheet">
+            <div class="mini-sheet-title">문서 목록 · 검토 결과</div>
+            <div class="mini-row"><span>1</span><span class="key-cell">문서 A1</span><span></span></div>
+            <div class="mini-row"><span>2</span><span class="key-cell">문서 A2</span><span class="filled-cell">비공개 유지</span></div>
+            <div class="mini-row"><span>3</span><span class="key-cell">문서 A3</span><span></span></div>
+            <div class="mini-row"><span>4</span><span class="key-cell">문서 A4</span><span class="filled-cell">공개 전환</span></div>
+          </div>
+          <div class="match-note"><span>A2 ↗ 2행</span><span>A4 ↗ 4행</span></div>
+        </div>
+      </div>
+
+      <div class="choice-body">
+        <div class="use-block">
+          <h3>이런 파일이면 선택</h3>
+          <ul class="use-list">
+            <li>문서 제목·등록일자 등이 이미 있음</li>
+            <li>학교는 검토 결과 같은 일부 칸만 작성</li>
+            <li>키가 같은 기존 행에 값만 넣어야 함</li>
+          </ul>
+        </div>
+        <div class="example-box">
+          <h3>대표 예시</h3>
+          <strong>비공개 사유 검토<br>문서별 확인 결과<br>기준 명단 보완 제출</strong>
+        </div>
+      </div>
+      <div class="choice-footer">
+        <a class="choice-link" href="https://gyohaeng.pages.dev/tools/common/excel_fixed_form_merge.html" target="_blank" rel="noopener">
+          <span>고정 서식형 취합 도구로 이동</span><span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </article>
+  </section>
+
+  <section class="comparison" aria-labelledby="comparisonTitle">
+    <div class="comparison-title" id="comparisonTitle">한눈에 다시 비교</div>
+    <div class="compare-grid">
+      <div class="compare-cell label">구분</div>
+      <div class="compare-cell row-value"><strong>행 추가형</strong></div>
+      <div class="compare-cell fixed-value"><strong>고정 서식형</strong></div>
+
+      <div class="compare-cell label">결과 행 수</div>
+      <div class="compare-cell row-value"><strong>계속 늘어남 ↑</strong></div>
+      <div class="compare-cell fixed-value"><strong>그대로 유지 =</strong></div>
+
+      <div class="compare-cell label">자료가 들어갈 곳</div>
+      <div class="compare-cell">마지막 행 아래</div>
+      <div class="compare-cell">키가 같은 기존 행</div>
+
+      <div class="compare-cell label">사용자가 정할 것</div>
+      <div class="compare-cell">첫 데이터 행·끝 확인 열</div>
+      <div class="compare-cell">키 열·취합할 열</div>
+    </div>
+  </section>
+
+  <div class="privacy-note">두 도구 모두 파일을 서버로 보내지 않고 브라우저에서 처리합니다.</div>
+</main>
+
+<script>
+function syncThemeButton() {
+  document.getElementById("themeButton").textContent =
+    document.documentElement.classList.contains("dark") ? "☀️" : "🌙";
+}
+
+function initializeTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.classList.toggle("dark", savedTheme === "dark" || (!savedTheme && prefersDark));
+  syncThemeButton();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initializeTheme();
+  document.getElementById("themeButton").addEventListener("click", () => {
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    syncThemeButton();
+  });
+});
+</script>
+<div id="vibecoding-webdesign-credit">Web design by Kwon O Young.</div>
+<style id="vibecoding-home-style" data-vibecoding-home="persistent">
+  #vibecoding-webdesign-credit{padding:18px 16px 76px;text-align:center;color:#6b7280;font:700 12px/1.4 "Malgun Gothic",sans-serif}
+  #vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;letter-spacing:-.02em;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+  #vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75;box-shadow:0 14px 32px rgba(0,0,0,.24)}
+  #vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
+  @media(max-width:640px){#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
+  @media print{#vibecoding-home-btn,#vibecoding-webdesign-credit{display:none!important}}
+</style>
+<a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
+<script src="./latest-home-nav.js?v=20260811-excelmerge" data-vibecoding-latest-home="1"></script>
+</body>
+</html>
