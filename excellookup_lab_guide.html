@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>엑셀 데이터 비교 도구 사용 설명서 - 오춘기 권오영</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-sub: #4b5563;
+            --border-color: #e2e8f0;
+            --accent-color: #2563eb;
+            --accent-soft: #eff6ff;
+            --tag-bg: #eff6ff;
+            --tag-text: #1d4ed8;
+            --info-box-bg: #f3f4f6;
+            --info-box-border: #d1d5db;
+            --highlight-line: #dbeafe;
+            --footer-bg: #f8fafc;
+            --code-bg: #f1f5f9;
+            --code-text: #0f172a;
+            --table-head-bg: #f8fafc;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+        }
+
+        html.dark {
+            --bg-color: #121826;
+            --card-bg: #1e293b;
+            --text-main: #e5edf6;
+            --text-sub: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #60a5fa;
+            --accent-soft: #172554;
+            --tag-bg: #1e3a8a;
+            --tag-text: #bfdbfe;
+            --info-box-bg: #1f2937;
+            --info-box-border: #475569;
+            --highlight-line: #1e3a8a;
+            --footer-bg: #121826;
+            --code-bg: #0f172a;
+            --code-text: #dbeafe;
+            --table-head-bg: #0f172a;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Pretendard", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.65;
+            transition: background-color 0.3s, color 0.3s;
+            word-break: keep-all;
+        }
+
+        .wrapper {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 56px 20px 64px;
+            min-height: calc(100vh - 150px);
+        }
+
+        header {
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.03em;
+            margin-bottom: 6px;
+        }
+
+        .sub-link {
+            font-size: 0.92rem;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            transition: color 0.2s, border-color 0.2s, background-color 0.2s, transform 0.2s;
+        }
+
+        .sub-link:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .sub-link-home {
+            background-color: var(--tag-bg);
+            color: var(--tag-text);
+            border-color: var(--accent-color);
+        }
+
+        .sub-link-home:hover {
+            background-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .sub-link-tool:hover {
+            background-color: var(--accent-soft);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 8px 10px;
+            border-radius: 999px;
+            color: var(--text-main);
+            transition: background-color 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+        }
+
+        .content-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .box-title {
+            font-size: 1.38rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .sub-title {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 28px;
+            margin-bottom: 12px;
+            display: inline-block;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 60%, var(--highlight-line) 60%);
+        }
+
+        .content-box .sub-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background-color: var(--tag-bg);
+            color: var(--tag-text);
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .lead {
+            color: var(--text-sub);
+            font-size: 1rem;
+        }
+
+        .def-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .def-list li {
+            margin-bottom: 12px;
+            color: var(--text-sub);
+            font-size: 1rem;
+        }
+
+        .def-list li strong {
+            color: var(--text-main);
+            font-weight: 800;
+            margin-right: 4px;
+        }
+
+        .info-box {
+            background-color: var(--info-box-bg);
+            border: 1px solid var(--info-box-border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin: 18px 0 0;
+            color: var(--text-sub);
+            font-size: 0.96rem;
+        }
+
+        .tip-list {
+            margin-top: 14px;
+            padding-left: 20px;
+            color: var(--text-sub);
+        }
+
+        .tip-list li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.88rem;
+            color: var(--code-text);
+            background: var(--code-bg);
+            padding: 3px 6px;
+            border-radius: 6px;
+            word-break: break-word;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+            margin-top: 10px;
+        }
+
+        .image-card {
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--card-bg);
+        }
+
+        .image-btn {
+            display: block;
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 0;
+            cursor: zoom-in;
+        }
+
+        .image-thumb {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 520px;
+            object-fit: contain;
+            background: var(--table-head-bg);
+        }
+
+        .image-caption {
+            padding: 14px 16px;
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .step-caption {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            background: var(--accent-soft);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .step-no {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-size: 0.82rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .summary-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 18px;
+            background: var(--card-bg);
+        }
+
+        .summary-card h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .summary-card p {
+            color: var(--text-sub);
+            font-size: 0.95rem;
+        }
+
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+        .image-modal.open {
+            display: flex;
+        }
+
+        .image-modal-dialog {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-width: 95vw;
+            max-height: 92vh;
+            overflow: auto;
+            padding: 10px;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(17, 24, 39, 0.88);
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 10px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .image-modal-img {
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: none;
+        }
+
+        .image-modal-caption {
+            margin-top: 8px;
+            font-size: 0.92rem;
+            color: var(--text-sub);
+            padding: 0 4px 4px;
+        }
+
+        footer {
+            width: 100%;
+            background-color: var(--footer-bg);
+            padding: 36px 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            margin-top: 36px;
+        }
+
+        .footer-content {
+            color: var(--text-sub);
+            font-size: 0.85rem;
+        }
+
+        .footer-content a {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        @media (max-width: 720px) {
+            .wrapper {
+                padding-top: 44px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .content-box {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 1.55rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div>
+                <h1>엑셀 데이터 비교 도구 사용 설명서</h1>
+                <div style="margin-top: 8px;">
+                    <span class="badge">상황: 왼쪽 학생 명단의 선택 열을 오른쪽 자료를 보고 채워 넣기</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <a href="index.html" class="sub-link sub-link-home">오춘기 권오영 홈</a>
+                <a href="excellookup.html" class="sub-link sub-link-tool">도구로 이동</a>
+                <button class="theme-toggle" id="theme-btn" title="다크모드 전환" aria-label="다크모드 전환">🌙</button>
+            </div>
+        </header>
+
+        <div class="content-box">
+            <h2 class="box-title">이 문서에서 하는 일</h2>
+            <p class="lead">
+                이 예제는 <strong>왼쪽의 전체 학생 명단</strong>과 <strong>오른쪽의 과일을 고른 학생 명단</strong>을 비교해서,
+                왼쪽 표의 <strong>선택</strong> 열에 값을 채워 넣는 방법을 설명합니다.
+                같은 이름이 있는 경우에도 <code>고급설정</code>에서 여러 기준열을 함께 사용하면 안전하게 조회할 수 있습니다.
+            </p>
+
+            <div class="info-box">
+                <strong>핵심:</strong> 이름만으로 찾으면 동명이인 때문에 잘못 붙을 수 있습니다.
+                이 문서의 예시에서는 <strong>반, 번호, 성별, 성명</strong>을 함께 기준으로 잡아 정확도를 높입니다.
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2 class="box-title">사용 방법 (무작정 따라하기)</h2>
+            <ul class="def-list">
+                <li>1. <strong>데이터 붙여넣기:</strong> 왼쪽에는 값을 채워 넣을 표, 오른쪽에는 참조할 표를 그대로 붙여넣습니다.</li>
+                <li>2. <strong>기준열 정하기:</strong> 동명이인이 없다면 <code>[1. 무엇을 기준으로 찾을까요?]</code>에서 한 개 기준열만 골라도 됩니다.</li>
+                <li>3. <strong>동명이인 처리:</strong> 같은 이름이 있으면 <code>고급설정</code>에서 왼쪽과 오른쪽 모두 <strong>반, 번호, 성별, 성명</strong>을 같은 순서로 체크합니다.</li>
+                <li>4. <strong>가져올 열 선택:</strong> <code>[2. 오른쪽에서 가져올 데이터]</code>에서 <strong>선택(과일명)</strong>을 체크합니다.</li>
+                <li>5. <strong>조회 실행:</strong> <code>[조회 실행하기]</code>를 누르면 참조 열에 값이 채워지고, 오른쪽 표에 없는 학생은 비워 둡니다.</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>예시 결과:</strong> 오른쪽 명단에 없는 <strong>김민지</strong>는 가져오지 않으며, 오른쪽에 있는 학생만 왼쪽 선택 열에 값이 들어갑니다.
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2 class="box-title">설명 이미지</h2>
+
+            <h3 class="sub-title">문제상황</h3>
+            <div class="image-grid">
+                <div class="image-card">
+                    <button type="button" class="image-btn zoomable-image" data-src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_001.png" data-alt="왼쪽 학생 명단과 오른쪽 과일 선택 명단을 비교하는 화면" data-caption="왼쪽 학생 명단과 오른쪽 과일 선택 명단을 비교하여 왼쪽 선택 열에 데이터를 채워 넣는 상황">
+                        <img class="image-thumb" src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_001.png" alt="왼쪽 학생 명단과 오른쪽 과일 선택 명단을 비교하는 화면" loading="lazy">
+                    </button>
+                    <div class="image-caption">왼쪽의 학생 명단과 오른쪽의 과일을 고른 학생 명단을 비교하여, 왼쪽 <strong>선택</strong> 열에 데이터를 채워 넣습니다.</div>
+                </div>
+            </div>
+
+            <h3 class="sub-title">따라하기</h3>
+            <div class="image-grid">
+                <div class="image-card">
+                    <button type="button" class="image-btn zoomable-image" data-src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_002.png" data-alt="왼쪽과 오른쪽에 각각 엑셀 표를 붙여넣는 화면" data-caption="1단계: 왼쪽에는 채워 넣을 표, 오른쪽에는 자료가 있는 표를 붙여넣기">
+                        <img class="image-thumb" src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_002.png" alt="왼쪽과 오른쪽에 각각 엑셀 표를 붙여넣는 화면" loading="lazy">
+                    </button>
+                    <div class="step-caption"><span class="step-no">1</span><span><code>데이터 붙여넣기</code>에서 왼쪽에는 채워 넣을 엑셀표, 오른쪽에는 자료가 있는 엑셀표를 붙여넣습니다.</span></div>
+                </div>
+
+                <div class="image-card">
+                    <button type="button" class="image-btn zoomable-image" data-src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_003.png" data-alt="기준열과 가져올 데이터를 설정하는 화면" data-caption="2단계: 동명이인이 있어 고급설정에서 반, 번호, 성별, 성명을 함께 기준으로 선택">
+                        <img class="image-thumb" src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_003.png" alt="기준열과 가져올 데이터를 설정하는 화면" loading="lazy">
+                    </button>
+                    <div class="step-caption"><span class="step-no">2</span><span>동명이인이 없다면 <code>[1. 무엇을 기준으로 찾을까요?]</code>에서 기준열 하나만 정하면 됩니다. 이 예시에서는 김도윤이 두 명 있으므로 <code>고급설정</code>에서 왼쪽과 오른쪽 모두 <strong>반, 번호, 성별, 성명</strong>을 기준으로 체크합니다.</span></div>
+                    <div class="image-caption"><code>[2. 오른쪽에서 가져올 데이터]</code>에서는 가져올 값인 <strong>선택(과일명)</strong>을 체크합니다.</div>
+                </div>
+
+                <div class="image-card">
+                    <button type="button" class="image-btn zoomable-image" data-src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_004.png" data-alt="조회 결과가 참조 열에 반영된 화면" data-caption="3단계: 조회 실행 후 참조 열에 값을 가져오고, 오른쪽에 없는 학생은 비워 둠">
+                        <img class="image-thumb" src="https://gyohaeng.pages.dev/tools/common/images/excel_lookup_004.png" alt="조회 결과가 참조 열에 반영된 화면" loading="lazy">
+                    </button>
+                    <div class="step-caption"><span class="step-no">3</span><span><code>[조회 실행하기]</code>를 누르면 참조 부분에 값을 잘 가져온 것을 확인할 수 있습니다. 오른쪽 명단에 없던 <strong>김민지</strong>는 가져오지 않았습니다.</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-box">
+            <h2 class="box-title">이 예제에서 중요한 설정</h2>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h3>동명이인이 없을 때</h3>
+                    <p>
+                        이름처럼 양쪽에 공통으로 있는 열 하나만 선택해도 됩니다.
+                        가장 간단한 방식은 <code>[1. 무엇을 기준으로 찾을까요?]</code>에서 왼쪽 기준열과 오른쪽 기준열을 각각 하나씩 연결하는 것입니다.
+                    </p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>동명이인이 있을 때</h3>
+                    <p>
+                        이름만으로는 다른 학생과 섞일 수 있으므로 <code>고급설정</code>을 열고
+                        <strong>반, 번호, 성별, 성명</strong>처럼 여러 열을 함께 선택해야 합니다.
+                        왼쪽과 오른쪽의 기준열 개수와 순서는 같아야 합니다.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>헷갈리기 쉬운 점</strong>
+                <ul class="tip-list">
+                    <li>왼쪽 표는 결과를 만들 기준표이고, 오른쪽 표는 값을 가져올 참조표입니다.</li>
+                    <li>가져올 열은 오른쪽에서 선택합니다. 이 예시에서는 <strong>선택(과일명)</strong>입니다.</li>
+                    <li>오른쪽 표에 없는 학생은 자동으로 새로 만들지 않고, 가져오지 않은 상태로 남습니다.</li>
+                    <li>조회가 이상하면 먼저 동명이인 여부와 기준열 순서가 맞는지 확인하면 됩니다.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="image-modal" id="imageModal" aria-hidden="true">
+        <div class="image-modal-dialog">
+            <button type="button" class="image-modal-close" id="imageModalClose">닫기</button>
+            <img id="imageModalImg" class="image-modal-img" src="" alt="">
+            <p id="imageModalCaption" class="image-modal-caption"></p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Copyright © 2026 오춘기 권오영 All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const toggleBtn = document.getElementById("theme-btn");
+        const html = document.documentElement;
+        const imageModal = document.getElementById("imageModal");
+        const imageModalImg = document.getElementById("imageModalImg");
+        const imageModalCaption = document.getElementById("imageModalCaption");
+        const imageModalClose = document.getElementById("imageModalClose");
+
+        function updateThemeBtn() {
+            const isDark = html.classList.contains("dark");
+            toggleBtn.innerText = isDark ? "☀️" : "🌙";
+            toggleBtn.setAttribute("aria-label", isDark ? "라이트모드 전환" : "다크모드 전환");
+            toggleBtn.setAttribute("title", isDark ? "라이트모드 전환" : "다크모드 전환");
+        }
+
+        (function () {
+            const savedTheme = localStorage.getItem("theme");
+            const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
+                html.classList.add("dark");
+            }
+            updateThemeBtn();
+        })();
+
+        toggleBtn.addEventListener("click", () => {
+            html.classList.toggle("dark");
+            const isDark = html.classList.contains("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+            updateThemeBtn();
+        });
+
+        function openImageModal(src, alt, caption) {
+            imageModalImg.onload = () => {
+                imageModalImg.style.width = imageModalImg.naturalWidth + "px";
+            };
+            imageModalImg.src = src;
+            imageModalImg.alt = alt || "";
+            imageModalCaption.textContent = caption || alt || "";
+            imageModal.classList.add("open");
+            imageModal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeImageModal() {
+            imageModal.classList.remove("open");
+            imageModal.setAttribute("aria-hidden", "true");
+            imageModalImg.src = "";
+            imageModalImg.alt = "";
+            imageModalImg.style.width = "";
+            imageModalCaption.textContent = "";
+            document.body.style.overflow = "";
+        }
+
+        document.querySelectorAll(".zoomable-image").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                openImageModal(
+                    btn.getAttribute("data-src"),
+                    btn.getAttribute("data-alt"),
+                    btn.getAttribute("data-caption")
+                );
+            });
+        });
+
+        imageModalClose.addEventListener("click", closeImageModal);
+        imageModal.addEventListener("click", (e) => {
+            if (e.target === imageModal) {
+                closeImageModal();
+            }
+        });
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && imageModal.classList.contains("open")) {
+                closeImageModal();
+            }
+        });
+    </script>
+    <style id="vibecoding-home-style" data-vibecoding-home="persistent">
+      #vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;letter-spacing:-.02em;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+      #vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75;box-shadow:0 14px 32px rgba(0,0,0,.24)}
+      #vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
+      @media(max-width:640px){#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
+      @media print{#vibecoding-home-btn{display:none!important}}
+    </style>
+    <a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
+    <script src="./latest-home-nav.js?v=20260811-excellookup-guide" data-vibecoding-latest-home="1"></script>
+</body>
+</html>
