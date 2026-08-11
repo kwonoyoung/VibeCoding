@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고정 서식 엑셀 취합 도구 - 오춘기 권오영</title>
+
+<style>
+:root {
+  --navy: #17324d;
+  --navy-strong: #0d2236;
+  --blue: #2563eb;
+  --blue-soft: #eff6ff;
+  --green: #15803d;
+  --green-soft: #f0fdf4;
+  --orange: #c2410c;
+  --orange-soft: #fff7ed;
+  --red: #b91c1c;
+  --red-soft: #fef2f2;
+  --bg: #f3f6f9;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --line: #d6dee8;
+  --line-strong: #aab8c7;
+  --text: #172033;
+  --muted: #66758a;
+  --shadow: 0 12px 34px rgba(23, 50, 77, 0.09);
+  --key-fill: rgba(37, 99, 235, 0.13);
+  --target-fill: rgba(234, 88, 12, 0.18);
+}
+
+html.dark {
+  --navy: #d8e8ff;
+  --navy-strong: #eef6ff;
+  --blue: #7db1ff;
+  --blue-soft: #152a4d;
+  --green: #79d799;
+  --green-soft: #173628;
+  --orange: #ffad78;
+  --orange-soft: #432719;
+  --red: #ff9292;
+  --red-soft: #431f29;
+  --bg: #091329;
+  --surface: #101d39;
+  --surface-2: #152544;
+  --line: #2b3d61;
+  --line-strong: #496088;
+  --text: #edf4ff;
+  --muted: #a7b5cd;
+  --shadow: 0 16px 38px rgba(0, 0, 0, 0.32);
+  --key-fill: rgba(93, 153, 255, 0.19);
+  --target-fill: rgba(255, 141, 75, 0.22);
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+html.dark { color-scheme: dark; }
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  font-size: 14px;
+}
+button, input, select { font: inherit; }
+button { color: inherit; }
+[hidden] { display: none !important; }
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 28px;
+  background: linear-gradient(135deg, #153552 0%, #245174 100%);
+  color: #fff;
+  box-shadow: 0 3px 14px rgba(10, 31, 48, 0.2);
+}
+.app-title h1 {
+  margin: 0;
+  font-size: 23px;
+  letter-spacing: -0.5px;
+}
+.app-title p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 13px;
+}
+.header-actions { display: flex; align-items: center; gap: 9px; }
+.header-link,
+.theme-button {
+  height: 40px;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #172033;
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+}
+.header-link { display: inline-flex; align-items: center; padding: 0 15px; }
+.theme-button { width: 40px; font-size: 17px; }
+
+.step-nav {
+  display: flex;
+  overflow-x: auto;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.step-button {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: max-content;
+  padding: 14px 22px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  cursor: pointer;
+}
+.step-button.active { color: var(--blue); border-bottom-color: var(--blue); }
+.step-button.done { color: var(--green); }
+.step-number {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--line);
+  color: #fff;
+  font-size: 12px;
+}
+.step-button.active .step-number { background: var(--blue); }
+.step-button.done .step-number { background: var(--green); }
+
+main { max-width: 1600px; margin: 0 auto; }
+.panel { display: none; padding: 26px 28px 36px; }
+.panel.active { display: block; }
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 18px;
+  color: var(--navy);
+  font-size: 20px;
+  letter-spacing: -0.4px;
+}
+
+.notice {
+  margin-bottom: 14px;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  line-height: 1.65;
+}
+.notice.info { background: var(--blue-soft); border-color: color-mix(in srgb, var(--blue) 32%, var(--line)); }
+.notice.success { background: var(--green-soft); border-color: color-mix(in srgb, var(--green) 34%, var(--line)); }
+.notice.warn { background: var(--orange-soft); border-color: color-mix(in srgb, var(--orange) 32%, var(--line)); }
+.notice.danger { background: var(--red-soft); border-color: color-mix(in srgb, var(--red) 32%, var(--line)); }
+
+.upload-zone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 210px;
+  padding: 30px;
+  border: 2px dashed var(--line-strong);
+  border-radius: 17px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.upload-zone:hover,
+.upload-zone.drag {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+.upload-zone.drag { transform: translateY(-2px); }
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.upload-icon { font-size: 42px; line-height: 1; }
+.upload-copy { margin-top: 12px; color: var(--muted); line-height: 1.7; }
+.upload-copy strong { color: var(--blue); }
+.file-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 8px 13px;
+  border: 1px solid color-mix(in srgb, var(--green) 35%, var(--line));
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-weight: 700;
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 18px;
+}
+.button {
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease, opacity 0.12s ease;
+}
+.button:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.03); }
+.button:disabled { cursor: not-allowed; opacity: 0.45; }
+.button.primary { background: var(--blue); color: #fff; }
+.button.success { background: var(--green); color: #fff; }
+.button.warning { background: var(--orange); color: #fff; }
+.button.outline { background: var(--surface); border-color: var(--line-strong); color: var(--text); }
+.button.small { min-height: 32px; padding: 6px 10px; font-size: 12px; }
+
+.config-layout {
+  display: grid;
+  grid-template-columns: minmax(290px, 340px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.config-card,
+.preview-card,
+.result-card {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.config-card { position: sticky; top: 14px; padding: 18px; }
+.config-card h3,
+.preview-card h3,
+.result-card h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 16px;
+}
+.config-help {
+  margin: 8px 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+.field { display: grid; gap: 7px; margin-top: 13px; }
+.field label { font-size: 12px; font-weight: 700; color: var(--muted); }
+.field input,
+.field select {
+  width: 100%;
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+}
+.field input:focus,
+.field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 18%, transparent); }
+.range-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+.range-chip span { color: var(--muted); font-size: 12px; }
+.range-chip strong { color: var(--orange); font-family: Consolas, monospace; }
+.selection-steps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 14px;
+}
+.selection-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.selection-step:hover:not(:disabled) { border-color: var(--blue); }
+.selection-step.active {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+  color: var(--blue);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--blue) 14%, transparent);
+}
+.selection-step.complete:not(.active) { border-color: var(--green); color: var(--green); }
+.selection-step:disabled { cursor: not-allowed; opacity: 0.45; }
+.selection-step-number {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: var(--line);
+  color: #fff;
+  font-size: 11px;
+}
+.selection-step.active .selection-step-number { background: var(--blue); }
+.selection-step.complete:not(.active) .selection-step-number { background: var(--green); }
+.selection-range-list { display: grid; gap: 7px; margin-top: 10px; }
+.selection-range-list .range-chip { margin-top: 0; min-height: 40px; }
+.selection-range-list .key-range-chip strong { color: var(--blue); }
+.legend {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+.legend-item { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.legend-swatch { width: 18px; height: 14px; border: 1px solid var(--line-strong); border-radius: 3px; }
+.legend-swatch.key { background: var(--key-fill); border-color: var(--blue); }
+.legend-swatch.target { background: var(--target-fill); border-color: var(--orange); }
+.config-status { margin-top: 14px; font-size: 12px; line-height: 1.6; }
+.config-status.ok { color: var(--green); }
+.config-status.error { color: var(--red); }
+
+.preview-card { min-width: 0; overflow: hidden; }
+.preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.preview-head-copy { min-width: 0; }
+.preview-head-copy p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.preview-meta { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.worksheet-scroll {
+  max-height: 650px;
+  overflow: auto;
+  background: var(--surface);
+  user-select: none;
+}
+.worksheet {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 100%;
+  table-layout: fixed;
+  font-size: 12px;
+}
+.worksheet th,
+.worksheet td {
+  height: 29px;
+  min-width: 112px;
+  max-width: 260px;
+  padding: 5px 8px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.worksheet thead th {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  min-width: 55px;
+  height: 27px;
+  padding: 3px 6px;
+  background: var(--surface-2);
+  color: var(--muted);
+  text-align: center;
+}
+.worksheet .corner {
+  position: sticky;
+  left: 0;
+  z-index: 6;
+  min-width: 48px;
+  width: 48px;
+}
+.worksheet .row-number {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 48px;
+  width: 48px;
+  background: var(--surface-2);
+  color: var(--muted);
+  text-align: center;
+  font-weight: 400;
+}
+.worksheet td { cursor: cell; background: var(--surface); }
+.worksheet td.key-cell { background: var(--key-fill); }
+.worksheet td.target-cell { background: var(--target-fill); }
+.worksheet td.data-start { border-top: 2px solid var(--orange); }
+.worksheet td.data-end { border-bottom: 2px solid var(--red); }
+.worksheet td.drag-key-cell { outline: 2px solid var(--blue); outline-offset: -2px; }
+.worksheet td.drag-cell { outline: 2px solid var(--orange); outline-offset: -2px; }
+.worksheet td:hover { box-shadow: inset 0 0 0 2px var(--blue); }
+.worksheet.result-preview td { cursor: default; }
+.worksheet.result-preview td:hover { box-shadow: none; }
+
+.file-list { display: grid; gap: 9px; margin-top: 16px; }
+.file-block { min-width: 0; }
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+}
+.file-block.expanded .file-row { border-radius: 11px 11px 0 0; }
+.file-row.error { border-color: color-mix(in srgb, var(--red) 45%, var(--line)); background: var(--red-soft); }
+.file-row.warn { border-color: color-mix(in srgb, var(--orange) 42%, var(--line)); background: var(--orange-soft); }
+.file-icon { font-size: 21px; }
+.file-main { min-width: 0; flex: 1; }
+.file-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
+.file-detail { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 25px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.status-tag.ok { color: var(--green); background: var(--green-soft); }
+.status-tag.warn { color: var(--orange); background: var(--orange-soft); }
+.status-tag.error { color: var(--red); background: var(--red-soft); }
+.file-issue-panel {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--orange) 42%, var(--line));
+  border-top: 0;
+  border-radius: 0 0 11px 11px;
+  background: var(--surface);
+}
+.file-issue-heading {
+  padding: 10px 13px;
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: 12px;
+  font-weight: 700;
+}
+.file-issue-scroll { overflow: auto; max-height: 260px; }
+.file-issue-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.file-issue-table th,
+.file-issue-table td {
+  padding: 9px 11px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.file-issue-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface-2);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.file-issue-table tr:last-child td { border-bottom: 0; }
+.file-issue-key {
+  min-width: 280px;
+  max-width: 680px;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.55;
+}
+.issue-toggle-button { white-space: nowrap; }
+
+.option-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 14px 0;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface-2);
+}
+.option-bar label { font-weight: 700; font-size: 12px; color: var(--muted); }
+.option-bar select {
+  min-width: 190px;
+  height: 36px;
+  padding: 0 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.progress-wrap { margin-top: 15px; }
+.progress-track { height: 9px; overflow: hidden; border-radius: 999px; background: var(--line); }
+.progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--blue), var(--green)); transition: width 0.15s ease; }
+.progress-text { margin-top: 7px; color: var(--muted); font-size: 12px; text-align: center; }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.summary-card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.summary-card span { display: block; color: var(--muted); font-size: 12px; }
+.summary-card strong { display: block; margin-top: 7px; color: var(--navy); font-size: 23px; }
+.summary-card.warning strong { color: var(--orange); }
+.summary-card.danger strong { color: var(--red); }
+
+.result-grid { display: grid; grid-template-columns: minmax(360px, 0.78fr) minmax(0, 1.22fr); gap: 16px; align-items: start; }
+.result-card { overflow: hidden; }
+.result-card-head { padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.result-table-wrap { overflow: auto; max-height: 540px; }
+.result-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.result-table th,
+.result-table td { padding: 10px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.result-table th { position: sticky; top: 0; z-index: 2; background: var(--surface-2); color: var(--muted); }
+.result-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.conflict-details {
+  margin-bottom: 16px;
+  border-color: color-mix(in srgb, var(--red) 42%, var(--line));
+}
+.conflict-details .result-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--red-soft);
+}
+.conflict-details-copy p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.conflict-count {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.conflict-table-wrap { max-height: 380px; }
+.conflict-table td { line-height: 1.5; }
+.conflict-table td:first-child { min-width: 94px; }
+.conflict-table .conflict-key {
+  min-width: 180px;
+  max-width: 420px;
+  white-space: normal;
+  word-break: break-word;
+}
+.conflict-value {
+  min-width: 190px;
+  max-width: 360px;
+  white-space: normal;
+  word-break: break-word;
+}
+.conflict-value strong { display: block; color: var(--text); }
+.conflict-value span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.conflict-value.final strong { color: var(--red); }
+.conflict-location-button {
+  padding: 4px 7px;
+  border: 1px solid color-mix(in srgb, var(--red) 42%, var(--line));
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--red);
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.worksheet.result-preview td.result-conflict-cell {
+  background: var(--red-soft);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--red) 72%, transparent);
+}
+.worksheet.result-preview td.result-conflict-cell:hover {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--red) 72%, transparent);
+}
+.worksheet.result-preview td.conflict-focused {
+  outline: 3px solid var(--red);
+  outline-offset: -3px;
+}
+.empty-state { padding: 34px 18px; color: var(--muted); text-align: center; }
+
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(4, 12, 25, 0.76);
+  backdrop-filter: blur(5px);
+}
+.video-modal-dialog {
+  width: min(1080px, 100%);
+  max-height: calc(100vh - 44px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--surface);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.4);
+}
+.video-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.video-modal-title { color: var(--navy); font-size: 16px; font-weight: 800; }
+.video-player {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 132px);
+  background: #000;
+}
+body.video-modal-open { overflow: hidden; }
+
+@media (max-width: 980px) {
+  .config-layout, .result-grid { grid-template-columns: 1fr; }
+  .config-card { position: static; }
+  .summary-grid { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+}
+@media (max-width: 650px) {
+  .app-header { padding: 16px; align-items: flex-start; }
+  .app-title h1 { font-size: 19px; }
+  .app-title p { display: none; }
+  .header-link { display: none; }
+  .panel { padding: 20px 14px 30px; }
+  .step-button { padding: 12px 15px; }
+  .upload-zone { min-height: 180px; }
+  .preview-head { align-items: flex-start; flex-direction: column; }
+  .file-row { align-items: flex-start; flex-wrap: wrap; }
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="app-title">
+    <h1>고정 서식 엑셀 취합 도구</h1>
+    <p>기준 열로 같은 행을 찾아 학교가 작성한 셀만 원본 서식에 채웁니다.</p>
+  </div>
+  <div class="header-actions">
+    <a class="header-link" href="excelmerge.html">← 취합 방식 선택</a>
+    <a class="header-link" href="index.html">오춘기 권오영 홈</a>
+    <button class="theme-button" id="themeButton" type="button" aria-label="다크 모드 전환">🌙</button>
+  </div>
+</header>
+
+<nav class="step-nav" aria-label="취합 단계">
+  <button class="step-button active" id="stepNav1" type="button" onclick="goToStep(1)">
+    <span class="step-number">1</span>기준 서식
+  </button>
+  <button class="step-button" id="stepNav2" type="button" onclick="goToStep(2)">
+    <span class="step-number">2</span>매칭 영역
+  </button>
+  <button class="step-button" id="stepNav3" type="button" onclick="goToStep(3)">
+    <span class="step-number">3</span>제출 파일
+  </button>
+  <button class="step-button" id="stepNav4" type="button" onclick="goToStep(4)">
+    <span class="step-number">4</span>취합 결과
+  </button>
+</nav>
+
+<main>
+  <section class="panel active" id="panel1">
+    <h2 class="panel-title">1. 기준 서식 파일 선택</h2>
+    <div class="notice info">
+      최종 결과의 뼈대가 될 엑셀 파일을 선택하세요. 제목, 문서 정보, 셀 서식은 이 파일을 그대로 사용합니다.
+      브라우저 안에서만 처리되며 파일은 서버로 전송되지 않습니다.
+    </div>
+    <div class="upload-zone" id="templateZone">
+      <input id="templateInput" type="file" accept=".xlsx,.xls" aria-label="기준 서식 파일 선택">
+      <div>
+        <div class="upload-icon">📄</div>
+        <div class="upload-copy"><strong>클릭</strong>하거나 기준 서식을 여기로 끌어오세요.<br>.xlsx 권장 · .xls 지원</div>
+      </div>
+    </div>
+    <div id="templateFileInfo"></div>
+    <div class="button-row">
+      <button class="button outline" id="guideVideoButton" type="button" onclick="openGuideVideo()">▶ 사용법(영상)</button>
+      <button class="button primary" id="templateNextButton" type="button" disabled onclick="showStep(2)">다음: 매칭 영역 설정</button>
+    </div>
+  </section>
+
+  <section class="panel" id="panel2">
+    <h2 class="panel-title">2. 키와 작성 영역 설정</h2>
+    <div class="notice info">
+      먼저 <strong>① 키 열범위</strong>를 드래그하고, 이어서 <strong>② 취합 범위</strong>를 드래그하세요.
+      취합 범위에서 처음 클릭한 행이 첫 데이터 행이 됩니다. 필요한 경우 <strong>취합 종료 행</strong>을 입력할 수 있으며,
+      비워두면 마지막 데이터 행까지 취합합니다.
+      예: <strong>A5 → G5</strong> 선택 후 <strong>H5 → J4</strong> 선택 시 키 A:G, 취합 열 H:J, 첫 데이터 행 5.
+    </div>
+    <div class="config-layout">
+      <aside class="config-card">
+        <h3>매칭 규칙</h3>
+        <p class="config-help">제출 파일에서 작성 열에 값이 있는 행만 찾고, 키 값이 같은 기준 서식 행에 값을 넣습니다.</p>
+
+        <div class="field">
+          <label for="templateSheetSelect">취합할 시트</label>
+          <select id="templateSheetSelect" onchange="changeTemplateSheet(this.value)"></select>
+        </div>
+        <div class="selection-steps" aria-label="영역 선택 순서">
+          <button class="selection-step active" id="keySelectionButton" type="button" onclick="setSelectionMode('key')">
+            <span class="selection-step-number">1</span>키 열범위 선택
+          </button>
+          <button class="selection-step" id="targetSelectionButton" type="button" onclick="setSelectionMode('target')" disabled>
+            <span class="selection-step-number">2</span>취합 범위 선택
+          </button>
+        </div>
+        <div class="selection-range-list">
+          <div class="range-chip key-range-chip">
+            <span>키 선택</span>
+            <strong id="keyDragRangeText">선택 전</strong>
+          </div>
+          <div class="range-chip">
+            <span>취합 선택</span>
+            <strong id="targetDragRangeText">선택 전</strong>
+          </div>
+        </div>
+        <div class="field">
+          <label for="keyRangeInput">키 열 범위</label>
+          <input id="keyRangeInput" type="text" placeholder="예: A:G" spellcheck="false" autocomplete="off" oninput="updateSettingsFromInputs()">
+        </div>
+        <div class="field">
+          <label for="targetRangeInput">취합할 열 범위</label>
+          <input id="targetRangeInput" type="text" placeholder="예: H:J" spellcheck="false" autocomplete="off" oninput="updateSettingsFromInputs()">
+        </div>
+        <div class="field">
+          <label for="dataStartRowInput">첫 데이터 행</label>
+          <input id="dataStartRowInput" type="number" min="1" max="1048576" placeholder="예: 5" inputmode="numeric" oninput="updateSettingsFromInputs()">
+        </div>
+        <div class="field">
+          <label for="dataEndRowInput">취합 종료 행 (선택)</label>
+          <input id="dataEndRowInput" type="number" min="1" max="1048576" placeholder="비워두면 마지막 데이터 행" inputmode="numeric" oninput="updateSettingsFromInputs()">
+        </div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-swatch key"></span>같은 행을 찾는 키</div>
+          <div class="legend-item"><span class="legend-swatch target"></span>기준 서식에 채울 값</div>
+        </div>
+        <div class="config-status" id="configStatus">표에서 작성 영역을 선택하세요.</div>
+      </aside>
+
+      <section class="preview-card">
+        <div class="preview-head">
+          <div class="preview-head-copy">
+            <h3 id="templatePreviewTitle">서식 미리보기</h3>
+            <p id="selectionModeHint">① 같은 행을 찾는 키 열범위를 드래그하세요.</p>
+          </div>
+          <span class="preview-meta" id="templatePreviewMeta"></span>
+        </div>
+        <div class="worksheet-scroll" id="templatePreview">
+          <div class="empty-state">기준 서식을 불러오는 중입니다.</div>
+        </div>
+      </section>
+    </div>
+    <div class="button-row">
+      <button class="button outline" type="button" onclick="showStep(1)">이전</button>
+      <button class="button primary" id="settingsNextButton" type="button" disabled onclick="prepareSubmissionStep()">다음: 제출 파일 추가</button>
+    </div>
+  </section>
+
+  <section class="panel" id="panel3">
+    <h2 class="panel-title">3. 학교 제출 파일 추가</h2>
+    <div class="notice info" id="ruleSummary">매칭 규칙을 확인 중입니다.</div>
+    <div class="option-bar">
+      <label for="conflictPolicy">같은 셀에 서로 다른 값이 들어오면</label>
+      <select id="conflictPolicy" onchange="invalidateOutput()">
+        <option value="first">먼저 추가한 파일의 값 유지</option>
+        <option value="last">나중에 추가한 파일의 값으로 변경</option>
+      </select>
+      <span style="color:var(--muted);font-size:12px">충돌은 결과에서 별도로 표시됩니다.</span>
+    </div>
+    <div class="upload-zone" id="submissionZone">
+      <input id="submissionInput" type="file" accept=".xlsx,.xls" multiple aria-label="학교 제출 파일 선택">
+      <div>
+        <div class="upload-icon">📂</div>
+        <div class="upload-copy"><strong>클릭</strong>하거나 여러 제출 파일을 한 번에 끌어오세요.<br>같은 서식의 .xlsx / .xls 파일</div>
+      </div>
+    </div>
+    <div class="file-list" id="submissionFileList"></div>
+    <div class="progress-wrap" id="progressWrap" hidden>
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">처리 중</div>
+    </div>
+    <div class="button-row">
+      <button class="button outline" type="button" onclick="showStep(2)">이전</button>
+      <button class="button outline" id="clearFilesButton" type="button" disabled onclick="clearSubmissionFiles()">파일 모두 지우기</button>
+      <button class="button success" id="mergeButton" type="button" disabled onclick="startMerge()">고정 서식에 취합하기</button>
+    </div>
+  </section>
+
+  <section class="panel" id="panel4">
+    <h2 class="panel-title">4. 취합 결과</h2>
+    <div id="resultNotices"></div>
+    <div class="summary-grid">
+      <div class="summary-card"><span>처리 파일</span><strong id="statFiles">0</strong></div>
+      <div class="summary-card"><span>매칭 행</span><strong id="statRows">0</strong></div>
+      <div class="summary-card"><span>채운 셀</span><strong id="statCells">0</strong></div>
+      <div class="summary-card warning"><span>키 불일치 행</span><strong id="statUnmatched">0</strong></div>
+      <div class="summary-card danger"><span>값 충돌</span><strong id="statConflicts">0</strong></div>
+    </div>
+    <section class="result-card conflict-details" id="conflictDetails" aria-labelledby="conflictDetailsTitle" hidden>
+      <div class="result-card-head">
+        <div class="conflict-details-copy">
+          <h3 id="conflictDetailsTitle">값 충돌 상세</h3>
+          <p id="conflictPolicySummary"></p>
+        </div>
+        <span class="conflict-count" id="conflictDetailsCount">0건</span>
+      </div>
+      <div class="result-table-wrap conflict-table-wrap">
+        <table class="result-table conflict-table">
+          <thead>
+            <tr>
+              <th>결과 위치</th>
+              <th>키 값</th>
+              <th>먼저 들어온 값</th>
+              <th>나중에 들어온 값</th>
+              <th>최종 반영값</th>
+            </tr>
+          </thead>
+          <tbody id="conflictDetailsTable"></tbody>
+        </table>
+      </div>
+    </section>
+    <div class="result-grid">
+      <section class="result-card">
+        <div class="result-card-head"><h3>파일별 처리 결과</h3></div>
+        <div class="result-table-wrap">
+          <table class="result-table">
+            <thead>
+              <tr><th>파일</th><th>매칭</th><th>채운 셀</th><th>미일치</th></tr>
+            </thead>
+            <tbody id="resultFileTable"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="result-card">
+        <div class="preview-head">
+          <div class="preview-head-copy">
+            <h3>결과 미리보기</h3>
+            <p id="resultPreviewCaption"></p>
+          </div>
+        </div>
+        <div class="worksheet-scroll" id="resultPreview"></div>
+      </section>
+    </div>
+    <div class="button-row">
+      <button class="button outline" type="button" onclick="showStep(3)">제출 파일로 돌아가기</button>
+      <button class="button warning" id="issueReportButton" type="button" onclick="downloadIssueReport()">불일치·충돌 목록 다운로드</button>
+      <button class="button primary" type="button" onclick="downloadMergedWorkbook()">취합 파일 다운로드 (.xlsx)</button>
+    </div>
+  </section>
+</main>
+
+<div class="video-modal" id="guideVideoModal" hidden>
+  <div class="video-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="guideVideoTitle">
+    <div class="video-modal-header">
+      <div class="video-modal-title" id="guideVideoTitle">고정 서식 엑셀 취합 도구 사용법</div>
+      <button class="button outline small" id="guideVideoCloseButton" type="button">닫기</button>
+    </div>
+    <video class="video-player" id="guideVideoPlayer" controls preload="metadata" playsinline>
+      <source src="https://gyohaeng.pages.dev/tools/common/vid/excel_fixed_form_merge.mp4" type="video/mp4">
+      브라우저에서 영상을 재생할 수 없습니다.
+    </video>
+  </div>
+</div>
+
+<script src="xlsx.full.min.js"></script>
+<script src="https://gyohaeng.pages.dev/js/exceljs.min_4.4.0.js?v=1"></script>
+<script>
+"use strict";
+
+let templateWorkbook = null;
+let templateBytes = null;
+let templateFileName = "";
+let templateWasXls = false;
+let templateSheetIndex = 0;
+let settings = createEmptySettings();
+let currentStep = 1;
+let maxVisitedStep = 1;
+let submissionFiles = [];
+let submissionSequence = 1;
+let expandedSubmissionIssues = new Set();
+let outputWorkbook = null;
+let lastResult = null;
+let isSelecting = false;
+let selectionAnchor = null;
+let selectionFocus = null;
+let selectionMode = "key";
+let keySelectionRange = null;
+let targetSelectionRange = null;
+let guideVideoReturnFocus = null;
+
+function createEmptySettings() {
+  return {
+    dataStartRow: null,
+    dataEndRow: null,
+    keyStartCol: null,
+    keyEndCol: null,
+    targetStartCol: null,
+    targetEndCol: null
+  };
+}
+
+function hasDataEndRow(rule = settings) {
+  return rule.dataEndRow !== null && rule.dataEndRow !== undefined && rule.dataEndRow !== "";
+}
+
+function getAggregationLastRow(worksheet, rule = settings) {
+  const worksheetLastRow = Math.max(worksheet.actualRowCount || 0, worksheet.rowCount || 0);
+  return Number.isInteger(rule.dataEndRow)
+    ? Math.min(worksheetLastRow, rule.dataEndRow)
+    : worksheetLastRow;
+}
+
+function isInsideDataRowRange(row, rule = settings) {
+  return Number.isInteger(rule.dataStartRow) &&
+    row >= rule.dataStartRow &&
+    (!Number.isInteger(rule.dataEndRow) || row <= rule.dataEndRow);
+}
+
+function copyBytes(value) {
+  if (value instanceof Uint8Array) return value.slice();
+  if (value instanceof ArrayBuffer) return new Uint8Array(value.slice(0));
+  return new Uint8Array(value);
+}
+
+async function loadExcelFile(file) {
+  const raw = await file.arrayBuffer();
+  const isXls = /\.xls$/i.test(file.name) && !/\.xlsx$/i.test(file.name);
+  let bytes = new Uint8Array(raw);
+
+  if (isXls) {
+    const legacy = XLSX.read(bytes, { type: "array", cellDates: true, cellStyles: true });
+    bytes = copyBytes(XLSX.write(legacy, { bookType: "xlsx", type: "array" }));
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(copyBytes(bytes));
+  return { workbook, bytes, isXls };
+}
+
+function getTemplateSheet() {
+  return templateWorkbook ? templateWorkbook.worksheets[templateSheetIndex] || null : null;
+}
+
+function colLetter(number) {
+  let value = Number(number);
+  let result = "";
+  while (value > 0) {
+    const remainder = (value - 1) % 26;
+    result = String.fromCharCode(65 + remainder) + result;
+    value = Math.floor((value - 1) / 26);
+  }
+  return result || "?";
+}
+
+function letterToCol(value) {
+  const text = String(value || "").trim().toUpperCase();
+  if (!/^[A-Z]{1,3}$/.test(text)) return null;
+  let result = 0;
+  for (const character of text) result = result * 26 + character.charCodeAt(0) - 64;
+  return result >= 1 && result <= 16384 ? result : null;
+}
+
+function parseColumnRange(value) {
+  const match = String(value || "").trim().toUpperCase().match(/^([A-Z]{1,3})\s*:\s*([A-Z]{1,3})$/);
+  if (!match) return null;
+  const first = letterToCol(match[1]);
+  const second = letterToCol(match[2]);
+  if (!first || !second) return null;
+  return { start: Math.min(first, second), end: Math.max(first, second) };
+}
+
+function formatColumnRange(start, end) {
+  return start && end ? `${colLetter(start)}:${colLetter(end)}` : "";
+}
+
+function getCellPlainValue(cell) {
+  if (!cell) return null;
+  const value = cell.value;
+  if (value === null || value === undefined) return null;
+  if (value instanceof Date) return value;
+  if (typeof value !== "object") return value;
+  if (Object.prototype.hasOwnProperty.call(value, "result")) return value.result;
+  if (Array.isArray(value.richText)) return value.richText.map((part) => part.text || "").join("");
+  if (Object.prototype.hasOwnProperty.call(value, "text")) return value.text;
+  if (Object.prototype.hasOwnProperty.call(value, "error")) return value.error;
+  return cell.text || "";
+}
+
+function isFilled(value) {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "string") return value.trim() !== "";
+  return true;
+}
+
+function formatDisplayValue(value) {
+  if (value === null || value === undefined) return "";
+  if (value instanceof Date) {
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, "0");
+    const day = String(value.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+  if (typeof value === "boolean") return value ? "TRUE" : "FALSE";
+  return String(value);
+}
+
+function normalizeKeyPart(value) {
+  if (value === null || value === undefined) return "";
+  if (value instanceof Date) {
+    return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
+  }
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) return String(value);
+    return Number.isInteger(value) ? String(value) : String(Number(value.toPrecision(15)));
+  }
+  if (typeof value === "boolean") return value ? "true" : "false";
+  return String(value).normalize("NFC").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function buildRowKey(worksheet, rowNumber, rule = settings) {
+  const normalized = [];
+  const display = [];
+  for (let column = rule.keyStartCol; column <= rule.keyEndCol; column += 1) {
+    const plain = getCellPlainValue(worksheet.getRow(rowNumber).getCell(column));
+    normalized.push(normalizeKeyPart(plain));
+    display.push(formatDisplayValue(plain).trim());
+  }
+  if (!normalized.some((value) => value !== "")) return null;
+  return {
+    canonical: normalized.join("\u241f"),
+    display: display.join(" | ")
+  };
+}
+
+function valuesEqual(first, second) {
+  return normalizeKeyPart(first) === normalizeKeyPart(second);
+}
+
+function createConflictRecord({
+  sheet,
+  target,
+  key,
+  previousAssignment,
+  incomingValue,
+  incomingFile,
+  incomingSourceRow,
+  policy
+}) {
+  const previousDisplayValue = formatDisplayValue(previousAssignment.value);
+  const incomingDisplayValue = formatDisplayValue(incomingValue);
+  const keepsPrevious = policy === "first";
+  return {
+    sheet,
+    target,
+    key,
+    previousValue: previousDisplayValue,
+    previousFile: previousAssignment.file,
+    previousSourceRow: previousAssignment.sourceRow,
+    incomingValue: incomingDisplayValue,
+    incomingFile,
+    incomingSourceRow,
+    appliedValue: keepsPrevious ? previousDisplayValue : incomingDisplayValue,
+    appliedFile: keepsPrevious ? previousAssignment.file : incomingFile,
+    appliedSourceRow: keepsPrevious ? previousAssignment.sourceRow : incomingSourceRow
+  };
+}
+
+function buildTemplateKeyMap(worksheet, rule = settings) {
+  const map = new Map();
+  if (!worksheet || !isSettingsValid(rule)) return map;
+  const lastRow = getAggregationLastRow(worksheet, rule);
+  for (let row = rule.dataStartRow; row <= lastRow; row += 1) {
+    const key = buildRowKey(worksheet, row, rule);
+    if (!key) continue;
+    if (!map.has(key.canonical)) map.set(key.canonical, []);
+    map.get(key.canonical).push({ row, display: key.display });
+  }
+  return map;
+}
+
+function findSourceWorksheet(workbook) {
+  const templateSheet = getTemplateSheet();
+  if (!workbook || !templateSheet) return { worksheet: null, method: "none" };
+  const exact = workbook.getWorksheet(templateSheet.name);
+  if (exact) return { worksheet: exact, method: "name" };
+  const lowerName = String(templateSheet.name || "").trim().toLowerCase();
+  const loose = workbook.worksheets.find((sheet) => String(sheet.name || "").trim().toLowerCase() === lowerName);
+  if (loose) return { worksheet: loose, method: "name" };
+  const position = workbook.worksheets[templateSheetIndex];
+  return position ? { worksheet: position, method: "position" } : { worksheet: null, method: "none" };
+}
+
+function rowHasTargetData(worksheet, rowNumber, rule = settings) {
+  for (let column = rule.targetStartCol; column <= rule.targetEndCol; column += 1) {
+    if (isFilled(getCellPlainValue(worksheet.getRow(rowNumber).getCell(column)))) return true;
+  }
+  return false;
+}
+
+function analyzeWorkbook(workbook, fileName) {
+  const targetMap = buildTemplateKeyMap(getTemplateSheet());
+  const sourceMatch = findSourceWorksheet(workbook);
+  const result = {
+    fileName,
+    sourceSheetName: sourceMatch.worksheet ? sourceMatch.worksheet.name : "",
+    sheetMatchMethod: sourceMatch.method,
+    rowsWithData: 0,
+    matchedRows: 0,
+    valueCells: 0,
+    unmatchedRows: [],
+    ambiguousRows: [],
+    duplicateTemplateKeys: 0,
+    error: ""
+  };
+
+  for (const rows of targetMap.values()) {
+    if (rows.length > 1) result.duplicateTemplateKeys += 1;
+  }
+
+  if (!sourceMatch.worksheet) {
+    result.error = "기준 서식과 대응하는 시트를 찾지 못했습니다.";
+    return result;
+  }
+
+  const sourceSheet = sourceMatch.worksheet;
+  const lastRow = getAggregationLastRow(sourceSheet);
+  for (let row = settings.dataStartRow; row <= lastRow; row += 1) {
+    if (!rowHasTargetData(sourceSheet, row)) continue;
+    result.rowsWithData += 1;
+    const key = buildRowKey(sourceSheet, row);
+    const targetRows = key ? targetMap.get(key.canonical) : null;
+    if (!key || !targetRows) {
+      result.unmatchedRows.push({ row, key: key ? key.display : "(키 없음)", reason: "기준 서식에서 같은 키를 찾지 못함" });
+      continue;
+    }
+    if (targetRows.length !== 1) {
+      result.ambiguousRows.push({ row, key: key.display, reason: `기준 서식에 같은 키가 ${targetRows.length}개 있음` });
+      continue;
+    }
+    result.matchedRows += 1;
+    for (let column = settings.targetStartCol; column <= settings.targetEndCol; column += 1) {
+      if (isFilled(getCellPlainValue(sourceSheet.getRow(row).getCell(column)))) result.valueCells += 1;
+    }
+  }
+  return result;
+}
+
+function isSettingsValid(rule = settings) {
+  return Number.isInteger(rule.dataStartRow) &&
+    rule.dataStartRow >= 1 &&
+    rule.dataStartRow <= 1048576 &&
+    (!hasDataEndRow(rule) ||
+      (Number.isInteger(rule.dataEndRow) &&
+        rule.dataEndRow >= rule.dataStartRow &&
+        rule.dataEndRow <= 1048576)) &&
+    Number.isInteger(rule.keyStartCol) &&
+    Number.isInteger(rule.keyEndCol) &&
+    Number.isInteger(rule.targetStartCol) &&
+    Number.isInteger(rule.targetEndCol) &&
+    rule.keyStartCol >= 1 &&
+    rule.keyEndCol >= rule.keyStartCol &&
+    rule.targetStartCol >= 1 &&
+    rule.targetEndCol >= rule.targetStartCol &&
+    (rule.keyEndCol < rule.targetStartCol || rule.keyStartCol > rule.targetEndCol);
+}
+
+function getSettingsValidation() {
+  if (!settings.keyStartCol || !settings.keyEndCol) return { ok: false, text: "키 열 범위를 A:G 형식으로 입력하세요." };
+  if (!settings.targetStartCol || !settings.targetEndCol) return { ok: false, text: "키 선택이 완료되었습니다. 이제 취합 범위를 선택하세요." };
+  if (!settings.dataStartRow) return { ok: false, text: "취합 범위에서 첫 데이터 행을 지정하세요." };
+  if (hasDataEndRow() && (!Number.isInteger(settings.dataEndRow) || settings.dataEndRow < 1 || settings.dataEndRow > 1048576)) {
+    return { ok: false, text: "취합 종료 행은 1~1,048,576 사이의 정수로 입력하거나 비워두세요." };
+  }
+  if (hasDataEndRow() && settings.dataEndRow < settings.dataStartRow) {
+    return { ok: false, text: "취합 종료 행은 첫 데이터 행보다 같거나 커야 합니다." };
+  }
+  if (!(settings.keyEndCol < settings.targetStartCol || settings.keyStartCol > settings.targetEndCol)) {
+    return { ok: false, text: "키 열과 작성 열은 서로 겹칠 수 없습니다." };
+  }
+  const count = buildTemplateKeyMap(getTemplateSheet()).size;
+  if (!count) return { ok: false, text: "지정한 데이터 행 범위에서 키 값을 찾지 못했습니다." };
+  const rangeText = hasDataEndRow()
+    ? `${settings.dataStartRow}~${settings.dataEndRow}행`
+    : `${settings.dataStartRow}행부터 마지막 데이터 행`;
+  return { ok: true, text: `${rangeText}의 ${count.toLocaleString()}개 기준 행을 키로 매칭할 수 있습니다.` };
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function trimFileName(value, limit = 36) {
+  const text = String(value || "");
+  return text.length > limit ? text.slice(0, limit - 1) + "…" : text;
+}
+
+function renderWorksheet(worksheet, container, options = {}) {
+  container.innerHTML = "";
+  if (!worksheet) {
+    container.innerHTML = '<div class="empty-state">표시할 시트가 없습니다.</div>';
+    return;
+  }
+
+  const highlightedAddresses = new Set(options.highlightAddresses || []);
+  const maxRows = Math.min(Math.max(worksheet.actualRowCount || worksheet.rowCount || 1, settings.dataStartRow || 1), options.maxRows || 220);
+  const maxColumns = Math.min(Math.max(worksheet.actualColumnCount || worksheet.columnCount || 1, settings.targetEndCol || 1), options.maxColumns || 60);
+  const table = document.createElement("table");
+  table.className = "worksheet" + (options.selectable ? "" : " result-preview");
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const corner = document.createElement("th");
+  corner.className = "corner";
+  headerRow.appendChild(corner);
+
+  for (let column = 1; column <= maxColumns; column += 1) {
+    const th = document.createElement("th");
+    th.textContent = colLetter(column);
+    headerRow.appendChild(th);
+  }
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  for (let row = 1; row <= maxRows; row += 1) {
+    const tr = document.createElement("tr");
+    const rowHeader = document.createElement("th");
+    rowHeader.className = "row-number";
+    rowHeader.textContent = row;
+    tr.appendChild(rowHeader);
+    for (let column = 1; column <= maxColumns; column += 1) {
+      const td = document.createElement("td");
+      const value = formatDisplayValue(getCellPlainValue(worksheet.getRow(row).getCell(column)));
+      td.textContent = value;
+      td.title = value;
+      td.dataset.row = String(row);
+      td.dataset.col = String(column);
+      td.dataset.address = `${colLetter(column)}${row}`;
+      const keyHighlight = hasValidKeyRange() &&
+        (settings.dataStartRow
+          ? isInsideDataRowRange(row)
+          : isInsideStoredRange(keySelectionRange, row, column)) &&
+        column >= settings.keyStartCol && column <= settings.keyEndCol;
+      const targetHighlight = hasValidTargetRange() &&
+        isInsideDataRowRange(row) &&
+        column >= settings.targetStartCol && column <= settings.targetEndCol;
+      if (keyHighlight) td.classList.add("key-cell");
+      if (targetHighlight) td.classList.add("target-cell");
+      if (highlightedAddresses.has(td.dataset.address)) td.classList.add("result-conflict-cell");
+      if (settings.dataStartRow && row === settings.dataStartRow) td.classList.add("data-start");
+      if (Number.isInteger(settings.dataEndRow) && row === settings.dataEndRow) td.classList.add("data-end");
+      if (isInsideDragRange(row, column)) td.classList.add(selectionMode === "key" ? "drag-key-cell" : "drag-cell");
+      if (options.selectable) {
+        td.addEventListener("mousedown", beginSelection);
+        td.addEventListener("mouseenter", continueSelection);
+      }
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function isInsideDragRange(row, column) {
+  if (!selectionAnchor || !selectionFocus) return false;
+  const minRow = Math.min(selectionAnchor.row, selectionFocus.row);
+  const maxRow = Math.max(selectionAnchor.row, selectionFocus.row);
+  const minCol = Math.min(selectionAnchor.col, selectionFocus.col);
+  const maxCol = Math.max(selectionAnchor.col, selectionFocus.col);
+  return row >= minRow && row <= maxRow && column >= minCol && column <= maxCol;
+}
+
+function isInsideStoredRange(range, row, column) {
+  if (!range || !range.anchor || !range.focus) return false;
+  const minRow = Math.min(range.anchor.row, range.focus.row);
+  const maxRow = Math.max(range.anchor.row, range.focus.row);
+  const minCol = Math.min(range.anchor.col, range.focus.col);
+  const maxCol = Math.max(range.anchor.col, range.focus.col);
+  return row >= minRow && row <= maxRow && column >= minCol && column <= maxCol;
+}
+
+function hasValidKeyRange() {
+  return Number.isInteger(settings.keyStartCol) &&
+    Number.isInteger(settings.keyEndCol) &&
+    settings.keyStartCol >= 1 &&
+    settings.keyEndCol >= settings.keyStartCol;
+}
+
+function hasValidTargetRange() {
+  return Number.isInteger(settings.targetStartCol) &&
+    Number.isInteger(settings.targetEndCol) &&
+    settings.targetStartCol >= 1 &&
+    settings.targetEndCol >= settings.targetStartCol;
+}
+
+function beginSelection(event) {
+  if (event.button !== 0) return;
+  if (selectionMode === "target" && !hasValidKeyRange()) return;
+  event.preventDefault();
+  const cell = event.currentTarget;
+  isSelecting = true;
+  selectionAnchor = { row: Number(cell.dataset.row), col: Number(cell.dataset.col) };
+  selectionFocus = { ...selectionAnchor };
+  paintSelectionOnly();
+}
+
+function continueSelection(event) {
+  if (!isSelecting) return;
+  const cell = event.currentTarget;
+  selectionFocus = { row: Number(cell.dataset.row), col: Number(cell.dataset.col) };
+  paintSelectionOnly();
+}
+
+function paintSelectionOnly() {
+  document.querySelectorAll("#templatePreview td[data-row]").forEach((cell) => {
+    const row = Number(cell.dataset.row);
+    const column = Number(cell.dataset.col);
+    const selected = isInsideDragRange(row, column);
+    cell.classList.toggle("drag-key-cell", selected && selectionMode === "key");
+    cell.classList.toggle("drag-cell", selected && selectionMode === "target");
+  });
+  updateSelectionRangeText();
+}
+
+function finishSelection() {
+  if (!isSelecting || !selectionAnchor || !selectionFocus) return;
+  isSelecting = false;
+  const completedRange = {
+    anchor: { ...selectionAnchor },
+    focus: { ...selectionFocus }
+  };
+  if (selectionMode === "key") {
+    settings.keyStartCol = Math.min(selectionAnchor.col, selectionFocus.col);
+    settings.keyEndCol = Math.max(selectionAnchor.col, selectionFocus.col);
+    settings.targetStartCol = null;
+    settings.targetEndCol = null;
+    settings.dataStartRow = null;
+    settings.dataEndRow = null;
+    keySelectionRange = completedRange;
+    targetSelectionRange = null;
+    selectionMode = "target";
+  } else {
+    settings.dataStartRow = selectionAnchor.row;
+    settings.targetStartCol = Math.min(selectionAnchor.col, selectionFocus.col);
+    settings.targetEndCol = Math.max(selectionAnchor.col, selectionFocus.col);
+    targetSelectionRange = completedRange;
+  }
+  selectionAnchor = null;
+  selectionFocus = null;
+  syncSettingInputs();
+  invalidateOutput();
+  renderTemplatePreview();
+  validateSettings();
+}
+
+function formatStoredSelection(range) {
+  if (!range || !range.anchor || !range.focus) return "";
+  return `${colLetter(range.anchor.col)}${range.anchor.row}:${colLetter(range.focus.col)}${range.focus.row}`;
+}
+
+function updateSelectionRangeText() {
+  const liveText = selectionAnchor && selectionFocus
+    ? `${colLetter(selectionAnchor.col)}${selectionAnchor.row}:${colLetter(selectionFocus.col)}${selectionFocus.row}`
+    : "";
+  const keyText = selectionMode === "key" && liveText
+    ? liveText
+    : (formatStoredSelection(keySelectionRange) || formatColumnRange(settings.keyStartCol, settings.keyEndCol) || "선택 전");
+  const targetText = selectionMode === "target" && liveText
+    ? liveText
+    : (formatStoredSelection(targetSelectionRange) || formatColumnRange(settings.targetStartCol, settings.targetEndCol) || "선택 전");
+  document.getElementById("keyDragRangeText").textContent = keyText;
+  document.getElementById("targetDragRangeText").textContent = targetText;
+}
+
+function updateSelectionModeUI() {
+  const keyButton = document.getElementById("keySelectionButton");
+  const targetButton = document.getElementById("targetSelectionButton");
+  const hint = document.getElementById("selectionModeHint");
+  const keyComplete = hasValidKeyRange();
+  const targetComplete = hasValidTargetRange() && Boolean(settings.dataStartRow);
+  keyButton.classList.toggle("active", selectionMode === "key");
+  keyButton.classList.toggle("complete", keyComplete);
+  targetButton.disabled = !keyComplete;
+  targetButton.classList.toggle("active", selectionMode === "target");
+  targetButton.classList.toggle("complete", targetComplete);
+  hint.textContent = selectionMode === "key"
+    ? "① 같은 행을 찾는 키 열범위를 드래그하세요."
+    : "② 취합할 범위를 드래그하세요. 처음 클릭한 행이 첫 데이터 행이 됩니다.";
+}
+
+function setSelectionMode(mode) {
+  if (mode !== "key" && mode !== "target") return;
+  if (mode === "target" && !hasValidKeyRange()) return;
+  selectionMode = mode;
+  isSelecting = false;
+  selectionAnchor = null;
+  selectionFocus = null;
+  updateSelectionRangeText();
+  updateSelectionModeUI();
+  renderTemplatePreview();
+}
+
+function syncSettingInputs() {
+  document.getElementById("dataStartRowInput").value = settings.dataStartRow || "";
+  document.getElementById("dataEndRowInput").value = hasDataEndRow() ? settings.dataEndRow : "";
+  document.getElementById("keyRangeInput").value = formatColumnRange(settings.keyStartCol, settings.keyEndCol);
+  document.getElementById("targetRangeInput").value = formatColumnRange(settings.targetStartCol, settings.targetEndCol);
+  updateSelectionRangeText();
+  updateSelectionModeUI();
+}
+
+function updateSettingsFromInputs() {
+  const rowValue = Number(document.getElementById("dataStartRowInput").value);
+  const endRowText = document.getElementById("dataEndRowInput").value.trim();
+  const endRowValue = Number(endRowText);
+  const keyRange = parseColumnRange(document.getElementById("keyRangeInput").value);
+  const targetRange = parseColumnRange(document.getElementById("targetRangeInput").value);
+  settings.dataStartRow = Number.isInteger(rowValue) && rowValue >= 1 && rowValue <= 1048576 ? rowValue : null;
+  settings.dataEndRow = endRowText === "" ? null : endRowValue;
+  settings.keyStartCol = keyRange ? keyRange.start : null;
+  settings.keyEndCol = keyRange ? keyRange.end : null;
+  settings.targetStartCol = targetRange ? targetRange.start : null;
+  settings.targetEndCol = targetRange ? targetRange.end : null;
+  if (!hasValidKeyRange()) selectionMode = "key";
+  else if (!hasValidTargetRange()) selectionMode = "target";
+  invalidateOutput();
+  updateSelectionRangeText();
+  updateSelectionModeUI();
+  renderTemplatePreview();
+  validateSettings();
+}
+
+function validateSettings() {
+  const validation = getSettingsValidation();
+  const status = document.getElementById("configStatus");
+  status.className = "config-status " + (validation.ok ? "ok" : "error");
+  status.textContent = validation.ok ? `✓ ${validation.text}` : validation.text;
+  document.getElementById("settingsNextButton").disabled = !validation.ok;
+  return validation.ok;
+}
+
+function renderTemplatePreview() {
+  const sheet = getTemplateSheet();
+  document.getElementById("templatePreviewTitle").textContent = sheet ? sheet.name : "서식 미리보기";
+  document.getElementById("templatePreviewMeta").textContent = sheet
+    ? `${sheet.actualRowCount || sheet.rowCount || 0}행 · ${sheet.actualColumnCount || sheet.columnCount || 0}열`
+    : "";
+  renderWorksheet(sheet, document.getElementById("templatePreview"), { selectable: true });
+}
+
+function chooseInitialSheet(workbook) {
+  const select = document.getElementById("templateSheetSelect");
+  select.innerHTML = "";
+  workbook.worksheets.forEach((sheet, index) => {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = sheet.name || `시트 ${index + 1}`;
+    select.appendChild(option);
+  });
+  templateSheetIndex = 0;
+  select.value = "0";
+}
+
+function changeTemplateSheet(value) {
+  const index = Number(value);
+  if (!templateWorkbook || !Number.isInteger(index) || !templateWorkbook.worksheets[index]) return;
+  templateSheetIndex = index;
+  settings = createEmptySettings();
+  selectionMode = "key";
+  keySelectionRange = null;
+  targetSelectionRange = null;
+  selectionAnchor = null;
+  selectionFocus = null;
+  syncSettingInputs();
+  invalidateOutput();
+  renderTemplatePreview();
+  validateSettings();
+}
+
+async function handleTemplateFile(file) {
+  if (!file) return;
+  const info = document.getElementById("templateFileInfo");
+  const next = document.getElementById("templateNextButton");
+  next.disabled = true;
+  info.innerHTML = '<div class="file-badge">파일을 읽는 중...</div>';
+  try {
+    const loaded = await loadExcelFile(file);
+    if (!loaded.workbook.worksheets.length) throw new Error("워크시트가 없습니다.");
+    templateWorkbook = loaded.workbook;
+    templateBytes = copyBytes(loaded.bytes);
+    templateFileName = file.name;
+    templateWasXls = loaded.isXls;
+    settings = createEmptySettings();
+    selectionMode = "key";
+    keySelectionRange = null;
+    targetSelectionRange = null;
+    selectionAnchor = null;
+    selectionFocus = null;
+    submissionFiles = [];
+    expandedSubmissionIssues.clear();
+    outputWorkbook = null;
+    lastResult = null;
+    chooseInitialSheet(templateWorkbook);
+    syncSettingInputs();
+    renderTemplatePreview();
+    validateSettings();
+    renderSubmissionFiles();
+    const legacyText = templateWasXls ? " · .xlsx로 변환하여 처리" : "";
+    info.innerHTML = `<div class="file-badge">✓ ${escapeHtml(file.name)} · 시트 ${templateWorkbook.worksheets.length}개${legacyText}</div>`;
+    next.disabled = false;
+    maxVisitedStep = 1;
+  } catch (error) {
+    templateWorkbook = null;
+    templateBytes = null;
+    info.innerHTML = `<div class="notice danger" style="margin-top:14px">파일을 열 수 없습니다: ${escapeHtml(error.message)}</div>`;
+  }
+}
+
+function prepareSubmissionStep() {
+  if (!validateSettings()) return;
+  updateRuleSummary();
+  reanalyzeAllSubmissions();
+  showStep(3);
+}
+
+function updateRuleSummary() {
+  const sheet = getTemplateSheet();
+  const keyCount = buildTemplateKeyMap(sheet).size;
+  const rowRangeText = hasDataEndRow()
+    ? `${settings.dataStartRow}~${settings.dataEndRow}행`
+    : `${settings.dataStartRow}행부터 마지막 데이터 행까지`;
+  document.getElementById("ruleSummary").innerHTML =
+    `<strong>${escapeHtml(sheet ? sheet.name : "")}</strong> 시트 · ` +
+    `<strong>${rowRangeText}</strong> · 키 <strong>${formatColumnRange(settings.keyStartCol, settings.keyEndCol)}</strong> · ` +
+    `작성 열 <strong>${formatColumnRange(settings.targetStartCol, settings.targetEndCol)}</strong> · 기준 행 ${keyCount.toLocaleString()}개`;
+}
+
+function createSubmissionItem(file) {
+  return {
+    id: submissionSequence++,
+    file,
+    name: file.name,
+    workbook: null,
+    isXls: false,
+    status: "loading",
+    error: "",
+    analysis: null
+  };
+}
+
+async function appendSubmissionFiles(files) {
+  const validFiles = Array.from(files || []).filter((file) => /\.(xlsx|xls)$/i.test(file.name));
+  for (const file of validFiles) {
+    const item = createSubmissionItem(file);
+    submissionFiles.push(item);
+    renderSubmissionFiles();
+    try {
+      const loaded = await loadExcelFile(file);
+      item.workbook = loaded.workbook;
+      item.isXls = loaded.isXls;
+      item.analysis = analyzeWorkbook(item.workbook, item.name);
+      item.status = item.analysis.error ? "error" :
+        (item.analysis.unmatchedRows.length || item.analysis.ambiguousRows.length || item.analysis.sheetMatchMethod === "position" ? "warn" : "ok");
+      item.error = item.analysis.error || "";
+    } catch (error) {
+      item.status = "error";
+      item.error = "파일 로드 오류: " + error.message;
+    }
+    renderSubmissionFiles();
+    updateMergeButton();
+  }
+  document.getElementById("submissionInput").value = "";
+  invalidateOutput();
+}
+
+function reanalyzeAllSubmissions() {
+  for (const item of submissionFiles) {
+    if (!item.workbook) continue;
+    item.analysis = analyzeWorkbook(item.workbook, item.name);
+    item.status = item.analysis.error ? "error" :
+      (item.analysis.unmatchedRows.length || item.analysis.ambiguousRows.length || item.analysis.sheetMatchMethod === "position" ? "warn" : "ok");
+    item.error = item.analysis.error || "";
+  }
+  renderSubmissionFiles();
+  updateMergeButton();
+}
+
+function renderSubmissionFiles() {
+  const list = document.getElementById("submissionFileList");
+  list.innerHTML = "";
+  for (const item of submissionFiles) {
+    const block = document.createElement("div");
+    const analysis = item.analysis;
+    const unmatchedIssues = analysis
+      ? [
+          ...analysis.unmatchedRows.map((issue) => ({ ...issue, type: "키 불일치" })),
+          ...analysis.ambiguousRows.map((issue) => ({ ...issue, type: "중복 키" }))
+        ]
+      : [];
+    const isExpanded = unmatchedIssues.length > 0 && expandedSubmissionIssues.has(item.id);
+    block.className = "file-block" + (isExpanded ? " expanded" : "");
+
+    const row = document.createElement("div");
+    row.className = "file-row " + (item.status === "error" ? "error" : item.status === "warn" ? "warn" : "");
+    let detail = "파일 분석 중...";
+    if (item.status === "error") detail = item.error || "파일 오류";
+    else if (analysis) {
+      const sheetNote = analysis.sheetMatchMethod === "position" ? ` · 시트명 불일치로 ${analysis.sourceSheetName} 시트를 위치 기준 사용` : "";
+      detail = `작성 행 ${analysis.rowsWithData}개 · 매칭 ${analysis.matchedRows}개 · 값 ${analysis.valueCells}셀 · 미일치 ${analysis.unmatchedRows.length + analysis.ambiguousRows.length}개${sheetNote}`;
+    }
+    const statusText = item.status === "loading" ? "분석 중" : item.status === "error" ? "오류" : item.status === "warn" ? "확인 필요" : "사용 가능";
+    row.innerHTML = `
+      <span class="file-icon" aria-hidden="true">📄</span>
+      <span class="file-main">
+        <span class="file-name" title="${escapeHtml(item.name)}">${escapeHtml(trimFileName(item.name))}</span>
+        <span class="file-detail">${escapeHtml(detail)}</span>
+      </span>
+      ${unmatchedIssues.length ? `<button class="button outline small issue-toggle-button" type="button" data-issues-id="${item.id}" aria-expanded="${isExpanded}">${isExpanded ? "미일치 닫기" : `미일치 ${unmatchedIssues.length}개 보기`}</button>` : ""}
+      <span class="status-tag ${item.status === "loading" ? "warn" : item.status}">${statusText}</span>
+      <button class="button outline small" type="button" data-remove-id="${item.id}">삭제</button>`;
+    row.querySelector("[data-remove-id]").addEventListener("click", () => removeSubmissionFile(item.id));
+    const issueButton = row.querySelector("[data-issues-id]");
+    if (issueButton) issueButton.addEventListener("click", () => toggleSubmissionIssues(item.id));
+
+    block.appendChild(row);
+    if (isExpanded) {
+      const panel = document.createElement("div");
+      panel.className = "file-issue-panel";
+      panel.innerHTML = `
+        <div class="file-issue-heading">작성값이 있지만 기준 서식의 행과 연결하지 못한 항목입니다.</div>
+        <div class="file-issue-scroll">
+          <table class="file-issue-table">
+            <thead><tr><th>제출 파일 행</th><th>구분</th><th>매칭에 사용한 키 값</th><th>사유</th></tr></thead>
+            <tbody>
+              ${unmatchedIssues.map((issue) => `
+                <tr>
+                  <td>${Number(issue.row).toLocaleString()}행</td>
+                  <td>${escapeHtml(issue.type)}</td>
+                  <td class="file-issue-key">${escapeHtml(issue.key || "(키 없음)")}</td>
+                  <td>${escapeHtml(issue.reason || "")}</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>`;
+      block.appendChild(panel);
+    }
+    list.appendChild(block);
+  }
+  document.getElementById("clearFilesButton").disabled = submissionFiles.length === 0;
+}
+
+function toggleSubmissionIssues(id) {
+  if (expandedSubmissionIssues.has(id)) expandedSubmissionIssues.delete(id);
+  else expandedSubmissionIssues.add(id);
+  renderSubmissionFiles();
+}
+
+function removeSubmissionFile(id) {
+  submissionFiles = submissionFiles.filter((item) => item.id !== id);
+  expandedSubmissionIssues.delete(id);
+  invalidateOutput();
+  renderSubmissionFiles();
+  updateMergeButton();
+}
+
+function clearSubmissionFiles() {
+  submissionFiles = [];
+  expandedSubmissionIssues.clear();
+  invalidateOutput();
+  renderSubmissionFiles();
+  updateMergeButton();
+}
+
+function updateMergeButton() {
+  const ready = submissionFiles.some((item) => item.workbook && item.status !== "error" && item.analysis && item.analysis.matchedRows > 0);
+  const loading = submissionFiles.some((item) => item.status === "loading");
+  document.getElementById("mergeButton").disabled = !ready || loading || !isSettingsValid();
+}
+
+function invalidateOutput() {
+  outputWorkbook = null;
+  lastResult = null;
+  if (currentStep === 4) showStep(3);
+}
+
+function setProgress(percent, text) {
+  document.getElementById("progressWrap").hidden = false;
+  document.getElementById("progressBar").style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  document.getElementById("progressText").textContent = text;
+}
+
+function sleep(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function startMerge() {
+  const usableFiles = submissionFiles.filter((item) => item.workbook && item.status !== "error");
+  if (!usableFiles.length || !templateBytes || !validateSettings()) return;
+  document.getElementById("mergeButton").disabled = true;
+  setProgress(3, "기준 서식을 복사하는 중...");
+
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(copyBytes(templateBytes));
+    const outputSheet = workbook.worksheets[templateSheetIndex];
+    if (!outputSheet) throw new Error("결과 시트를 찾지 못했습니다.");
+    const targetMap = buildTemplateKeyMap(outputSheet);
+    const assignedCells = new Map();
+    const policy = document.getElementById("conflictPolicy").value;
+    const issues = [];
+    const conflicts = [];
+    const fileResults = [];
+    let totalMatchedRows = 0;
+    let totalWrittenCells = 0;
+    let totalUnmatchedRows = 0;
+    let totalConflicts = 0;
+
+    for (let fileIndex = 0; fileIndex < usableFiles.length; fileIndex += 1) {
+      const item = usableFiles[fileIndex];
+      const sourceMatch = findSourceWorksheet(item.workbook);
+      const sourceSheet = sourceMatch.worksheet;
+      const fileResult = { name: item.name, matchedRows: 0, writtenCells: 0, unmatchedRows: 0, conflicts: 0 };
+      if (!sourceSheet) {
+        fileResult.unmatchedRows += 1;
+        issues.push({ type: "시트 오류", file: item.name, sourceRow: "", key: "", target: "", detail: "기준 서식과 대응하는 시트를 찾지 못함" });
+        fileResults.push(fileResult);
+        continue;
+      }
+
+      const lastRow = getAggregationLastRow(sourceSheet);
+      for (let sourceRowNumber = settings.dataStartRow; sourceRowNumber <= lastRow; sourceRowNumber += 1) {
+        if (!rowHasTargetData(sourceSheet, sourceRowNumber)) continue;
+        const key = buildRowKey(sourceSheet, sourceRowNumber);
+        const targets = key ? targetMap.get(key.canonical) : null;
+
+        if (!key || !targets) {
+          fileResult.unmatchedRows += 1;
+          totalUnmatchedRows += 1;
+          issues.push({
+            type: "키 불일치",
+            file: item.name,
+            sourceRow: sourceRowNumber,
+            key: key ? key.display : "(키 없음)",
+            target: "",
+            detail: "기준 서식에서 같은 키를 찾지 못함"
+          });
+          continue;
+        }
+        if (targets.length !== 1) {
+          fileResult.unmatchedRows += 1;
+          totalUnmatchedRows += 1;
+          issues.push({
+            type: "중복 키",
+            file: item.name,
+            sourceRow: sourceRowNumber,
+            key: key.display,
+            target: targets.map((target) => target.row).join(", "),
+            detail: `기준 서식에 같은 키가 ${targets.length}개 있어 행을 확정할 수 없음`
+          });
+          continue;
+        }
+
+        const targetRowNumber = targets[0].row;
+        fileResult.matchedRows += 1;
+        totalMatchedRows += 1;
+
+        for (let column = settings.targetStartCol; column <= settings.targetEndCol; column += 1) {
+          const sourceValue = getCellPlainValue(sourceSheet.getRow(sourceRowNumber).getCell(column));
+          if (!isFilled(sourceValue)) continue;
+          const cellAddress = `${colLetter(column)}${targetRowNumber}`;
+          const previousAssignment = assignedCells.get(cellAddress);
+          if (previousAssignment && !valuesEqual(previousAssignment.value, sourceValue)) {
+            const conflict = createConflictRecord({
+              sheet: outputSheet.name,
+              target: cellAddress,
+              key: key.display,
+              previousAssignment,
+              incomingValue: sourceValue,
+              incomingFile: item.name,
+              incomingSourceRow: sourceRowNumber,
+              policy
+            });
+            fileResult.conflicts += 1;
+            totalConflicts += 1;
+            conflicts.push(conflict);
+            issues.push({
+              type: "값 충돌",
+              file: item.name,
+              sourceRow: sourceRowNumber,
+              key: key.display,
+              target: cellAddress,
+              detail: `"${conflict.previousValue}" (${conflict.previousFile}) ↔ "${conflict.incomingValue}" (${conflict.incomingFile})`,
+              previousValue: conflict.previousValue,
+              previousFile: conflict.previousFile,
+              incomingValue: conflict.incomingValue,
+              incomingFile: conflict.incomingFile,
+              appliedValue: conflict.appliedValue,
+              appliedFile: conflict.appliedFile
+            });
+            if (policy === "first") continue;
+          } else if (previousAssignment) {
+            continue;
+          }
+
+          outputSheet.getRow(targetRowNumber).getCell(column).value = sourceValue instanceof Date
+            ? new Date(sourceValue.getTime())
+            : sourceValue;
+          assignedCells.set(cellAddress, { value: sourceValue, file: item.name, sourceRow: sourceRowNumber });
+          fileResult.writtenCells += 1;
+          totalWrittenCells += 1;
+        }
+      }
+
+      fileResults.push(fileResult);
+      setProgress(10 + Math.round(((fileIndex + 1) / usableFiles.length) * 82), `${item.name} 반영 중...`);
+      await sleep(8);
+    }
+
+    outputWorkbook = workbook;
+    lastResult = {
+      fileResults,
+      issues,
+      conflicts,
+      conflictPolicy: policy,
+      stats: {
+        files: usableFiles.length,
+        matchedRows: totalMatchedRows,
+        writtenCells: totalWrittenCells,
+        unmatchedRows: totalUnmatchedRows,
+        conflicts: totalConflicts
+      }
+    };
+    setProgress(100, "취합 완료");
+    await sleep(180);
+    document.getElementById("progressWrap").hidden = true;
+    buildResultView();
+    showStep(4);
+  } catch (error) {
+    document.getElementById("progressWrap").hidden = true;
+    document.getElementById("mergeButton").disabled = false;
+    alert("취합 중 오류가 발생했습니다: " + error.message);
+    console.error(error);
+  }
+}
+
+function buildResultView() {
+  if (!lastResult || !outputWorkbook) return;
+  const stats = lastResult.stats;
+  document.getElementById("statFiles").textContent = stats.files.toLocaleString();
+  document.getElementById("statRows").textContent = stats.matchedRows.toLocaleString();
+  document.getElementById("statCells").textContent = stats.writtenCells.toLocaleString();
+  document.getElementById("statUnmatched").textContent = stats.unmatchedRows.toLocaleString();
+  document.getElementById("statConflicts").textContent = stats.conflicts.toLocaleString();
+
+  const notices = document.getElementById("resultNotices");
+  const parts = [];
+  parts.push(`<div class="notice success">기준 서식의 모양은 유지하고, 매칭된 ${stats.matchedRows.toLocaleString()}개 행에 ${stats.writtenCells.toLocaleString()}개 셀을 채웠습니다.</div>`);
+  if (stats.unmatchedRows) {
+    parts.push(`<div class="notice warn">키 불일치 ${stats.unmatchedRows.toLocaleString()}건은 결과에 반영하지 않았습니다. 자세한 내용은 불일치·충돌 목록을 내려받아 확인하세요.</div>`);
+  }
+  if (stats.conflicts) {
+    const policyText = lastResult.conflictPolicy === "last"
+      ? "나중에 추가한 파일의 값을 최종 반영했습니다."
+      : "먼저 추가한 파일의 값을 최종 유지했습니다.";
+    parts.push(`<div class="notice danger"><strong>값 충돌 ${stats.conflicts.toLocaleString()}건이 있습니다.</strong> 아래 ‘값 충돌 상세’에서 결과 셀 위치와 서로 다른 값을 확인하세요. ${policyText}</div>`);
+  }
+  notices.innerHTML = parts.join("");
+
+  const tbody = document.getElementById("resultFileTable");
+  tbody.innerHTML = lastResult.fileResults.map((item) => `
+    <tr>
+      <td title="${escapeHtml(item.name)}">${escapeHtml(trimFileName(item.name, 28))}${item.conflicts ? `<br><span style="color:var(--red)">충돌 ${item.conflicts}건</span>` : ""}</td>
+      <td class="num">${item.matchedRows.toLocaleString()}</td>
+      <td class="num">${item.writtenCells.toLocaleString()}</td>
+      <td class="num">${item.unmatchedRows.toLocaleString()}</td>
+    </tr>`).join("");
+
+  const outputSheet = outputWorkbook.worksheets[templateSheetIndex];
+  const resultRowRange = hasDataEndRow()
+    ? `${settings.dataStartRow}~${settings.dataEndRow}행`
+    : `${settings.dataStartRow}행부터 마지막 데이터 행`;
+  document.getElementById("resultPreviewCaption").textContent =
+    `${outputSheet ? outputSheet.name : ""} · ${resultRowRange} · ${formatColumnRange(settings.targetStartCol, settings.targetEndCol)} 열에 값 반영`;
+  renderWorksheet(outputSheet, document.getElementById("resultPreview"), {
+    maxRows: 220,
+    maxColumns: 60,
+    highlightAddresses: lastResult.conflicts.map((conflict) => conflict.target)
+  });
+  renderConflictDetails(lastResult.conflicts, lastResult.conflictPolicy);
+  document.getElementById("issueReportButton").disabled = lastResult.issues.length === 0;
+}
+
+function renderConflictDetails(conflicts, policy) {
+  const details = document.getElementById("conflictDetails");
+  const tbody = document.getElementById("conflictDetailsTable");
+  const conflictList = Array.isArray(conflicts) ? conflicts : [];
+  details.hidden = conflictList.length === 0;
+  tbody.innerHTML = "";
+  if (!conflictList.length) return;
+
+  document.getElementById("conflictDetailsCount").textContent = `${conflictList.length.toLocaleString()}건`;
+  document.getElementById("conflictPolicySummary").textContent = policy === "last"
+    ? "나중에 추가한 파일의 값으로 변경했습니다. 미리보기 범위 안의 결과 위치를 누르면 해당 충돌 셀로 이동합니다."
+    : "먼저 추가한 파일의 값을 유지했습니다. 미리보기 범위 안의 결과 위치를 누르면 해당 충돌 셀로 이동합니다.";
+
+  const valueCell = (value, file, sourceRow, isFinal = false) => `
+    <td class="conflict-value${isFinal ? " final" : ""}">
+      <strong>${escapeHtml(value || "(빈 값)")}</strong>
+      <span title="${escapeHtml(file)}">${escapeHtml(trimFileName(file, 32))}${sourceRow ? ` · 제출 ${Number(sourceRow).toLocaleString()}행` : ""}</span>
+    </td>`;
+
+  tbody.innerHTML = conflictList.map((conflict) => `
+    <tr>
+      <td>
+        <span title="${escapeHtml(conflict.sheet)}">${escapeHtml(trimFileName(conflict.sheet, 18))}</span><br>
+        <button class="conflict-location-button" type="button" data-conflict-target="${escapeHtml(conflict.target)}" title="${escapeHtml(conflict.sheet)} 시트 ${escapeHtml(conflict.target)} 셀 보기">${escapeHtml(conflict.target)}</button>
+      </td>
+      <td class="conflict-key">${escapeHtml(conflict.key || "(키 없음)")}</td>
+      ${valueCell(conflict.previousValue, conflict.previousFile, conflict.previousSourceRow)}
+      ${valueCell(conflict.incomingValue, conflict.incomingFile, conflict.incomingSourceRow)}
+      ${valueCell(conflict.appliedValue, conflict.appliedFile, conflict.appliedSourceRow, true)}
+    </tr>`).join("");
+
+  tbody.querySelectorAll("[data-conflict-target]").forEach((button) => {
+    button.addEventListener("click", () => focusResultConflictCell(button.dataset.conflictTarget));
+  });
+}
+
+function focusResultConflictCell(address) {
+  const preview = document.getElementById("resultPreview");
+  preview.querySelectorAll(".conflict-focused").forEach((cell) => cell.classList.remove("conflict-focused"));
+  const cell = Array.from(preview.querySelectorAll("[data-address]"))
+    .find((candidate) => candidate.dataset.address === address);
+  if (!cell) return;
+  cell.classList.add("conflict-focused");
+  cell.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+}
+
+function removeExtension(fileName) {
+  return String(fileName || "").replace(/\.[^.]+$/, "");
+}
+
+async function triggerWorkbookDownload(workbook, fileName) {
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function downloadMergedWorkbook() {
+  if (!outputWorkbook) return;
+  await triggerWorkbookDownload(outputWorkbook, `${removeExtension(templateFileName)}_고정서식_취합완료.xlsx`);
+}
+
+async function downloadIssueReport() {
+  if (!lastResult || !lastResult.issues.length) return;
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("불일치·충돌 목록");
+  sheet.columns = [
+    { header: "구분", key: "type", width: 14 },
+    { header: "파일명", key: "file", width: 42 },
+    { header: "제출 파일 행", key: "sourceRow", width: 14 },
+    { header: "키 값", key: "key", width: 58 },
+    { header: "결과 위치", key: "target", width: 15 },
+    { header: "상세", key: "detail", width: 72 }
+  ];
+  lastResult.issues.forEach((issue) => sheet.addRow(issue));
+  const header = sheet.getRow(1);
+  header.font = { bold: true, color: { argb: "FFFFFFFF" } };
+  header.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF17324D" } };
+  header.alignment = { vertical: "middle", horizontal: "center" };
+  sheet.views = [{ state: "frozen", ySplit: 1 }];
+  sheet.autoFilter = { from: "A1", to: "F1" };
+  await triggerWorkbookDownload(workbook, `${removeExtension(templateFileName)}_불일치_충돌목록.xlsx`);
+}
+
+function showStep(step) {
+  if (step === 2 && !templateWorkbook) return;
+  if (step === 3 && !validateSettings()) return;
+  if (step === 4 && (!outputWorkbook || !lastResult)) return;
+  currentStep = step;
+  maxVisitedStep = Math.max(maxVisitedStep, step);
+  document.querySelectorAll(".panel").forEach((panel) => panel.classList.remove("active"));
+  document.getElementById(`panel${step}`).classList.add("active");
+  document.querySelectorAll(".step-button").forEach((button, index) => {
+    button.classList.toggle("active", index + 1 === step);
+    button.classList.toggle("done", index + 1 < step);
+  });
+  if (step === 2) {
+    renderTemplatePreview();
+    validateSettings();
+  }
+  if (step === 3) {
+    updateRuleSummary();
+    updateMergeButton();
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function goToStep(step) {
+  if (step === 1) return showStep(1);
+  if (step === 2 && templateWorkbook) return showStep(2);
+  if (step === 3 && templateWorkbook && validateSettings()) return prepareSubmissionStep();
+  if (step === 4 && outputWorkbook && lastResult) return showStep(4);
+}
+
+function setupDropZone(zoneId, inputId, multipleHandler) {
+  const zone = document.getElementById(zoneId);
+  const input = document.getElementById(inputId);
+  ["dragenter", "dragover"].forEach((eventName) => {
+    zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.add("drag");
+    });
+  });
+  ["dragleave", "drop"].forEach((eventName) => {
+    zone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      zone.classList.remove("drag");
+    });
+  });
+  zone.addEventListener("drop", (event) => {
+    const files = event.dataTransfer ? event.dataTransfer.files : null;
+    if (!files || !files.length) return;
+    multipleHandler(files);
+  });
+  input.addEventListener("change", () => {
+    if (input.files && input.files.length) multipleHandler(input.files);
+  });
+}
+
+function syncThemeButton() {
+  document.getElementById("themeButton").textContent = document.documentElement.classList.contains("dark") ? "☀️" : "🌙";
+}
+
+function openGuideVideo() {
+  const modal = document.getElementById("guideVideoModal");
+  const player = document.getElementById("guideVideoPlayer");
+  guideVideoReturnFocus = document.activeElement;
+  modal.hidden = false;
+  document.body.classList.add("video-modal-open");
+  document.getElementById("guideVideoCloseButton").focus();
+  const playPromise = player.play();
+  if (playPromise && typeof playPromise.catch === "function") playPromise.catch(() => {});
+}
+
+function closeGuideVideo() {
+  const modal = document.getElementById("guideVideoModal");
+  const player = document.getElementById("guideVideoPlayer");
+  if (modal.hidden) return;
+  player.pause();
+  player.currentTime = 0;
+  modal.hidden = true;
+  document.body.classList.remove("video-modal-open");
+  if (guideVideoReturnFocus && typeof guideVideoReturnFocus.focus === "function") guideVideoReturnFocus.focus();
+}
+
+function initializeTheme() {
+  const saved = localStorage.getItem("theme");
+  const dark = saved === "dark" || (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  document.documentElement.classList.toggle("dark", dark);
+  syncThemeButton();
+}
+
+document.addEventListener("mouseup", finishSelection);
+document.addEventListener("DOMContentLoaded", () => {
+  initializeTheme();
+  const guideModal = document.getElementById("guideVideoModal");
+  document.getElementById("guideVideoCloseButton").addEventListener("click", closeGuideVideo);
+  guideModal.addEventListener("click", (event) => {
+    if (event.target === guideModal) closeGuideVideo();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !guideModal.hidden) closeGuideVideo();
+  });
+  document.getElementById("themeButton").addEventListener("click", () => {
+    const dark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", dark ? "dark" : "light");
+    syncThemeButton();
+  });
+  setupDropZone("templateZone", "templateInput", (files) => handleTemplateFile(files[0]));
+  setupDropZone("submissionZone", "submissionInput", appendSubmissionFiles);
+});
+</script>
+<div id="vibecoding-webdesign-credit">Web design by Kwon O Young.</div>
+<style id="vibecoding-home-style" data-vibecoding-home="persistent">
+#vibecoding-webdesign-credit{padding:18px 16px 76px;text-align:center;color:#6b7280;font:700 12px/1.4 "Malgun Gothic",sans-serif}
+#vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;letter-spacing:-.02em}
+#vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75}
+#vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
+@media(max-width:640px){#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
+@media print{#vibecoding-home-btn,#vibecoding-webdesign-credit{display:none!important}}
+</style>
+<a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
+<script src="./latest-home-nav.js?v=20260812-fixed" data-vibecoding-latest-home="1"></script>
+</body>
+</html>
