@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#2f7d43">
+  <title>공무원 급여 과다·과소 지급 소급 기간 계산기</title>
+  <style>
+    :root{--green:#2f7d43;--green2:#65ad3d;--green-soft:#eef8ec;--navy:#153149;--text:#1b2a36;--muted:#667884;--line:#dce6df;--cream:#fff4cc;--blue:#e5f0f8;--result:#fff0e3;--white:#fff;--shadow:0 20px 60px rgba(21,49,73,.10)}
+    *{box-sizing:border-box}html{font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--text);background:#f5f8f6}body{margin:0;min-height:100vh;background:radial-gradient(circle at 10% 0%,#eaf6ed 0,transparent 31%),linear-gradient(180deg,#f9fbfa 0,#f2f6f4 100%)}
+    button,input,a{font:inherit}.topbar{height:66px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(20px,calc((100vw - 1100px)/2));position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+    .home{display:inline-flex;align-items:center;gap:9px;color:var(--navy);text-decoration:none;font-size:14px;font-weight:800;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:#fff}.home:hover{border-color:#9fc4aa;background:var(--green-soft)}.brand{font-size:13px;color:var(--muted);font-weight:800}.home-icon{font-size:17px;color:var(--green)}
+    .page{width:min(1040px,calc(100% - 32px));margin:0 auto;padding:54px 0 42px}.hero{text-align:center;margin-bottom:28px}.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--green);background:var(--green-soft);border:1px solid #cfe5d2;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:900;letter-spacing:.03em}.hero h1{margin:16px auto 10px;color:var(--navy);font-size:clamp(25px,4vw,38px);line-height:1.28;letter-spacing:-.045em}.hero p{margin:0;color:var(--muted);font-size:14px;line-height:1.75}
+    .calculator{background:var(--white);border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);overflow:hidden}.version{background:linear-gradient(115deg,var(--green),var(--green2));color:#fff;text-align:center;padding:15px 18px;font-size:13px;font-weight:800;letter-spacing:.04em}.body{padding:30px}
+    .section-label{display:flex;align-items:center;gap:10px;margin:0 0 15px;color:var(--navy);font-size:16px;font-weight:900}.step{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--green);color:#fff;font-size:12px}.inputs{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:14px;margin-bottom:22px}.field{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}.field.date{background:#fffaf0}.field.years{background:#f3f8fc}.field.months{background:#f4faef}.field label{display:block;margin-bottom:9px;color:#4c606c;font-size:13px;font-weight:900}.field input{width:100%;height:47px;border:1px solid #cddbd1;border-radius:11px;background:#fff;padding:0 13px;color:var(--navy);font-size:17px;font-weight:800;outline:0}.field input:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(47,125,67,.11)}.hint{margin:7px 1px 0;color:#7b8c95;font-size:11px;line-height:1.5}
+    .actions{display:flex;justify-content:center;gap:10px;margin:0 0 28px}.button{border:0;border-radius:12px;min-width:140px;padding:13px 20px;font-weight:900;cursor:pointer}.calculate{background:linear-gradient(115deg,var(--green),#459a48);color:#fff;box-shadow:0 9px 20px rgba(47,125,67,.2)}.reset{background:#edf2ef;color:#50616b}.button:hover{transform:translateY(-1px)}
+    .results{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}.result{border:1px solid #f0d7c3;border-radius:16px;background:var(--result);padding:20px;text-align:center}.result span{display:block;color:#765f4c;font-size:12px;font-weight:900;margin-bottom:10px}.result strong{display:block;color:var(--navy);font-size:clamp(19px,3vw,26px);letter-spacing:-.03em}.result.primary strong{color:#264fd4}.message{min-height:22px;margin:14px 0 0;text-align:center;color:#b42318;font-size:12px;font-weight:800}
+    .rule{margin-top:20px;border-radius:16px;background:#f2f7f4;border:1px solid var(--line);padding:16px 18px;color:#5f7079;font-size:12px;line-height:1.75}.rule strong{color:var(--green)}.notice{margin:22px 2px 0;color:#76868f;font-size:11px;line-height:1.7;text-align:center}.footer{text-align:center;margin-top:26px;color:#4d873c;font-size:12px;font-weight:800}
+    @media(max-width:720px){.topbar{height:60px;padding:0 12px}.brand{display:none}.page{width:min(100% - 20px,1040px);padding:34px 0}.hero h1{font-size:25px}.hero p{font-size:12px}.body{padding:20px 14px}.inputs,.results{grid-template-columns:1fr}.field{padding:14px}.actions{margin-bottom:22px}.button{flex:1;min-width:0}.result{padding:16px}.version{font-size:12px}.home{font-size:13px;padding:9px 12px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="home" href="index.html" aria-label="홈으로 이동"><span class="home-icon">⌂</span> 홈으로</a>
+    <div class="brand">오춘기 권오영 업무지원 서비스</div>
+  </header>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">급여·수당 업무 도구</div>
+      <h1>공무원 급여 과다·과소 지급에 따른<br>소급 기간 계산기</h1>
+      <p>청구일과 소급 기간을 입력하면 엑셀 원본의 계산식에 따라 시작월·종료월·총개월수를 계산합니다.</p>
+    </section>
+    <section class="calculator" aria-labelledby="calculator-title">
+      <div class="version" id="calculator-title">소급 기간 계산 · 엑셀 원본 계산식 적용</div>
+      <div class="body">
+        <h2 class="section-label"><span class="step">1</span> 계산 조건 입력</h2>
+        <div class="inputs">
+          <div class="field date"><label for="claimDate">청구일</label><input id="claimDate" type="date"><p class="hint">실제 청구 기준일을 선택하세요.</p></div>
+          <div class="field years"><label for="years">소급년수</label><input id="years" type="number" min="0" max="99" step="1" inputmode="numeric" value="3"><p class="hint">0 이상의 정수로 입력</p></div>
+          <div class="field months"><label for="months">소급월수</label><input id="months" type="number" min="0" max="11" step="1" inputmode="numeric" value="0"><p class="hint">0~11개월로 입력</p></div>
+        </div>
+        <div class="actions"><button class="button calculate" id="calculate" type="button">계산하기</button><button class="button reset" id="reset" type="button">초기화</button></div>
+        <h2 class="section-label"><span class="step">2</span> 계산 결과</h2>
+        <div class="results" aria-live="polite">
+          <div class="result primary"><span>소급시작월</span><strong id="startMonth">—</strong></div>
+          <div class="result primary"><span>소급종료월</span><strong id="endMonth">—</strong></div>
+          <div class="result"><span>소급 총개월수</span><strong id="totalMonths">—</strong></div>
+        </div>
+        <p class="message" id="message"></p>
+        <div class="rule"><strong>엑셀 계산 기준</strong><br>청구일이 매월 1~16일이면 종료월은 직전 월, 17일 이후이면 종료월은 청구일이 속한 월로 계산합니다. 시작월은 입력한 총 소급개월수가 시작월과 종료월을 포함하도록 산정합니다.</div>
+        <p class="notice">이 계산기는 기간 확인을 돕는 보조 도구입니다. 실제 환수·환급 및 소급 적용 시에는 해당 기관의 최신 법령·지침과 담당 부서의 판단을 함께 확인하세요.</p>
+      </div>
+    </section>
+    <footer class="footer">2026. Program by Kwon O Young. · 오춘기 권오영</footer>
+  </main>
+  <script>
+    const claimDate=document.getElementById('claimDate');
+    const years=document.getElementById('years');
+    const months=document.getElementById('months');
+    const startMonth=document.getElementById('startMonth');
+    const endMonth=document.getElementById('endMonth');
+    const totalMonths=document.getElementById('totalMonths');
+    const message=document.getElementById('message');
+
+    function localToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+    function parseDate(value){const [y,m,d]=value.split('-').map(Number);return {y,m,d}}
+    function monthIndex(y,m){return y*12+(m-1)}
+    function fromMonthIndex(index){const y=Math.floor(index/12);const m=((index%12)+12)%12+1;return {y,m}}
+    function formatMonth(value){return `${value.y}/${String(value.m).padStart(2,'0')}`}
+    function integerValue(input){return Number(input.value)}
+
+    function calculate(){
+      message.textContent='';
+      if(!claimDate.value){message.textContent='청구일을 선택해 주세요.';return}
+      const y=integerValue(years),m=integerValue(months);
+      if(!Number.isInteger(y)||y<0||y>99){message.textContent='소급년수는 0~99 사이의 정수로 입력해 주세요.';return}
+      if(!Number.isInteger(m)||m<0||m>11){message.textContent='소급월수는 0~11 사이의 정수로 입력해 주세요.';return}
+      const total=y*12+m;
+      if(total<1){message.textContent='소급 기간은 1개월 이상 입력해 주세요.';return}
+      const date=parseDate(claimDate.value);
+      const claimIndex=monthIndex(date.y,date.m);
+      const endIndex=date.d<=16?claimIndex-1:claimIndex;
+      const startIndex=endIndex-total+1;
+      startMonth.textContent=formatMonth(fromMonthIndex(startIndex));
+      endMonth.textContent=formatMonth(fromMonthIndex(endIndex));
+      totalMonths.textContent=`${total.toLocaleString('ko-KR')}개월`;
+    }
+
+    function reset(){claimDate.value=localToday();years.value='3';months.value='0';startMonth.textContent='—';endMonth.textContent='—';totalMonths.textContent='—';message.textContent=''}
+    document.getElementById('calculate').addEventListener('click',calculate);
+    document.getElementById('reset').addEventListener('click',reset);
+    [claimDate,years,months].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')calculate()}));
+    reset();
+  </script>
+</body>
+</html>
