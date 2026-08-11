@@ -1,0 +1,3939 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>엑셀 자동 취합 도구 - 오춘기 권오영</title>
+
+
+<style>
+:root {
+  --primary: #1a3a5c;
+  --primary-strong: #0d2740;
+  --accent: #2e7d32;
+  --accent-strong: #1b5e20;
+  --accent2: #1565c0;
+  --accent2-strong: #0d47a1;
+  --warn: #e65100;
+  --danger: #c62828;
+  --bg: #f0f4f8;
+  --card: #ffffff;
+  --card-soft: #f8fbff;
+  --border: #cfd8dc;
+  --border-strong: #b0bec5;
+  --text: #212121;
+  --muted: #607d8b;
+  --shadow: 0 10px 30px rgba(26, 58, 92, 0.08);
+  --row-hl: rgba(76, 175, 80, 0.18);
+  --col-hl: rgba(21, 101, 192, 0.18);
+  --row-border: #4caf50;
+  --col-border: #1565c0;
+  --pill-bg: #edf4ff;
+  --pill-text: #1565c0;
+}
+
+html.dark {
+  --primary: #90caf9;
+  --primary-strong: #64b5f6;
+  --accent: #81c784;
+  --accent-strong: #66bb6a;
+  --accent2: #64b5f6;
+  --accent2-strong: #42a5f5;
+  --warn: #ffb74d;
+  --danger: #ef9a9a;
+  --bg: #0b1437;
+  --card: #111c44;
+  --card-soft: #16224f;
+  --border: #2b3674;
+  --border-strong: #3c4b93;
+  --text: #edf2ff;
+  --muted: #a8b3d9;
+  --shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+  --row-hl: rgba(129, 199, 132, 0.22);
+  --col-hl: rgba(100, 181, 246, 0.24);
+  --row-border: #81c784;
+  --col-border: #64b5f6;
+  --pill-bg: rgba(100, 181, 246, 0.16);
+  --pill-text: #bbdefb;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "맑은 고딕", "Malgun Gothic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+#app { max-width: 100%; min-height: 100vh; }
+button, input { font: inherit; }
+
+.app-header {
+  background: linear-gradient(135deg, var(--primary) 0%, #274b72 100%);
+  color: #fff;
+  padding: 18px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+html.dark .app-header {
+  background: linear-gradient(135deg, #13204f 0%, #1c2f6b 100%);
+}
+.app-header-main h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.app-header-main p {
+  font-size: 13px;
+  opacity: 0.88;
+  margin-top: 3px;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.home-btn {
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s ease;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+.home-btn:hover { transform: translateY(-1px); background: #fff; }
+.theme-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  transition: 0.2s ease;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+}
+.theme-btn:hover { transform: translateY(-1px); background: #fff; }
+html.dark .home-btn,
+html.dark .theme-btn {
+  background: #111c44;
+  color: #edf2ff;
+  border-color: #2b3674;
+}
+html.dark .home-btn:hover,
+html.dark .theme-btn:hover {
+  background: #1b285d;
+}
+
+.step-nav {
+  display: flex;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+}
+.step-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+}
+.step-nav-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+.step-nav-item.done { color: var(--accent); }
+.step-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--border);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-nav-item.active .step-badge { background: var(--primary); }
+.step-nav-item.done .step-badge { background: var(--accent); }
+
+.panel {
+  display: none;
+  padding: 24px 28px 30px;
+  animation: fadeIn 0.25s ease;
+}
+.panel.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.panel-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 36px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--card);
+  position: relative;
+  box-shadow: var(--shadow);
+}
+.upload-zone:hover,
+.upload-zone.drag {
+  border-color: var(--accent2);
+  background: var(--card-soft);
+}
+.upload-zone input[type=file] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.upload-icon { font-size: 40px; margin-bottom: 10px; }
+.upload-text { color: var(--muted); font-size: 14px; }
+.upload-text strong { color: var(--accent2); }
+.file-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+html.dark .file-badge {
+  background: rgba(129, 199, 132, 0.14);
+  border-color: rgba(129, 199, 132, 0.4);
+  color: #c8e6c9;
+}
+
+.settings-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--card-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+.setting-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.setting-block label {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--primary);
+}
+.info-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.info-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--accent2);
+  background: var(--pill-bg);
+  color: var(--accent2);
+  font-size: 11px;
+  font-weight: 800;
+  cursor: help;
+  user-select: none;
+}
+.info-tip::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 2px);
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: rgba(11, 20, 55, 0.92);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease;
+}
+.info-tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 12px);
+  transform: translateX(-50%);
+  min-width: 220px;
+  max-width: 280px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: rgba(11, 20, 55, 0.92);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  z-index: 6;
+}
+.info-tip:hover::before,
+.info-tip:hover::after,
+.info-tip:focus-visible::before,
+.info-tip:focus-visible::after {
+  opacity: 1;
+}
+.info-tip:hover::after,
+.info-tip:focus-visible::after {
+  transform: translateX(-50%) translateY(-2px);
+}
+.setting-val {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  min-width: 96px;
+  text-align: center;
+  font-weight: 700;
+}
+.setting-val.set-row { color: var(--accent); border-color: var(--row-border); }
+.setting-val.set-col { color: var(--accent2); border-color: var(--col-border); }
+.setting-help {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--pill-bg);
+  color: var(--pill-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+.setting-link-btn {
+  border: 1px solid var(--accent2);
+  background: var(--pill-bg);
+  color: var(--accent2);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.setting-link-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(21, 101, 192, 0.1);
+}
+html.dark .setting-link-btn {
+  background: rgba(100, 181, 246, 0.14);
+  color: #bbdefb;
+  border-color: rgba(100, 181, 246, 0.42);
+}
+.sheet-select {
+  min-width: 180px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+.sheet-select:focus {
+  outline: none;
+  border-color: var(--accent2);
+}
+.setting-input {
+  min-width: 220px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+.setting-input:focus {
+  outline: none;
+  border-color: var(--accent2);
+}
+.range-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.compact-details {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.compact-details summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+}
+.compact-details summary::-webkit-details-marker { display: none; }
+.compact-details summary::after {
+  content: "펼치기";
+  margin-left: auto;
+  color: var(--accent2);
+  font-size: 11px;
+  font-weight: 800;
+}
+.compact-details[open] summary::after { content: "접기"; }
+.compact-details summary > span:first-child {
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 800;
+}
+.compact-summary-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 12px;
+}
+.compact-details-body {
+  padding: 0 14px 14px;
+  border-top: 1px solid var(--border);
+}
+.compact-details .settings-bar {
+  margin: 12px 0 0;
+  box-shadow: none;
+  background: var(--card-soft);
+}
+.compact-sheet-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.compact-sheet-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 10px;
+  background: var(--card-soft);
+  cursor: pointer;
+}
+.compact-sheet-option.selected {
+  border-color: var(--accent2);
+  background: rgba(21, 101, 192, 0.06);
+}
+.compact-sheet-option input {
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+.compact-sheet-option span {
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 700;
+  word-break: break-all;
+}
+.sheet-target-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+.range-workspace {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.sheet-status-panel,
+.range-editor {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+.sheet-status-panel {
+  position: sticky;
+  top: 10px;
+  padding: 12px;
+}
+.sheet-status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+.sheet-status-header strong {
+  color: var(--primary);
+  font-size: 14px;
+}
+.sheet-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.sheet-setting-btn {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+.sheet-setting-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 900;
+}
+.sheet-setting-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.sheet-setting-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sheet-setting-copy small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.sheet-setting-btn.excluded { opacity: 0.62; }
+.sheet-setting-btn.configured .sheet-setting-icon {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.sheet-setting-btn.needs-setting .sheet-setting-icon {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+.range-editor { padding: 14px; }
+.range-editor-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+.current-sheet-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 150px;
+}
+.current-sheet-copy span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.current-sheet-copy strong {
+  color: var(--primary);
+  font-size: 17px;
+}
+.range-input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 8px;
+  width: min(430px, 100%);
+}
+.range-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.range-field > span {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+.range-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.range-input {
+  min-width: 0;
+  width: 100%;
+  height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-soft);
+  color: var(--text);
+  font-weight: 800;
+  text-align: center;
+}
+.range-input:focus {
+  outline: 2px solid rgba(21, 101, 192, 0.22);
+  border-color: var(--accent2);
+}
+.range-input.set-row { color: var(--accent); border-color: var(--row-border); }
+.range-input.set-col { color: var(--accent2); border-color: var(--col-border); }
+.range-input-unit { color: var(--muted); font-size: 12px; }
+.range-editor-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 10px;
+}
+.range-editor-actions .btn { padding: 7px 12px; }
+.divider-v {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+  margin: 0 4px;
+}
+.radio-group { display: flex; gap: 12px; }
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text);
+}
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+.checkbox-group input {
+  width: 16px;
+  height: 16px;
+}
+.sheet-setting-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+.sheet-select-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.sheet-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-soft);
+  padding: 12px 14px;
+  transition: 0.2s ease;
+}
+.sheet-option:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent2);
+  box-shadow: var(--shadow);
+}
+.sheet-option.selected {
+  border-color: var(--accent2);
+  background: rgba(21, 101, 192, 0.06);
+}
+.sheet-option input {
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.sheet-option-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sheet-option-title {
+  font-weight: 700;
+  color: var(--text);
+  word-break: break-all;
+}
+.sheet-option-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+.sheet-setting-btn {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-soft);
+  color: var(--text);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.sheet-setting-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent2);
+  box-shadow: var(--shadow);
+}
+.sheet-setting-btn.current {
+  border-color: var(--accent2);
+  background: rgba(21, 101, 192, 0.06);
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.08);
+}
+html.dark .sheet-setting-btn.current {
+  background: rgba(100, 181, 246, 0.12);
+}
+
+.mode-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  border-left: 4px solid var(--accent2);
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+.mode-hint.ready {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border-left-color: var(--accent);
+}
+html.dark .mode-hint {
+  background: rgba(100, 181, 246, 0.12);
+  color: #bbdefb;
+}
+html.dark .mode-hint.ready {
+  background: rgba(129, 199, 132, 0.12);
+  color: #c8e6c9;
+}
+
+.excel-wrap {
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  max-height: 520px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+.source-preview-wrap {
+  overflow: scroll;
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: auto;
+  scrollbar-color: var(--border-strong) var(--card-soft);
+}
+.source-preview-wrap .worksheet-scroll-wrap {
+  min-width: max-content;
+  min-height: 100%;
+  overflow: visible !important;
+}
+.source-preview-wrap::-webkit-scrollbar {
+  height: 14px;
+  width: 14px;
+}
+.source-preview-wrap::-webkit-scrollbar-track {
+  background: var(--card-soft);
+  border-top: 1px solid var(--border);
+}
+.source-preview-wrap::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+.source-preview-wrap::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+  background-clip: padding-box;
+}
+.excel-table { border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+.excel-table th {
+  background: #eceff1;
+  border: 1px solid #b0bec5;
+  padding: 3px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  white-space: nowrap;
+}
+.excel-table th.row-hdr {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 38px;
+}
+.excel-table td {
+  border: 1px solid #e0e0e0;
+  padding: 2px 4px;
+  min-height: 20px;
+  height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  background: var(--card);
+  color: var(--text);
+}
+.excel-table td.clickable:hover {
+  outline: 2px solid orange;
+  cursor: pointer;
+  z-index: 1;
+}
+.excel-table td.hl-row { background: var(--row-hl) !important; outline: 1px solid var(--row-border); }
+.excel-table td.hl-col { background: var(--col-hl) !important; outline: 1px solid var(--col-border); }
+.excel-table td.hl-both { background: rgba(100, 181, 246, 0.25) !important; }
+.row-num-cell {
+  background: #eceff1 !important;
+  border: 1px solid #b0bec5;
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 38px;
+}
+.row-num-cell.hl-row-num { background: #c8e6c9 !important; color: #1b5e20; font-weight: 700; }
+html.dark .excel-table th,
+html.dark .row-num-cell {
+  background: #1c295d !important;
+  color: #dbe6ff;
+  border-color: #3c4b93;
+}
+html.dark .excel-table td { border-color: #2b3674; }
+
+.file-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow);
+}
+.file-item.has-error {
+  border-color: #ef9a9a;
+  background: #fff5f5;
+  box-shadow: 0 0 0 2px rgba(198, 40, 40, 0.1), var(--shadow);
+}
+.file-item-icon { font-size: 20px; flex-shrink: 0; }
+.file-item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.file-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.file-item-sub {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-item-status {
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.status-ok { background: #e8f5e9; color: #2e7d32; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.status-loading { background: #fff3e0; color: #e65100; }
+.status-err { background: #ffebee; color: #c62828; }
+.file-item-rows { font-size: 12px; color: var(--muted); max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-item-actions { display: flex; gap: 8px; align-items: center; margin-left: auto; flex-shrink: 0; }
+.file-remove-btn {
+  border: 1px solid #ef9a9a;
+  background: #fff5f5;
+  color: var(--danger);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+.file-remove-btn:hover { background: #ffe6e6; }
+html.dark .status-ok {
+  background: rgba(129, 199, 132, 0.14);
+  color: #c8e6c9;
+}
+html.dark .status-loading {
+  background: rgba(255, 183, 77, 0.12);
+  color: #ffe0b2;
+}
+html.dark .status-err {
+  background: rgba(239, 154, 154, 0.14);
+  color: #ffcdd2;
+}
+html.dark .file-remove-btn {
+  background: rgba(239, 154, 154, 0.1);
+  border-color: rgba(239, 154, 154, 0.4);
+  color: #ffcdd2;
+}
+html.dark .file-item.has-error {
+  background: rgba(239, 154, 154, 0.08);
+  border-color: rgba(239, 154, 154, 0.42);
+  box-shadow: 0 0 0 2px rgba(239, 154, 154, 0.14), var(--shadow);
+}
+
+.clickable-notice {
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.clickable-notice:hover {
+  filter: brightness(0.98);
+}
+.excluded-file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.excluded-file-btn {
+  border: 1px solid #ef9a9a;
+  background: #fff5f5;
+  color: var(--danger);
+  border-radius: 999px;
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  max-width: 100%;
+}
+.excluded-file-btn:hover {
+  background: #ffeaea;
+}
+html.dark .excluded-file-btn {
+  background: rgba(239, 154, 154, 0.1);
+  border-color: rgba(239, 154, 154, 0.4);
+  color: #ffcdd2;
+}
+
+.btn {
+  padding: 9px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-strong); }
+.btn-primary:disabled { background: #9fb1c2; cursor: not-allowed; transform: none; }
+.btn-success { background: var(--accent); color: #fff; }
+.btn-success:hover { background: var(--accent-strong); }
+.btn-success:disabled { background: #a5d6a7; cursor: not-allowed; transform: none; }
+.btn-outline {
+  background: var(--card);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+.btn-outline:hover { background: var(--card-soft); }
+.btn-warn { background: var(--accent2); color: #fff; }
+.btn-warn:hover { background: var(--accent2-strong); }
+.btn-warn:disabled { background: #90caf9; cursor: not-allowed; transform: none; }
+.btn-row { display: flex; gap: 10px; margin-top: 18px; align-items: center; flex-wrap: wrap; }
+html.dark .btn-outline { background: var(--card); }
+
+.video-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.72);
+  z-index: 4000;
+}
+.video-modal.open { display: flex; }
+.video-modal-dialog {
+  width: min(960px, 100%);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+}
+.video-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.video-modal-title {
+  font-size: 17px;
+  font-weight: 800;
+}
+.video-modal-close {
+  min-width: 72px;
+}
+.video-modal-body {
+  padding: 18px;
+}
+.video-player {
+  width: 100%;
+  max-height: 70vh;
+  display: block;
+  border-radius: 14px;
+  background: #000;
+}
+.guide-image {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card-soft);
+}
+.guide-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.filename-format-list {
+  display: grid;
+  gap: 10px;
+}
+.filename-format-item {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-soft);
+}
+.filename-format-item strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--primary);
+}
+.filename-format-item code {
+  display: block;
+  overflow-x: auto;
+  color: var(--text);
+  white-space: nowrap;
+}
+.filename-guide-link {
+  display: inline-flex;
+  margin-top: 12px;
+  color: var(--accent2);
+  font-weight: 800;
+  text-decoration: none;
+}
+.filename-guide-link:hover { text-decoration: underline; }
+.video-modal-help {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.progress-bar-wrap {
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  height: 8px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+.progress-text { font-size: 12px; color: var(--muted); margin-top: 5px; }
+
+.tab-bar {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 2px solid var(--border);
+  gap: 2px;
+  margin-bottom: 0;
+}
+.tab-btn {
+  padding: 9px 18px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  margin-bottom: -2px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 800; }
+.tab-btn:hover:not(.active) { color: var(--text); background: rgba(0, 0, 0, 0.03); }
+.tab-content { display: none; padding-top: 16px; }
+.tab-content.active { display: block; }
+
+.result-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.result-stat {
+  background: var(--pill-bg);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--pill-text);
+  font-weight: 700;
+}
+
+.validation-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.validation-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.validation-row strong {
+  font-size: 15px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.validation-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin: 14px 0 16px;
+}
+.v-stat {
+  background: var(--card-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.v-stat strong {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.warn-tag,
+.ok-tag,
+.bad-tag {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+.warn-tag {
+  background: #fff8e1;
+  color: #f57f17;
+  border-color: #ffe082;
+}
+.ok-tag {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #a5d6a7;
+}
+.bad-tag {
+  background: #ffebee;
+  color: #c62828;
+  border-color: #ef9a9a;
+}
+html.dark .warn-tag {
+  background: rgba(255, 183, 77, 0.12);
+  color: #ffe0b2;
+  border-color: rgba(255, 183, 77, 0.34);
+}
+html.dark .ok-tag {
+  background: rgba(129, 199, 132, 0.14);
+  color: #c8e6c9;
+  border-color: rgba(129, 199, 132, 0.36);
+}
+html.dark .bad-tag {
+  background: rgba(239, 154, 154, 0.14);
+  color: #ffcdd2;
+  border-color: rgba(239, 154, 154, 0.36);
+}
+
+.validation-compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.compare-pane {
+  min-width: 0;
+  background: var(--card-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+.compare-pane h4 {
+  font-size: 14px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+.compare-pane p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.notice {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  border-left: 4px solid transparent;
+}
+.notice-info {
+  background: #e3f2fd;
+  border-left-color: var(--accent2);
+  color: #0d47a1;
+}
+.notice-warn {
+  background: #fff3e0;
+  border-left-color: var(--warn);
+  color: #bf360c;
+}
+.notice-success {
+  background: #e8f5e9;
+  border-left-color: var(--accent);
+  color: #1b5e20;
+}
+html.dark .notice-info {
+  background: rgba(100, 181, 246, 0.12);
+  color: #bbdefb;
+}
+html.dark .notice-warn {
+  background: rgba(255, 183, 77, 0.12);
+  color: #ffe0b2;
+}
+html.dark .notice-success {
+  background: rgba(129, 199, 132, 0.12);
+  color: #c8e6c9;
+}
+
+@media (max-width: 900px) {
+  .validation-compare { grid-template-columns: 1fr; }
+  .range-workspace { grid-template-columns: 1fr; }
+  .sheet-status-panel { position: static; }
+  .sheet-status-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .panel { padding: 14px; }
+  .settings-bar { flex-direction: column; align-items: flex-start; }
+  .divider-v { display: none; }
+  .app-header { padding: 16px; }
+  .step-nav-item { padding: 12px 18px; }
+  .video-modal { padding: 12px; }
+  .video-modal-header,
+  .video-modal-body { padding: 14px; }
+  .video-player { max-height: 55vh; }
+  .range-toolbar { grid-template-columns: 1fr; }
+  .range-editor-header { align-items: stretch; flex-direction: column; }
+  .range-input-grid { grid-template-columns: 1fr; width: 100%; }
+  .compact-details summary { align-items: flex-start; flex-wrap: wrap; }
+  .compact-details summary::after { margin-left: 0; }
+  .file-item {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .file-item-actions {
+    margin-left: 30px;
+    width: calc(100% - 30px);
+    justify-content: space-between;
+  }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<header class="app-header">
+  <div class="app-header-main">
+    <h1>📊 엑셀 취합 도구</h1>
+    <p>같은 양식의 여러 파일을 시트별로 이어 붙이는 행 단위 엑셀 취합 도구</p>
+  </div>
+  <div class="header-actions">
+    <a href="excelmerge.html" class="home-btn">← 취합 방식 선택</a>
+    <a href="index.html" class="home-btn">오춘기 권오영 홈</a>
+    <button type="button" id="theme-btn" class="theme-btn" aria-label="다크모드 전환">🌙</button>
+  </div>
+</header>
+
+<nav class="step-nav">
+  <div class="step-nav-item active" id="nav1" onclick="jumpToStep(1)">
+    <span class="step-badge">1</span> 서식 파일 업로드
+  </div>
+  <div class="step-nav-item" id="nav2" onclick="jumpToStep(2)">
+    <span class="step-badge">2</span> 데이터 범위 설정
+  </div>
+  <div class="step-nav-item" id="nav3" onclick="jumpToStep(3)">
+    <span class="step-badge">3</span> 학교 파일 업로드
+  </div>
+  <div class="step-nav-item" id="nav4" onclick="jumpToStep(4)">
+    <span class="step-badge">4</span> 취합 결과
+  </div>
+  <div class="step-nav-item" id="nav5" onclick="jumpToStep(5)">
+    <span class="step-badge">5</span> 파일(학교)별 검증
+  </div>
+</nav>
+
+<div class="panel active" id="panel1">
+  <div class="panel-title">📁 서식 파일 업로드</div>
+  <div class="notice notice-info">취합 기준이 되는 템플릿 파일을 업로드하세요. <b>.xlsx</b> 파일 사용을 권장하며 <b>.xls</b> 파일 사용시 서식이 유지되지 않습니다.</div>
+  <div class="upload-zone" id="templateZone">
+    <input type="file" id="templateInput" accept=".xlsx,.xls">
+    <div class="upload-icon">📄</div>
+    <div class="upload-text"><strong>클릭</strong>하거나 파일을 드래그해서 템플릿 파일을 선택하세요.<br><small style="color:#90a4ae">.xlsx / .xls 형식</small></div>
+  </div>
+  <div id="templateFileInfo"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline" type="button" onclick="openGuideVideo()">사용법(영상)</button>
+    <button class="btn btn-primary" id="btn1Next" disabled onclick="goStep(2)">다음 단계 → 데이터 범위 설정</button>
+  </div>
+</div>
+
+<div class="panel" id="panel2">
+  <div class="panel-title">📐 데이터 범위 설정</div>
+  <div class="range-toolbar">
+    <details class="compact-details" id="sheetTargetDetails">
+      <summary>
+        <span>취합할 시트</span>
+        <strong class="compact-summary-text" id="sheetSelectionSummary">서식 파일 확인 중</strong>
+      </summary>
+      <div class="compact-details-body" id="sheetSelectionStatus"></div>
+    </details>
+    <details class="compact-details" id="advancedSettingsDetails">
+      <summary>
+        <span>고급 설정</span>
+        <strong class="compact-summary-text" id="advancedSettingSummary">값만 복사 · 마지막 합계행 제외</strong>
+      </summary>
+      <div class="compact-details-body">
+        <div class="settings-bar">
+          <div class="setting-block">
+            <label>복사 방식</label>
+            <div class="radio-group">
+              <label><input type="radio" name="copyMode" value="value" checked onchange="updateCopyMode(this.value)"> 값만 복사</label>
+              <label><input type="radio" name="copyMode" value="formula" onchange="updateCopyMode(this.value)"> 수식 포함</label>
+            </div>
+          </div>
+          <div class="divider-v"></div>
+          <div class="setting-block">
+            <label class="checkbox-group">
+              <input type="checkbox" id="excludeSummaryRows" checked onchange="toggleExcludeSummaryRows(this.checked)">
+              <span>마지막 합계행 제외</span>
+            </label>
+          </div>
+          <div class="setting-block">
+            <label for="excludePatternInput">끝행 일치 문구</label>
+            <input
+              type="text"
+              id="excludePatternInput"
+              class="setting-input"
+              value="합계"
+              placeholder="예: 합계, 총계"
+              oninput="updateExcludePatternInput(this.value)"
+            >
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
+  <div class="range-workspace">
+    <aside class="sheet-status-panel">
+      <div class="sheet-status-header">
+        <strong>시트별 범위</strong>
+        <span class="warn-tag" id="sheetSettingSummary">설정 확인 중</span>
+      </div>
+      <div class="sheet-status-list" id="sheetSettingStatus"></div>
+    </aside>
+    <section class="range-editor">
+      <div class="range-editor-header">
+        <div class="current-sheet-copy">
+          <span>현재 설정 중인 시트</span>
+          <strong id="currentSheetName">시트를 불러오세요</strong>
+        </div>
+        <div class="range-input-grid">
+          <label class="range-field" for="startRowInput">
+            <span>첫 데이터 행</span>
+            <span class="range-input-wrap">
+              <input id="startRowInput" class="range-input" type="number" min="1" max="1048576" step="1" inputmode="numeric" placeholder="예: 4" aria-describedby="modeHint" oninput="updateRangeSettingFromInputs()">
+              <span class="range-input-unit">행</span>
+            </span>
+          </label>
+          <label class="range-field" for="lastColInput">
+            <span>행 존재 확인 열</span>
+            <span class="range-input-wrap">
+              <input id="lastColInput" class="range-input" type="text" maxlength="3" autocomplete="off" spellcheck="false" placeholder="예: A" aria-describedby="modeHint" oninput="updateRangeSettingFromInputs()">
+              <span class="range-input-unit">열</span>
+            </span>
+          </label>
+        </div>
+        <select id="templateSheetSelect" class="sheet-select" onchange="changeTemplateSheet(this.value)" disabled hidden>
+          <option value="0">시트를 먼저 불러오세요</option>
+        </select>
+      </div>
+      <div class="mode-hint" id="modeHint">📌 표에서 첫 데이터 행의 셀을 선택하세요. 선택한 행부터 취합하고, 선택한 열의 첫 빈칸 직전까지만 가져옵니다. 모든 데이터 행에 값이 있는 열을 선택하세요.</div>
+      <div class="range-editor-actions">
+        <button class="btn btn-outline" type="button" onclick="clearSelection()">범위 다시 선택</button>
+        <button class="btn btn-outline" id="applyAllSheetsBtn" type="button" onclick="applyCurrentSettingToAllSheets()">현재 범위를 모든 시트에 적용</button>
+      </div>
+      <div class="excel-wrap" id="templatePreview">
+        <div style="padding:20px;text-align:center;color:#90a4ae">서식 파일을 먼저 로드하세요.</div>
+      </div>
+    </section>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="goStep(1)">← 이전</button>
+    <button class="btn btn-primary" id="btn2Next" disabled onclick="goStep(3)">다음 단계 → 학교 파일 업로드</button>
+  </div>
+</div>
+
+<div class="panel" id="panel3">
+  <div class="panel-title">🏫 학교 파일 업로드</div>
+  <div class="notice notice-info" id="settingSummary">설정 정보를 확인 중입니다...</div>
+  <div class="settings-bar">
+    <div class="setting-block">
+      <label class="checkbox-group">
+        <input type="checkbox" id="sortBySchoolLevel" onchange="toggleSchoolLevelSort(this.checked)">
+        <span>학교급·학교명 순으로 취합</span>
+      </label>
+      <button class="setting-link-btn" type="button" onclick="openFilenameGuide()">지원 형식 3가지</button>
+    </div>
+    <div class="setting-block">
+      <span class="setting-help">파일명에서 학교명을 추출해 초 → 중 → 고 → 지원청 → 기타 순으로 취합합니다.</span>
+    </div>
+  </div>
+  <div class="notice notice-info">첫 데이터 행 바로 위의 같은 열 텍스트도 함께 검사합니다. 학교 파일의 같은 위치 텍스트가 다르면 <strong>서식 오류 추정</strong>으로 표시됩니다.</div>
+  <div class="upload-zone" id="schoolZone">
+    <input type="file" id="schoolInput" accept=".xlsx,.xls" multiple>
+    <div class="upload-icon">📂</div>
+    <div class="upload-text"><strong>클릭</strong>하거나 드래그해서 학교 파일을 추가하세요.<br><small style="color:#90a4ae">복수 선택 가능, 업로드 후 개별 삭제 가능</small></div>
+  </div>
+  <div id="schoolFileList" class="file-list"></div>
+  <div class="btn-row">
+    <button class="btn btn-outline" onclick="goStep(2)">← 이전</button>
+    <button class="btn btn-warn" id="btnErrorDownloadUpload" type="button" onclick="downloadErrorList()" disabled>⬇️ 오류 파일 목록 다운로드 (.xlsx)</button>
+    <button class="btn btn-success" id="btnAggregate" disabled onclick="startAggregation()">🔄 취합 시작</button>
+  </div>
+  <div id="aggProgress" style="margin-top:14px;display:none">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0"></div></div>
+    <div class="progress-text" id="progressText">처리 중...</div>
+  </div>
+</div>
+
+<div class="panel" id="panel4">
+  <div class="panel-title">✅ 취합 결과</div>
+  <div class="result-header">
+    <button class="btn btn-warn" id="btnErrorDownloadResult" type="button" onclick="downloadErrorList()" disabled>⬇️ 오류 파일 목록 다운로드 (.xlsx)</button>
+    <button class="btn btn-warn" id="btnDownload" onclick="downloadResult()">⬇️ 취합 파일 다운로드 (.xlsx)</button>
+    <button class="btn btn-primary" type="button" onclick="goStep(5)">🏫 학교별 검증</button>
+    <button class="btn btn-outline" onclick="goStep(1)">🔄 새 취합 시작</button>
+    <span class="result-stat" id="statTotal"></span>
+  </div>
+  <div class="tab-bar" id="resultTabBar"></div>
+  <div id="resultTabContent"></div>
+</div>
+
+<div class="panel" id="panel5">
+  <div class="panel-title">🏫 파일(학교)별 검증</div>
+  <div class="result-header">
+    <button class="btn btn-outline" type="button" onclick="goStep(4)">← 취합 결과</button>
+    <button class="btn btn-outline" onclick="goStep(1)">🔄 새 취합 시작</button>
+    <span class="result-stat" id="statValidation"></span>
+  </div>
+  <div class="tab-bar" id="validationTabBar"></div>
+  <div id="validationTabContent"></div>
+</div>
+
+<div class="video-modal" id="guideVideoModal" hidden onclick="if (event.target === this) closeGuideVideo()">
+  <div class="video-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="guideVideoTitle">
+    <div class="video-modal-header">
+      <div class="video-modal-title" id="guideVideoTitle">사용법 영상</div>
+      <button class="btn btn-outline video-modal-close" type="button" onclick="closeGuideVideo()">닫기</button>
+    </div>
+    <div class="video-modal-body">
+      <video id="guideVideoPlayer" class="video-player" controls preload="metadata" playsinline>
+        <source src="https://gyohaeng.pages.dev/tools/common/vid/excel_collect_merge.mp4" type="video/mp4">
+        브라우저에서 영상을 재생할 수 없습니다.
+      </video>
+      <div class="video-modal-help">영상이 자동 재생되지 않으면 플레이 버튼을 한 번 더 눌러주세요.</div>
+    </div>
+  </div>
+</div>
+
+<div class="video-modal" id="filenameGuideModal" hidden onclick="if (event.target === this) closeFilenameGuide()">
+  <div class="video-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="filenameGuideTitle">
+    <div class="video-modal-header">
+      <div>
+        <div class="video-modal-title" id="filenameGuideTitle">에듀파인 저장 형식 안내</div>
+        <div class="video-modal-help">본문·첨부 모두 지원하며 세 저장 형식을 자동으로 판별합니다.</div>
+      </div>
+      <button class="btn btn-outline video-modal-close" type="button" onclick="closeFilenameGuide()">닫기</button>
+    </div>
+    <div class="video-modal-body">
+      <div class="filename-format-list" aria-label="지원하는 파일명 형식 세 가지">
+        <div class="filename-format-item">
+          <strong>앞 괄호형</strong>
+          <code>(문서번호 (본문) 학교명) 문서제목</code>
+        </div>
+        <div class="filename-format-item">
+          <strong>뒤 대괄호형</strong>
+          <code>문서제목 [문서번호 (본문) 학교명]</code>
+        </div>
+        <div class="filename-format-item">
+          <strong>뒤 괄호형</strong>
+          <code>문서제목 (문서번호 (본문) 학교명)</code>
+        </div>
+      </div>
+      <div class="video-modal-help"><strong>(본문)</strong> 대신 <strong>(첨부)</strong>가 들어간 형식도 동일하게 지원합니다.</div>
+      <a class="filename-guide-link" href="https://gyohaeng.pages.dev/tools/common/submit_filename_extract.html" target="_blank" rel="noopener">파일명 추출 도구에서 자세히 보기 →</a>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script src="https://gyohaeng.pages.dev/js/submit_filename_extract_core.js"></script>
+<script src="xlsx.full.min.js"></script>
+<script src="https://gyohaeng.pages.dev/js/exceljs.min_4.4.0.js?v=1"></script>
+<script>
+
+let templateWorkbook = null;
+let templateWs = null;
+let templateSheetIndex = 0;
+let sheetSettings = [];
+let copyMode = "value";
+let excludeSummaryRows = true;
+let excludePatternInput = "합계";
+let schoolData = [];
+let outputWorkbook = null;
+let sheetAggregationResults = [];
+let currentStep = 1;
+let maxColCount = 0;
+let schoolSeq = 1;
+let selectedSheetIndexes = [];
+let sortBySchoolLevel = false;
+
+const THEME_COLORS = ["FFFFFF", "000000", "E7E6E6", "44546A", "4472C4", "ED7D31", "A9D18E", "FF0000", "FFC000", "F4B942"];
+const SCHOOL_LEVEL_SORT_ORDER = Object.freeze({ "초": 0, "중": 1, "고": 2, "지원청": 3, "기타": 4 });
+
+function createEmptySheetSetting() {
+  return { startRow: null, lastRowCol: null, referenceRow: null, referenceCol: null, referenceText: "" };
+}
+
+function buildSheetSettingFromSelection(sheet, row, col) {
+  const safeRow = Number.isInteger(row) ? row : null;
+  const safeCol = Number.isInteger(col) ? col : null;
+  const referenceRow = safeRow && safeRow > 1 ? safeRow - 1 : null;
+  const referenceCol = referenceRow && safeCol ? safeCol : null;
+  const referenceText = sheet && referenceRow && referenceCol
+    ? normalizeCellValue(sheet.getRow(referenceRow).getCell(referenceCol).value)
+    : "";
+
+  return {
+    startRow: safeRow,
+    lastRowCol: safeCol,
+    referenceRow,
+    referenceCol,
+    referenceText
+  };
+}
+
+function getSheetReferenceInfo(setting) {
+  const startRow = Number.isInteger(setting?.startRow) ? setting.startRow : null;
+  const lastRowCol = Number.isInteger(setting?.lastRowCol) ? setting.lastRowCol : null;
+  const referenceRow = Number.isInteger(setting?.referenceRow) ? setting.referenceRow : (startRow && startRow > 1 ? startRow - 1 : null);
+  const referenceCol = Number.isInteger(setting?.referenceCol) ? setting.referenceCol : lastRowCol;
+  const expectedText = normalizeCellValue(setting?.referenceText || "");
+
+  return {
+    referenceRow,
+    referenceCol,
+    expectedText,
+    cellAddress: referenceRow && referenceCol ? `${colLetter(referenceCol)}${referenceRow}` : ""
+  };
+}
+
+function appendWarnMessage(base, next) {
+  if (!next) return base || "";
+  return base ? `${base} / ${next}` : next;
+}
+
+function formatReferenceTextForMessage(text) {
+  const safeText = normalizeCellValue(text);
+  return safeText ? `"${safeText}"` : "빈칸";
+}
+
+function validateSheetReferenceText(ws, setting) {
+  const referenceInfo = getSheetReferenceInfo(setting);
+  if (!referenceInfo.referenceRow || !referenceInfo.referenceCol) {
+    return {
+      ...referenceInfo,
+      required: false,
+      matched: true,
+      actualText: "",
+      message: ""
+    };
+  }
+
+  const actualText = ws
+    ? normalizeCellValue(ws.getRow(referenceInfo.referenceRow).getCell(referenceInfo.referenceCol).value)
+    : "";
+  const required = referenceInfo.expectedText !== "";
+  const matched = !required || actualText === referenceInfo.expectedText;
+  const message = required && !matched
+    ? `서식 오류 추정: ${referenceInfo.cellAddress} 셀 텍스트가 ${formatReferenceTextForMessage(referenceInfo.expectedText)}와 일치하지 않습니다. 현재 값 ${formatReferenceTextForMessage(actualText)}`
+    : "";
+
+  return {
+    ...referenceInfo,
+    required,
+    matched,
+    actualText,
+    message
+  };
+}
+
+function ensureSheetSettings() {
+  const sheetCount = getTemplateSheets().length;
+  while (sheetSettings.length < sheetCount) sheetSettings.push(createEmptySheetSetting());
+  if (sheetSettings.length > sheetCount) sheetSettings = sheetSettings.slice(0, sheetCount);
+}
+
+function ensureSelectedSheetIndexes() {
+  const sheetCount = getTemplateSheets().length;
+  const validIndexes = selectedSheetIndexes
+    .map((index) => Number(index))
+    .filter((index) => Number.isInteger(index) && index >= 0 && index < sheetCount);
+  const unique = Array.from(new Set(validIndexes)).sort((a, b) => a - b);
+  if (!unique.length && sheetCount) {
+    selectedSheetIndexes = Array.from({ length: sheetCount }, (_, index) => index);
+    return;
+  }
+  selectedSheetIndexes = unique;
+}
+
+function getSelectedSheetIndexes() {
+  ensureSelectedSheetIndexes();
+  return selectedSheetIndexes.slice();
+}
+
+function isSheetSelected(index) {
+  return getSelectedSheetIndexes().includes(index);
+}
+
+function setSelectedSheetIndexes(indexes) {
+  selectedSheetIndexes = Array.isArray(indexes) ? indexes.slice() : [];
+  ensureSelectedSheetIndexes();
+}
+
+function toggleSheetSelection(index, checked) {
+  const next = new Set(getSelectedSheetIndexes());
+  if (checked) {
+    next.add(index);
+  } else if (next.size > 1) {
+    next.delete(index);
+  }
+  selectedSheetIndexes = Array.from(next).sort((a, b) => a - b);
+  renderSheetSelectionStatus();
+  renderSheetSettingStatus();
+  updateSettingSummary();
+  updateAggregateButton();
+}
+
+function toggleAllSheetSelections(checked) {
+  const sheetIndexes = getTemplateSheets().map((sheet, index) => index);
+  selectedSheetIndexes = checked ? sheetIndexes : (sheetIndexes.length ? [sheetIndexes[0]] : []);
+  renderSheetSelectionStatus();
+  renderSheetSettingStatus();
+  updateSettingSummary();
+  updateAggregateButton();
+}
+
+function getSheetSetting(index = templateSheetIndex) {
+  ensureSheetSettings();
+  return sheetSettings[index] || createEmptySheetSetting();
+}
+
+function setSheetSetting(index, nextSetting) {
+  ensureSheetSettings();
+  sheetSettings[index] = {
+    ...createEmptySheetSetting(),
+    ...(sheetSettings[index] || {}),
+    ...nextSetting
+  };
+}
+
+function areAllSheetsConfigured() {
+  const selectedIndexes = getSelectedSheetIndexes();
+  if (!selectedIndexes.length) return false;
+  ensureSheetSettings();
+  return selectedIndexes.every((index) => {
+    const setting = getSheetSetting(index);
+    return setting.startRow !== null && setting.lastRowCol !== null;
+  });
+}
+
+function escapeRegExp(text) {
+  return String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function removeFileExtension(name) {
+  const text = String(name || "");
+  const lastDot = text.lastIndexOf(".");
+  return lastDot > 0 ? text.slice(0, lastDot) : text;
+}
+
+function classifySchoolLevel(name) {
+  const safeName = String(name || "");
+  if (safeName.includes("교육지원청")) return "지원청";
+  if (safeName.includes("초등학교")) return "초";
+  if (safeName.includes("중학교")) return "중";
+  if (safeName.includes("고등학교")) return "고";
+  return "기타";
+}
+
+function getSchoolLevelSortPriority(level) {
+  return SCHOOL_LEVEL_SORT_ORDER[level] ?? SCHOOL_LEVEL_SORT_ORDER["기타"];
+}
+
+function analyzeSchoolFileName(fileName) {
+  const filenameCore = globalThis.SubmitFilenameExtractCore;
+  const extraction = filenameCore && typeof filenameCore.parseFileName === "function"
+    ? filenameCore.parseFileName(fileName, "both")
+    : { matched: false, errorCode: "parser_unavailable" };
+  const extractedSchoolName = extraction.matched ? String(extraction.institutionName || "").trim() : "";
+  const schoolLevel = extractedSchoolName ? classifySchoolLevel(extractedSchoolName) : "기타";
+  const schoolExtractError = extraction.matched
+    ? ""
+    : (filenameCore && typeof filenameCore.getErrorMessage === "function"
+        ? filenameCore.getErrorMessage(extraction.errorCode, "both", extraction.detectedBasis)
+        : "파일명 분석 기능을 불러오지 못했습니다.");
+  return {
+    extractedSchoolName,
+    schoolLevel,
+    schoolNameMatched: Boolean(extractedSchoolName),
+    schoolExtractBasis: extraction.matched ? extraction.basis || "" : "",
+    schoolExtractFormat: extraction.matched ? extraction.formatLabel || "" : "",
+    schoolExtractError,
+    schoolSortPriority: getSchoolLevelSortPriority(schoolLevel)
+  };
+}
+
+function getSchoolSortName(item) {
+  return String(item?.extractedSchoolName || removeFileExtension(item?.name || "")).trim();
+}
+
+function compareSchoolAggregationOrder(a, b) {
+  const levelDiff = getSchoolLevelSortPriority(a?.schoolLevel) - getSchoolLevelSortPriority(b?.schoolLevel);
+  if (levelDiff !== 0) return levelDiff;
+
+  const schoolNameDiff = getSchoolSortName(a).localeCompare(getSchoolSortName(b), "ko");
+  if (schoolNameDiff !== 0) return schoolNameDiff;
+
+  return String(a?.name || "").localeCompare(String(b?.name || ""), "ko");
+}
+
+function getOrderedSchoolData(items = schoolData) {
+  const list = Array.isArray(items) ? items.slice() : [];
+  return sortBySchoolLevel ? list.sort(compareSchoolAggregationOrder) : list;
+}
+
+function buildSchoolFileMetaText(item) {
+  if (item.status === "err") return item.error || "로드 실패";
+  if (item.status === "loading") return "파일을 분석하고 있습니다.";
+  if (!item.schoolNameMatched || !item.extractedSchoolName) {
+    return `파일명 미인식: ${item.schoolExtractError || "지원하는 세 저장 형식과 일치하지 않습니다."} · 학교급 정렬에서는 기타로 처리`;
+  }
+  const basisText = item.schoolExtractBasis ? ` · ${item.schoolExtractBasis}` : "";
+  const formatText = item.schoolExtractFormat ? ` · ${item.schoolExtractFormat}` : "";
+  return `파일명 인식: ${item.extractedSchoolName} · ${item.schoolLevel}${basisText}${formatText}`;
+}
+
+function toggleSchoolLevelSort(checked) {
+  sortBySchoolLevel = Boolean(checked);
+  renderSchoolFileList();
+  updateSettingSummary();
+  if (outputWorkbook) buildValidationView();
+}
+
+function updateCopyMode(value) {
+  copyMode = value === "formula" ? "formula" : "value";
+  syncAdvancedSettingSummary();
+  updateSettingSummary();
+}
+
+function syncAdvancedSettingSummary() {
+  const summary = document.getElementById("advancedSettingSummary");
+  if (!summary) return;
+  const copyText = copyMode === "formula" ? "수식 포함" : "값만 복사";
+  const excludeText = excludeSummaryRows ? `마지막 ${getExcludePatternLabel()} 행 제외` : "끝행 제외 안 함";
+  summary.textContent = `${copyText} · ${excludeText}`;
+}
+
+function parseColumnInput(value) {
+  const text = String(value || "").trim().toUpperCase();
+  if (!text) return null;
+  if (/^[1-9]\d*$/.test(text)) {
+    const numericColumn = Number(text);
+    return numericColumn <= 16384 ? numericColumn : null;
+  }
+  if (!/^[A-Z]{1,3}$/.test(text)) return null;
+  const letterColumn = letterToNum(text);
+  return letterColumn <= 16384 ? letterColumn : null;
+}
+
+function updateRangeSettingFromInputs() {
+  const startInput = document.getElementById("startRowInput");
+  const colInput = document.getElementById("lastColInput");
+  const rowText = String(startInput?.value || "").trim();
+  const rowCandidate = /^[1-9]\d*$/.test(rowText) ? Number(rowText) : null;
+  const row = rowCandidate && rowCandidate <= 1048576 ? rowCandidate : null;
+  const col = parseColumnInput(colInput?.value);
+  const invalidRow = rowText !== "" && row === null;
+  const invalidCol = String(colInput?.value || "").trim() !== "" && col === null;
+  if (startInput) startInput.setCustomValidity(invalidRow ? "첫 데이터 행은 1~1,048,576 사이의 숫자로 입력하세요." : "");
+  if (colInput) colInput.setCustomValidity(invalidCol ? "행 존재 확인 열은 A~XFD 또는 1~16,384로 입력하세요." : "");
+  if (invalidRow) {
+    startInput.reportValidity();
+    return;
+  }
+  if (invalidCol) {
+    colInput.reportValidity();
+    return;
+  }
+  setSheetSetting(templateSheetIndex, buildSheetSettingFromSelection(getCurrentTemplateSheet(), row, col));
+  syncSelectionDisplay();
+  renderTemplatePreview();
+  refreshSchoolDataStats();
+}
+
+function getExcludePatternTokens() {
+  return String(excludePatternInput || "")
+    .split(/[\n,;]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function buildExcludePatternRegex(token) {
+  const trimmed = String(token || "").trim();
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith("/") && trimmed.lastIndexOf("/") > 0) {
+    const lastSlash = trimmed.lastIndexOf("/");
+    const body = trimmed.slice(1, lastSlash);
+    const flags = trimmed.slice(lastSlash + 1) || "i";
+    try {
+      return new RegExp(body, flags);
+    } catch (error) {}
+  }
+
+  const compact = trimmed.replace(/\s+/g, "");
+  if (!compact) return null;
+  const body = Array.from(compact).map((char) => escapeRegExp(char)).join("\\s*");
+  return new RegExp(`^\\s*${body}\\s*$`, "i");
+}
+
+function getExcludePatternRegexes() {
+  return getExcludePatternTokens()
+    .map((token) => buildExcludePatternRegex(token))
+    .filter(Boolean);
+}
+
+function getExcludePatternLabel() {
+  const tokens = getExcludePatternTokens();
+  return tokens.length ? tokens.join(", ") : "없음";
+}
+
+function isSummaryRowText(text) {
+  if (!excludeSummaryRows) return false;
+  const normalized = String(text || "").trim();
+  if (!normalized) return false;
+  return getExcludePatternRegexes().some((regex) => regex.test(normalized));
+}
+
+function selectTemplateSheet(index) {
+  const nextIndex = Number(index);
+  if (!Number.isInteger(nextIndex)) return;
+  const sheets = getTemplateSheets();
+  if (nextIndex < 0 || nextIndex >= sheets.length) return;
+  templateSheetIndex = nextIndex;
+  templateWs = getCurrentTemplateSheet();
+  const sheetSelect = document.getElementById("templateSheetSelect");
+  if (sheetSelect) sheetSelect.value = String(nextIndex);
+  syncSelectionDisplay();
+  renderTemplatePreview();
+}
+
+function toggleExcludeSummaryRows(checked) {
+  excludeSummaryRows = Boolean(checked);
+  syncAdvancedSettingSummary();
+  syncSelectionDisplay();
+  refreshSchoolDataStats();
+}
+
+function updateExcludePatternInput(value) {
+  excludePatternInput = String(value || "");
+  syncAdvancedSettingSummary();
+  syncSelectionDisplay();
+  refreshSchoolDataStats();
+}
+
+function applyCurrentSettingToAllSheets() {
+  const currentSetting = getSheetSetting();
+  if (currentSetting.startRow === null || currentSetting.lastRowCol === null) {
+    alert("현재 시트에서 첫 데이터 행과 행 존재 확인 열을 먼저 설정하세요.");
+    return;
+  }
+
+  getTemplateSheets().forEach((sheet, index) => {
+    setSheetSetting(index, buildSheetSettingFromSelection(sheet, currentSetting.startRow, currentSetting.lastRowCol));
+  });
+
+  syncSelectionDisplay();
+  renderTemplatePreview();
+  refreshSchoolDataStats();
+}
+
+function renderSheetSelectionStatus() {
+  const container = document.getElementById("sheetSelectionStatus");
+  const summary = document.getElementById("sheetSelectionSummary");
+  const sheets = getTemplateSheets();
+  if (!container) return;
+
+  if (!sheets.length) {
+    if (summary) summary.textContent = "서식 파일을 먼저 불러오세요";
+    container.innerHTML = '<div class="notice notice-info" style="margin-top:12px">서식 파일을 불러오면 취합할 시트를 선택할 수 있습니다.</div>';
+    return;
+  }
+
+  const selectedIndexes = getSelectedSheetIndexes();
+  const allSelected = selectedIndexes.length === sheets.length;
+  if (summary) {
+    const excludedNames = sheets
+      .filter((sheet, index) => !selectedIndexes.includes(index))
+      .map((sheet) => sheet.name)
+      .join(", ");
+    summary.textContent = allSelected
+      ? `전체 ${sheets.length}개`
+      : `${selectedIndexes.length}/${sheets.length}개${excludedNames ? ` · ${excludedNames} 제외` : ""}`;
+  }
+  const cards = sheets.map((sheet, index) => `
+    <label class="compact-sheet-option${isSheetSelected(index) ? " selected" : ""}">
+      <input type="checkbox" ${isSheetSelected(index) ? "checked" : ""} onchange="toggleSheetSelection(${index}, this.checked)">
+      <span>${escapeHtml(sheet.name || `시트${index + 1}`)}</span>
+    </label>
+  `).join("");
+
+  container.innerHTML = `
+    <div class="sheet-target-actions">
+      <span class="setting-help">선택한 시트만 결과 파일에 포함됩니다.</span>
+      <label class="checkbox-group">
+        <input type="checkbox" ${allSelected ? "checked" : ""} onchange="toggleAllSheetSelections(this.checked)">
+        <span>전체 선택</span>
+      </label>
+    </div>
+    <div class="compact-sheet-options">${cards}</div>
+  `;
+}
+
+function renderSheetSettingStatus() {
+  const container = document.getElementById("sheetSettingStatus");
+  const summary = document.getElementById("sheetSettingSummary");
+  const sheets = getTemplateSheets();
+  const selectedIndexes = getSelectedSheetIndexes();
+  if (!container) return;
+
+  if (!sheets.length) {
+    if (summary) {
+      summary.className = "warn-tag";
+      summary.textContent = "서식 파일 필요";
+    }
+    container.innerHTML = '<div class="setting-help">서식 파일을 불러오면 시트별 범위가 표시됩니다.</div>';
+    return;
+  }
+
+  const configuredCount = selectedIndexes.filter((index) => {
+    const setting = getSheetSetting(index);
+    return setting.startRow !== null && setting.lastRowCol !== null;
+  }).length;
+
+  if (summary) {
+    const complete = selectedIndexes.length && configuredCount === selectedIndexes.length;
+    summary.className = complete ? "ok-tag" : "warn-tag";
+    summary.textContent = `${configuredCount}/${selectedIndexes.length || 0} 완료`;
+  }
+
+  const cards = sheets.map((sheet, index) => {
+    const setting = getSheetSetting(index);
+    const configured = setting.startRow !== null && setting.lastRowCol !== null;
+    const selected = isSheetSelected(index);
+    const referenceInfo = getSheetReferenceInfo(setting);
+    const stateClass = selected ? (configured ? "configured" : "needs-setting") : "excluded";
+    const icon = selected ? (configured ? "✓" : "!") : "–";
+    const rangeText = configured
+      ? `${setting.startRow}행부터 · ${colLetter(setting.lastRowCol)}열 확인`
+      : (selected ? "범위 설정 필요" : "취합 제외");
+    const referenceTitle = referenceInfo.expectedText
+      ? `${referenceInfo.cellAddress} ${formatReferenceTextForMessage(referenceInfo.expectedText)} 확인`
+      : "서식 확인 텍스트 없음";
+    return `
+      <button type="button" class="sheet-setting-btn ${stateClass}${index === templateSheetIndex ? " current" : ""}" title="${escapeHtml(referenceTitle)}" onclick="selectTemplateSheet(${index})">
+        <span class="sheet-setting-icon" aria-hidden="true">${icon}</span>
+        <span class="sheet-setting-copy">
+          <strong>${escapeHtml(sheet.name || `시트${index + 1}`)}</strong>
+          <small>${rangeText}</small>
+        </span>
+      </button>
+    `;
+  }).join("");
+
+  container.innerHTML = cards;
+}
+
+function syncThemeButton() {
+  const themeBtn = document.getElementById("theme-btn");
+  if (!themeBtn) return;
+  themeBtn.textContent = document.documentElement.classList.contains("dark") ? "☀️" : "🌙";
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  html.classList.toggle("dark");
+  localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
+  syncThemeButton();
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem("theme");
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+    document.documentElement.classList.add("dark");
+  }
+  syncThemeButton();
+  const themeBtn = document.getElementById("theme-btn");
+  if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
+}
+
+function openGuideVideo() {
+  const modal = document.getElementById("guideVideoModal");
+  const player = document.getElementById("guideVideoPlayer");
+  if (!modal || !player) return;
+  modal.hidden = false;
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+  const playPromise = player.play();
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {});
+  }
+}
+
+function closeGuideVideo() {
+  const modal = document.getElementById("guideVideoModal");
+  const player = document.getElementById("guideVideoPlayer");
+  if (!modal || !player) return;
+  player.pause();
+  modal.classList.remove("open");
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function openFilenameGuide() {
+  const modal = document.getElementById("filenameGuideModal");
+  if (!modal) return;
+  modal.hidden = false;
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeFilenameGuide() {
+  const modal = document.getElementById("filenameGuideModal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  modal.hidden = true;
+  document.body.style.overflow = "";
+}
+
+function goStep(n) {
+  if (n === 1) {
+    resetAll();
+    return;
+  }
+  if (n === 2 && !templateWorkbook) {
+    alert("서식 파일을 먼저 업로드하세요.");
+    return;
+  }
+  if (n === 3 && !areAllSheetsConfigured()) {
+    alert("선택한 각 시트에서 첫 데이터 행과 행 존재 확인 열을 모두 설정하세요.");
+    return;
+  }
+  if ((n === 4 || n === 5) && !outputWorkbook) return;
+  showStep(n);
+}
+
+function jumpToStep(n) {
+  if (n === 1) {
+    resetAll();
+    return;
+  }
+  if (n === 2 && !templateWorkbook) return;
+  if (n === 3 && !areAllSheetsConfigured()) return;
+  if ((n === 4 || n === 5) && !outputWorkbook) return;
+  if (n > currentStep && !((n === 4 || n === 5) && outputWorkbook)) return;
+  showStep(n);
+}
+
+function showStep(n) {
+  currentStep = n;
+  document.querySelectorAll(".panel").forEach((panel) => panel.classList.remove("active"));
+  document.getElementById("panel" + n).classList.add("active");
+  document.querySelectorAll(".step-nav-item").forEach((item, index) => {
+    item.classList.remove("active", "done");
+    if (index + 1 < n) item.classList.add("done");
+    if (index + 1 === n) item.classList.add("active");
+  });
+  if (n === 3) updateSettingSummary();
+}
+
+function getTemplateSheets() {
+  return templateWorkbook ? templateWorkbook.worksheets : [];
+}
+
+function getCurrentTemplateSheet() {
+  const sheets = getTemplateSheets();
+  return sheets[templateSheetIndex] || null;
+}
+
+function changeTemplateSheet(indexValue) {
+  selectTemplateSheet(indexValue);
+}
+
+function resetAll() {
+  templateWorkbook = null;
+  templateWs = null;
+  templateSheetIndex = 0;
+  sheetSettings = [];
+  schoolData = [];
+  outputWorkbook = null;
+  sheetAggregationResults = [];
+  maxColCount = 0;
+  selectedSheetIndexes = [];
+  copyMode = "value";
+  document.getElementById("templateInput").value = "";
+  document.getElementById("schoolInput").value = "";
+  document.getElementById("templateSheetSelect").innerHTML = '<option value="0">시트를 먼저 불러오세요</option>';
+  document.getElementById("templateSheetSelect").disabled = true;
+  document.getElementById("templateFileInfo").innerHTML = "";
+  document.getElementById("btn1Next").disabled = true;
+  document.getElementById("btn2Next").disabled = true;
+  document.getElementById("btnAggregate").disabled = true;
+  document.getElementById("templatePreview").innerHTML = '<div style="padding:20px;text-align:center;color:#90a4ae">서식 파일을 먼저 로드하세요.</div>';
+  document.getElementById("schoolFileList").innerHTML = "";
+  document.getElementById("resultTabBar").innerHTML = "";
+  document.getElementById("resultTabContent").innerHTML = "";
+  document.getElementById("validationTabBar").innerHTML = "";
+  document.getElementById("validationTabContent").innerHTML = "";
+  document.getElementById("statTotal").textContent = "";
+  document.getElementById("statValidation").textContent = "";
+  document.getElementById("aggProgress").style.display = "none";
+  updateErrorDownloadButtons();
+  excludeSummaryRows = true;
+  excludePatternInput = "합계";
+  sortBySchoolLevel = false;
+  const valueModeRadio = document.querySelector('input[name="copyMode"][value="value"]');
+  if (valueModeRadio) valueModeRadio.checked = true;
+  document.getElementById("excludeSummaryRows").checked = true;
+  document.getElementById("excludePatternInput").value = "합계";
+  document.getElementById("sortBySchoolLevel").checked = false;
+  document.getElementById("sheetTargetDetails").open = false;
+  document.getElementById("advancedSettingsDetails").open = false;
+  syncAdvancedSettingSummary();
+  syncSelectionDisplay();
+  renderSheetSelectionStatus();
+  renderSheetSettingStatus();
+  showStep(1);
+}
+
+function clearSelection() {
+  setSheetSetting(templateSheetIndex, createEmptySheetSetting());
+  syncSelectionDisplay();
+  if (templateWs) renderTemplatePreview();
+  refreshSchoolDataStats();
+}
+
+function syncSelectionDisplay() {
+  const startEl = document.getElementById("startRowInput");
+  const colEl = document.getElementById("lastColInput");
+  const hint = document.getElementById("modeHint");
+  const currentSheetName = document.getElementById("currentSheetName");
+  const applyAllButton = document.getElementById("applyAllSheetsBtn");
+  const currentSheet = getCurrentTemplateSheet();
+  const setting = getSheetSetting();
+  const referenceInfo = getSheetReferenceInfo(setting);
+  if (startEl && document.activeElement !== startEl) startEl.value = setting.startRow === null ? "" : String(setting.startRow);
+  if (colEl && document.activeElement !== colEl) colEl.value = setting.lastRowCol === null ? "" : colLetter(setting.lastRowCol);
+  if (startEl) startEl.className = "range-input" + (setting.startRow === null ? "" : " set-row");
+  if (colEl) colEl.className = "range-input" + (setting.lastRowCol === null ? "" : " set-col");
+  if (currentSheetName) currentSheetName.textContent = currentSheet ? currentSheet.name : "시트를 불러오세요";
+  const excludeStateText = excludeSummaryRows
+    ? `마지막 값이 ${getExcludePatternLabel()}와 일치하면 해당 끝행을 제외합니다.`
+    : "끝행 제외 기능이 꺼져 있어 감지된 마지막 데이터 행까지 그대로 취합합니다.";
+  const referenceText = referenceInfo.expectedText
+    ? `서식 확인 텍스트는 ${referenceInfo.cellAddress} ${formatReferenceTextForMessage(referenceInfo.expectedText)}입니다.`
+    : "첫 데이터 행 바로 위 텍스트가 비어 있으면 서식 검사를 생략합니다.";
+
+  if (setting.startRow !== null && setting.lastRowCol !== null) {
+    hint.className = "mode-hint ready";
+    hint.textContent = `✅ ${currentSheet ? currentSheet.name : "현재"}: ${setting.startRow}행부터 취합하고 ${colLetter(setting.lastRowCol)}열의 첫 빈칸 직전까지 가져옵니다. ${referenceText} ${excludeStateText}`;
+  } else {
+    hint.className = "mode-hint";
+    hint.textContent = currentSheet
+      ? `📌 ${currentSheet.name} 표에서 첫 데이터 행의 셀을 선택하세요. 선택한 행부터 취합하고, 선택한 열의 첫 빈칸 직전까지만 가져옵니다. 모든 데이터 행에 값이 있는 열을 선택하세요.`
+      : "📌 서식 파일을 불러온 뒤 첫 데이터 행과 행 존재 확인 열을 설정하세요.";
+  }
+
+  if (applyAllButton) {
+    applyAllButton.textContent = setting.startRow !== null && setting.lastRowCol !== null
+      ? `${setting.startRow}행 / ${colLetter(setting.lastRowCol)}열을 모든 시트에 적용`
+      : "현재 범위를 모든 시트에 적용";
+  }
+
+  syncAdvancedSettingSummary();
+  document.getElementById("btn2Next").disabled = !areAllSheetsConfigured();
+  renderSheetSettingStatus();
+}
+
+function updateAggregateButton() {
+  document.getElementById("btnAggregate").disabled = !areAllSheetsConfigured() || !schoolData.some((item) => item.status !== "err" && item.workbook && hasAggregatableData(item));
+}
+
+function getErroredSchools() {
+  return getOrderedSchoolData(schoolData.filter((school) => school.error));
+}
+
+function updateErrorDownloadButtons() {
+  const disabled = getErroredSchools().length === 0;
+  ["btnErrorDownloadUpload", "btnErrorDownloadResult"].forEach((id) => {
+    const button = document.getElementById(id);
+    if (button) button.disabled = disabled;
+  });
+}
+
+function applyTint(hex, tint) {
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  let nr;
+  let ng;
+  let nb;
+  if (tint > 0) {
+    nr = Math.round(r + (255 - r) * tint);
+    ng = Math.round(g + (255 - g) * tint);
+    nb = Math.round(b + (255 - b) * tint);
+  } else {
+    nr = Math.round(r * (1 + tint));
+    ng = Math.round(g * (1 + tint));
+    nb = Math.round(b * (1 + tint));
+  }
+  return "#" + [nr, ng, nb].map((value) => Math.max(0, Math.min(255, value)).toString(16).padStart(2, "0")).join("");
+}
+
+function colorToCSS(color) {
+  if (!color) return null;
+  if (color.argb) {
+    const argb = color.argb;
+    if (argb.length === 8) {
+      const alpha = parseInt(argb.slice(0, 2), 16) / 255;
+      if (alpha < 1) {
+        return `rgba(${parseInt(argb.slice(2, 4), 16)},${parseInt(argb.slice(4, 6), 16)},${parseInt(argb.slice(6, 8), 16)},${alpha.toFixed(2)})`;
+      }
+      return "#" + argb.slice(2);
+    }
+    return "#" + argb;
+  }
+  if (color.theme !== undefined) {
+    const base = THEME_COLORS[color.theme] || "000000";
+    return color.tint ? applyTint(base, color.tint) : "#" + base;
+  }
+  return null;
+}
+
+function borderCSS(border) {
+  if (!border || !border.style) return null;
+  const widths = {
+    thin: "1px",
+    medium: "2px",
+    thick: "3px",
+    hair: "1px",
+    dashed: "1px",
+    dotted: "1px",
+    double: "3px",
+    mediumDashed: "2px",
+    dashDot: "1px",
+    mediumDashDot: "2px",
+    slantDashDot: "1px"
+  };
+  const styles = {
+    dashed: "dashed",
+    dotted: "dotted",
+    double: "double"
+  };
+  const width = widths[border.style] || "1px";
+  const style = styles[border.style] || "solid";
+  const color = colorToCSS(border.color) || "#000";
+  return `${width} ${style} ${color}`;
+}
+
+function fillCSS(fill) {
+  if (!fill) return null;
+  if (fill.type === "pattern" && fill.pattern !== "none") return colorToCSS(fill.fgColor);
+  if (fill.type === "gradient" && fill.gradient === "angle" && fill.stops && fill.stops.length > 0) {
+    return colorToCSS(fill.stops[0].color);
+  }
+  return null;
+}
+
+function cellValueText(cell) {
+  const value = cell.value;
+  if (value === null || value === undefined) return "";
+  if (typeof value === "object") {
+    if (value instanceof Date) return value.toLocaleDateString("ko-KR");
+    if (value.richText) return value.richText.map((part) => part.text || "").join("");
+    if ("formula" in value) {
+      if (value.result !== undefined && value.result !== null) return String(value.result);
+      return value.formula || "";
+    }
+    if ("text" in value) return String(value.text || "");
+    if ("hyperlink" in value && "text" in value) return String(value.text || "");
+    if ("error" in value) return String(value.error || "");
+    return "";
+  }
+  return String(value);
+}
+
+function cellInlineStyle(cell) {
+  const styles = [];
+  const bg = fillCSS(cell.fill);
+  if (bg) styles.push("background-color:" + bg);
+  if (cell.font) {
+    if (cell.font.bold) styles.push("font-weight:bold");
+    if (cell.font.italic) styles.push("font-style:italic");
+    const fontColor = colorToCSS(cell.font.color);
+    if (fontColor) styles.push("color:" + fontColor);
+    if (cell.font.size) styles.push("font-size:" + cell.font.size + "pt");
+    if (cell.font.underline) styles.push("text-decoration:underline");
+    if (cell.font.strike) styles.push("text-decoration:line-through");
+  }
+  if (cell.alignment) {
+    const horizontalMap = { left: "left", center: "center", right: "right", fill: "left", justify: "justify", distributed: "center" };
+    const verticalMap = { top: "top", middle: "middle", bottom: "bottom", distributed: "middle" };
+    if (cell.alignment.horizontal && horizontalMap[cell.alignment.horizontal]) {
+      styles.push("text-align:" + horizontalMap[cell.alignment.horizontal]);
+    }
+    if (cell.alignment.vertical && verticalMap[cell.alignment.vertical]) {
+      styles.push("vertical-align:" + verticalMap[cell.alignment.vertical]);
+    }
+    if (cell.alignment.wrapText) styles.push("white-space:pre-wrap;word-break:break-all");
+  }
+  if (cell.border) {
+    const border = cell.border;
+    if (border.top) {
+      const value = borderCSS(border.top);
+      if (value) styles.push("border-top:" + value);
+    }
+    if (border.bottom) {
+      const value = borderCSS(border.bottom);
+      if (value) styles.push("border-bottom:" + value);
+    }
+    if (border.left) {
+      const value = borderCSS(border.left);
+      if (value) styles.push("border-left:" + value);
+    }
+    if (border.right) {
+      const value = borderCSS(border.right);
+      if (value) styles.push("border-right:" + value);
+    }
+  }
+  return styles.join(";");
+}
+
+function colLetter(num) {
+  let text = "";
+  let current = num;
+  while (current > 0) {
+    const remainder = (current - 1) % 26;
+    text = String.fromCharCode(65 + remainder) + text;
+    current = Math.floor((current - 1) / 26);
+  }
+  return text;
+}
+
+function letterToNum(text) {
+  let value = 0;
+  for (let index = 0; index < text.length; index += 1) {
+    value = value * 26 + (text.toUpperCase().charCodeAt(index) - 64);
+  }
+  return value;
+}
+
+function parseMerges(ws) {
+  const spans = {};
+  const skip = new Set();
+  const masters = {};
+  const merges = (ws.model && ws.model.merges) || [];
+
+  merges.forEach((range) => {
+    const match = range.match(/([A-Z]+)(\d+):([A-Z]+)(\d+)/);
+    if (!match) return;
+    const startCol = letterToNum(match[1]);
+    const startRow = parseInt(match[2], 10);
+    const endCol = letterToNum(match[3]);
+    const endRow = parseInt(match[4], 10);
+    const masterKey = `${startRow},${startCol}`;
+    spans[masterKey] = {
+      rowspan: endRow - startRow + 1,
+      colspan: endCol - startCol + 1,
+      endRow,
+      endCol
+    };
+
+    for (let row = startRow; row <= endRow; row += 1) {
+      for (let col = startCol; col <= endCol; col += 1) {
+        masters[`${row},${col}`] = { row: startRow, col: startCol, endRow, endCol };
+        if (row !== startRow || col !== startCol) {
+          skip.add(`${row},${col}`);
+        }
+      }
+    }
+  });
+
+  return { spans, skip, masters, merges };
+}
+
+function normalizeCellValue(value) {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "object") {
+    if (value instanceof Date) return value.toISOString();
+    if (value.richText) return value.richText.map((part) => part.text || "").join("").trim();
+    if ("formula" in value) {
+      if (value.result !== undefined && value.result !== null && String(value.result).trim() !== "") return String(value.result).trim();
+      return String(value.formula || "").trim();
+    }
+    if ("text" in value) return String(value.text || "").trim();
+    if ("hyperlink" in value && "text" in value) return String(value.text || "").trim();
+    if ("error" in value) return String(value.error || "").trim();
+    return "";
+  }
+  return typeof value === "string" ? value.trim() : String(value).trim();
+}
+
+function isMeaningfulValue(value) {
+  return normalizeCellValue(value) !== "";
+}
+
+function analyzeWorksheetData(ws, setting) {
+  const { startRow, lastRowCol } = setting || createEmptySheetSetting();
+  if (startRow === null || lastRowCol === null) {
+    return {
+      rowCount: 0,
+      lastDataRow: startRow === null ? null : startRow - 1,
+      firstKey: "",
+      lastKey: "",
+      excludedTotalRow: false,
+      excludedRowText: ""
+    };
+  }
+
+  const maxRow = ws.rowCount || ws.actualRowCount || 0;
+  let lastDataRow = startRow - 1;
+  let found = false;
+  let firstKey = "";
+  let lastKey = "";
+  let excludedRowText = "";
+
+  for (let row = startRow; row <= maxRow; row += 1) {
+    const value = ws.getRow(row).getCell(lastRowCol).value;
+    if (isMeaningfulValue(value)) {
+      const normalized = normalizeCellValue(value);
+      if (!found) firstKey = normalized;
+      lastKey = normalized;
+      lastDataRow = row;
+      found = true;
+      continue;
+    }
+    if (found) break;
+  }
+
+  let excludedTotalRow = false;
+  if (found && isSummaryRowText(lastKey)) {
+    excludedTotalRow = true;
+    excludedRowText = lastKey;
+    let previousKey = "";
+    let previousRow = startRow - 1;
+    for (let row = lastDataRow - 1; row >= startRow; row -= 1) {
+      const value = ws.getRow(row).getCell(lastRowCol).value;
+      if (!isMeaningfulValue(value)) continue;
+      previousKey = normalizeCellValue(value);
+      previousRow = row;
+      break;
+    }
+
+    if (previousRow >= startRow) {
+      lastDataRow = previousRow;
+      lastKey = previousKey;
+    } else {
+      found = false;
+      lastDataRow = startRow - 1;
+      firstKey = "";
+      lastKey = "";
+    }
+  }
+
+  return {
+    rowCount: found ? lastDataRow - startRow + 1 : 0,
+    lastDataRow,
+    firstKey,
+    lastKey,
+    excludedTotalRow,
+    excludedRowText
+  };
+}
+
+function countRangeMerges(ws, rowStart, rowEnd) {
+  if (rowStart == null || rowEnd == null) return 0;
+  const merges = (ws.model && ws.model.merges) || [];
+  return merges.filter((range) => {
+    const match = range.match(/([A-Z]+)(\d+):([A-Z]+)(\d+)/);
+    if (!match) return false;
+    const start = parseInt(match[2], 10);
+    const end = parseInt(match[4], 10);
+    return start >= rowStart && end <= rowEnd;
+  }).length;
+}
+
+function getRangeKeys(ws, rowStart, rowEnd, col) {
+  if (rowStart == null || rowEnd == null || rowEnd < rowStart) {
+    return { firstKey: "", lastKey: "" };
+  }
+  let firstKey = "";
+  let lastKey = "";
+  for (let row = rowStart; row <= rowEnd; row += 1) {
+    const value = ws.getRow(row).getCell(col).value;
+    if (!isMeaningfulValue(value)) continue;
+    const normalized = normalizeCellValue(value);
+    if (!firstKey) firstKey = normalized;
+    lastKey = normalized;
+  }
+  return { firstKey, lastKey };
+}
+
+function normalizeSheetName(name) {
+  return String(name || "").trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+function buildWorksheetMatchMap(workbook) {
+  const templateSheets = getTemplateSheets();
+  const sourceSheets = (workbook && workbook.worksheets) || [];
+  const sourceByName = new Map();
+
+  sourceSheets.forEach((sheet) => {
+    const normalized = normalizeSheetName(sheet.name);
+    if (normalized && !sourceByName.has(normalized)) {
+      sourceByName.set(normalized, sheet);
+    }
+  });
+
+  return templateSheets.map((templateSheet, templateIndex) => {
+    const normalizedTemplateName = normalizeSheetName(templateSheet.name);
+    const byName = normalizedTemplateName ? sourceByName.get(normalizedTemplateName) : null;
+    if (byName) {
+      return {
+        sheet: byName,
+        matchType: "name"
+      };
+    }
+
+    if (templateSheets.length === sourceSheets.length) {
+      const byIndex = sourceSheets[templateIndex] || null;
+      if (byIndex) {
+        return {
+          sheet: byIndex,
+          matchType: "index"
+        };
+      }
+    }
+
+    return {
+      sheet: null,
+      matchType: "missing"
+    };
+  });
+}
+
+function findMatchingWorksheet(workbook, templateSheet, templateIndex, matchMap = null) {
+  if (!workbook || !templateSheet) return null;
+  const resolvedMap = matchMap || buildWorksheetMatchMap(workbook);
+  const matched = resolvedMap[templateIndex];
+  return matched ? matched.sheet : null;
+}
+
+function analyzeWorkbookAgainstTemplate(workbook, isXls = false) {
+  const matchMap = buildWorksheetMatchMap(workbook);
+  return getTemplateSheets().map((templateSheet, templateIndex) => {
+    const setting = getSheetSetting(templateIndex);
+    const matched = matchMap[templateIndex];
+    const sourceSheet = matched ? matched.sheet : null;
+    if (!sourceSheet) {
+      return {
+        templateSheetName: templateSheet.name,
+        sourceSheetName: "",
+        rowCount: 0,
+        lastDataRow: setting.startRow === null ? null : setting.startRow - 1,
+        firstKey: "",
+        lastKey: "",
+        missing: true,
+        formatHeaderRequired: false,
+        formatHeaderMatched: true,
+        formatHeaderExpectedText: "",
+        formatHeaderActualText: "",
+        formatHeaderCellAddress: "",
+        formatHeaderMessage: "",
+        warn: "대응되는 시트를 찾지 못했습니다."
+      };
+    }
+
+    const analysis = analyzeWorksheetData(sourceSheet, setting);
+    const formatCheck = validateSheetReferenceText(sourceSheet, setting);
+    let warn = "";
+    if (analysis.rowCount === 0) {
+      warn = analysis.excludedTotalRow
+        ? `마지막 제외 패턴 행(${analysis.excludedRowText || "패턴 일치"})을 제외한 뒤 취합할 데이터가 감지되지 않았습니다.`
+        : "선택한 기준 열에서 데이터가 감지되지 않았습니다.";
+    } else if (analysis.excludedTotalRow) {
+      warn = `마지막 제외 패턴 행(${analysis.excludedRowText || "패턴 일치"})을 제외했습니다.`;
+    }
+    if (matched && matched.matchType === "index") {
+      warn = warn
+        ? `${warn} / 시트명을 찾지 못해 같은 순번 시트로 대응`
+        : "시트명을 찾지 못해 같은 순번 시트로 대응";
+    }
+    if (formatCheck.message) {
+      warn = appendWarnMessage(warn, formatCheck.message);
+    }
+    if (isXls) warn = warn ? `${warn} / .xls 변환 파일` : ".xls 변환 파일";
+
+    return {
+      templateSheetName: templateSheet.name,
+      sourceSheetName: sourceSheet.name,
+      rowCount: analysis.rowCount,
+      lastDataRow: analysis.lastDataRow,
+      firstKey: analysis.firstKey,
+      lastKey: analysis.lastKey,
+      excludedTotalRow: analysis.excludedTotalRow,
+      excludedRowText: analysis.excludedRowText,
+      missing: false,
+      formatHeaderRequired: formatCheck.required,
+      formatHeaderMatched: formatCheck.matched,
+      formatHeaderExpectedText: formatCheck.expectedText,
+      formatHeaderActualText: formatCheck.actualText,
+      formatHeaderCellAddress: formatCheck.cellAddress,
+      formatHeaderMessage: formatCheck.message,
+      warn
+    };
+  });
+}
+
+function getSchoolTotalRows(item) {
+  return getSelectedSheetIndexes().reduce((sum, index) => sum + (((item.sheetStats || [])[index] || {}).rowCount || 0), 0);
+}
+
+function getMatchedSheetCount(sheetStats) {
+  return getSelectedSheetIndexes().filter((index) => {
+    const sheet = (sheetStats || [])[index];
+    return sheet && !sheet.missing;
+  }).length;
+}
+
+function getSheetWarnings(sheetStats) {
+  return getSelectedSheetIndexes()
+    .map((index) => (sheetStats || [])[index])
+    .filter((sheet) => sheet && sheet.warn)
+    .map((sheet) => `${sheet.templateSheetName}: ${sheet.warn}`)
+    .join(" / ");
+}
+
+function getNoMatchedSheetError() {
+  return "대응되는 시트가 0개입니다. 해당 파일을 다시 확인해 주세요.";
+}
+
+function getFormatMismatchErrors(sheetStats) {
+  return getSelectedSheetIndexes()
+    .map((index) => (sheetStats || [])[index])
+    .filter((sheet) => sheet && sheet.formatHeaderRequired && !sheet.formatHeaderMatched)
+    .map((sheet) => sheet.formatHeaderMessage)
+    .filter(Boolean);
+}
+
+function buildSchoolAnalysisSummary(sheetStats) {
+  const matchedSheetCount = getMatchedSheetCount(sheetStats);
+  const errors = [];
+  if (matchedSheetCount === 0) errors.push(getNoMatchedSheetError());
+  errors.push(...getFormatMismatchErrors(sheetStats));
+  const error = errors.join(" / ");
+  return {
+    rowCount: getSchoolTotalRows({ sheetStats }),
+    warn: getSheetWarnings(sheetStats),
+    status: error ? "err" : "ok",
+    error
+  };
+}
+
+function hasAggregatableData(item) {
+  return getSelectedSheetIndexes().some((index) => (((item.sheetStats || [])[index] || {}).rowCount || 0) > 0);
+}
+
+function getRangeFingerprint(ws, rowStart, rowEnd, maxCols) {
+  if (rowStart == null || rowEnd == null || rowEnd < rowStart) return "";
+  const rows = [];
+  for (let row = rowStart; row <= rowEnd; row += 1) {
+    const cells = [];
+    for (let col = 1; col <= maxCols; col += 1) {
+      cells.push(normalizeCellValue(ws.getRow(row).getCell(col).value));
+    }
+    rows.push(cells.join("\u001f"));
+  }
+  return rows.join("\u001e");
+}
+
+function trimName(name) {
+  return name.length > 14 ? name.slice(0, 12) + "…" : name;
+}
+
+function trimName(name, limit = 14) {
+  const safeName = String(name || "");
+  return safeName.length > limit ? safeName.slice(0, Math.max(limit - 2, 1)) + ".." : safeName;
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function copyCellStyle(sourceCell, targetCell) {
+  try {
+    targetCell.style = JSON.parse(JSON.stringify(sourceCell.style || {}));
+  } catch (error) {
+    targetCell.style = sourceCell.style || {};
+  }
+}
+
+function getCopyValue(cell, rowOffset) {
+  const value = cell.value;
+  if (value === null || value === undefined) return null;
+
+  if (copyMode === "formula" && typeof value === "object" && value !== null && "formula" in value) {
+    return {
+      formula: adjustFormula(value.formula, rowOffset),
+      result: value.result
+    };
+  }
+
+  if (typeof value === "object") {
+    if (value instanceof Date) return value;
+    if ("formula" in value) return value.result !== undefined && value.result !== null ? value.result : null;
+    if (value.richText) return value.richText.map((part) => part.text || "").join("");
+    if ("text" in value) return value.text || "";
+    return value;
+  }
+
+  return value;
+}
+
+function adjustFormula(formula, offset) {
+  if (!formula || offset === 0) return formula;
+  return formula.replace(/(\$?)([A-Z]{1,3})(\$?)(\d+)/g, (match, colAbs, col, rowAbs, row) => {
+    if (rowAbs === "$") return `${colAbs}${col}${rowAbs}${row}`;
+    return `${colAbs}${col}${parseInt(row, 10) + offset}`;
+  });
+}
+
+async function loadExcelFile(file) {
+  const buffer = await file.arrayBuffer();
+  const extension = file.name.split(".").pop().toLowerCase();
+  let xlsxBuffer = buffer;
+
+  if (extension === "xls") {
+    const sheetJsWorkbook = XLSX.read(new Uint8Array(buffer), { type: "array", cellStyles: true, cellDates: true });
+    const out = XLSX.write(sheetJsWorkbook, { type: "array", bookType: "xlsx", cellStyles: true });
+    xlsxBuffer = new Uint8Array(out).buffer;
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(xlsxBuffer);
+
+  if (!workbook.worksheets || workbook.worksheets.length === 0) {
+    throw new Error("워크시트를 찾을 수 없습니다. 파일이 비어 있거나 손상되었을 수 있습니다.");
+  }
+
+  return { workbook, isXls: extension === "xls" };
+}
+
+function renderWorksheet(ws, container, opts = {}) {
+  const clickable = Boolean(opts.clickable);
+  const hlRow = opts.hlRow ?? null;
+  const hlCol = opts.hlCol ?? null;
+  const mergeInfo = parseMerges(ws);
+  const maxRow = ws.rowCount || ws.actualRowCount || 1;
+  const maxCol = Math.max(ws.columnCount || ws.actualColumnCount || 1, maxColCount || 1);
+  const rowStart = Math.max(1, opts.rowStart || 1);
+  const rowEnd = Math.min(maxRow, opts.rowEnd || maxRow);
+
+  if (rowEnd < rowStart) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:#90a4ae">표시할 데이터가 없습니다.</div>';
+    return;
+  }
+
+  const wrap = document.createElement("div");
+  wrap.className = "worksheet-scroll-wrap";
+  wrap.style.overflow = "auto";
+
+  const table = document.createElement("table");
+  table.className = "excel-table";
+
+  const colgroup = document.createElement("colgroup");
+  const rowNumberCol = document.createElement("col");
+  rowNumberCol.style.width = "38px";
+  colgroup.appendChild(rowNumberCol);
+  for (let col = 1; col <= maxCol; col += 1) {
+    const worksheetColumn = ws.getColumn(col);
+    const width = worksheetColumn.width ? Math.round(worksheetColumn.width * 7) : 80;
+    const colElement = document.createElement("col");
+    colElement.style.width = width + "px";
+    colgroup.appendChild(colElement);
+  }
+  table.appendChild(colgroup);
+
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  const corner = document.createElement("th");
+  corner.className = "row-hdr";
+  corner.textContent = "#";
+  headerRow.appendChild(corner);
+  for (let col = 1; col <= maxCol; col += 1) {
+    const th = document.createElement("th");
+    th.textContent = colLetter(col);
+    headerRow.appendChild(th);
+  }
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  for (let rowNum = rowStart; rowNum <= rowEnd; rowNum += 1) {
+    const row = ws.getRow(rowNum);
+    const tr = document.createElement("tr");
+    if (row.height) tr.style.height = Math.round(row.height * 1.33) + "px";
+
+    const rowNumberCell = document.createElement("td");
+    rowNumberCell.className = "row-num-cell" + (hlRow === rowNum ? " hl-row-num" : "");
+    rowNumberCell.textContent = rowNum;
+    tr.appendChild(rowNumberCell);
+
+    for (let col = 1; col <= maxCol; col += 1) {
+      const key = `${rowNum},${col}`;
+      if (mergeInfo.skip.has(key)) continue;
+
+      const cell = row.getCell(col);
+      const td = document.createElement("td");
+      const span = mergeInfo.spans[key];
+      if (span) {
+        const cappedRowSpan = Math.min(span.endRow, rowEnd) - rowNum + 1;
+        if (cappedRowSpan > 1) td.rowSpan = cappedRowSpan;
+        if (span.colspan > 1) td.colSpan = span.colspan;
+      }
+
+      const inlineStyle = cellInlineStyle(cell);
+      if (inlineStyle) td.setAttribute("style", inlineStyle);
+      td.style.padding = "2px 5px";
+      td.style.minWidth = "30px";
+
+      const isRow = hlRow === rowNum;
+      const isCol = hlCol === col;
+      if (isRow && isCol) td.classList.add("hl-both");
+      else if (isRow) td.classList.add("hl-row");
+      else if (isCol) td.classList.add("hl-col");
+
+      td.textContent = cellValueText(cell);
+
+      if (clickable) {
+        td.classList.add("clickable");
+        td.dataset.row = String(rowNum);
+        td.dataset.col = String(col);
+        td.title = `${rowNum}행부터 취합 · ${colLetter(col)}열의 첫 빈칸 직전까지`;
+        td.addEventListener("click", () => handleTemplateCellClick(rowNum, col));
+      }
+
+      tr.appendChild(td);
+    }
+
+    tbody.appendChild(tr);
+  }
+
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  container.innerHTML = "";
+  container.appendChild(wrap);
+}
+
+function renderTemplatePreview() {
+  const currentSheet = getCurrentTemplateSheet();
+  if (!currentSheet) return;
+  templateWs = currentSheet;
+  const setting = getSheetSetting();
+  renderWorksheet(currentSheet, document.getElementById("templatePreview"), {
+    clickable: true,
+    hlRow: setting.startRow,
+    hlCol: setting.lastRowCol
+  });
+}
+
+function handleTemplateCellClick(row, col) {
+  setSheetSetting(templateSheetIndex, buildSheetSettingFromSelection(getCurrentTemplateSheet(), row, col));
+  syncSelectionDisplay();
+  renderTemplatePreview();
+  refreshSchoolDataStats();
+}
+
+function updateSettingSummary() {
+  const summary = document.getElementById("settingSummary");
+  const selectedIndexes = getSelectedSheetIndexes();
+  const excludeSummaryText = excludeSummaryRows
+    ? `마지막 합계행 제외: 사용 · 일치 문구 ${getExcludePatternLabel()}`
+    : "마지막 합계행 제외: 사용 안 함";
+  const formatCheckText = "서식 확인: 첫 데이터 행 바로 위 텍스트 검사";
+  const schoolOrderText = sortBySchoolLevel
+    ? "학교 파일 순서: 초 → 중 → 고 → 지원청 → 기타"
+    : "학교 파일 순서: 업로드 순서 유지";
+  if (!selectedIndexes.length) {
+    summary.textContent = `취합 대상 시트를 먼저 선택하세요. | ${formatCheckText} | ${schoolOrderText}`;
+    return;
+  }
+  if (!areAllSheetsConfigured()) {
+    const configuredCount = selectedIndexes.filter((index) => {
+      const setting = getSheetSetting(index);
+      return setting.startRow !== null && setting.lastRowCol !== null;
+    }).length;
+    summary.textContent = `데이터 범위가 아직 모두 설정되지 않았습니다. 현재 ${configuredCount}/${selectedIndexes.length || 0}개 선택 시트만 완료되었습니다. · ${excludeSummaryText} | ${formatCheckText} | ${schoolOrderText}`;
+    return;
+  }
+  const details = getTemplateSheets().map((sheet, index) => {
+    const setting = getSheetSetting(index);
+    return `${sheet.name}: ${setting.startRow}행부터 / ${colLetter(setting.lastRowCol)}열 확인`;
+  }).join(" | ");
+  const selectedDetails = selectedIndexes.map((index) => {
+    const sheet = getTemplateSheets()[index];
+    const setting = getSheetSetting(index);
+    return `${sheet.name}: ${setting.startRow}행부터 / ${colLetter(setting.lastRowCol)}열 확인`;
+  }).join(" | ");
+  summary.textContent = `선택 시트 ${selectedIndexes.length}개 · ${selectedDetails} | 복사 방식: ${copyMode === "formula" ? "수식 포함" : "값만"} | ${excludeSummaryText} | ${formatCheckText} | ${schoolOrderText}`;
+}
+
+function createSchoolItem(file) {
+  const schoolMeta = analyzeSchoolFileName(file.name);
+  return {
+    id: schoolSeq++,
+    name: file.name,
+    workbook: null,
+    rowCount: 0,
+    sheetStats: [],
+    warn: "",
+    status: "loading",
+    error: "",
+    isXls: false,
+    ...schoolMeta
+  };
+}
+
+function refreshSchoolDataStats() {
+  schoolData = schoolData.map((item) => {
+    if (!item.workbook) return item;
+    const sheetStats = analyzeWorkbookAgainstTemplate(item.workbook, item.isXls);
+    const summary = buildSchoolAnalysisSummary(sheetStats);
+    return {
+      ...item,
+      ...analyzeSchoolFileName(item.name),
+      sheetStats,
+      rowCount: summary.rowCount,
+      warn: summary.warn,
+      status: summary.status,
+      error: summary.error
+    };
+  });
+  renderSchoolFileList();
+  updateSettingSummary();
+  updateAggregateButton();
+}
+
+function removeSchoolFile(id) {
+  schoolData = schoolData.filter((item) => item.id !== id);
+  renderSchoolFileList();
+  buildValidationView();
+  updateAggregateButton();
+}
+
+function renderSchoolFileList() {
+  const list = document.getElementById("schoolFileList");
+  list.innerHTML = "";
+  updateErrorDownloadButtons();
+
+  if (!schoolData.length) return;
+
+  getOrderedSchoolData(schoolData).forEach((item) => {
+    const row = document.createElement("div");
+    row.className = "file-item" + (item.status === "err" ? " has-error" : "");
+
+    const icon = document.createElement("span");
+    icon.className = "file-item-icon";
+    icon.textContent = "📄";
+
+    const main = document.createElement("div");
+    main.className = "file-item-main";
+
+    const name = document.createElement("span");
+    name.className = "file-item-name";
+    name.textContent = item.name;
+    name.title = item.name;
+
+    const sub = document.createElement("span");
+    sub.className = "file-item-sub";
+    sub.textContent = buildSchoolFileMetaText(item);
+    sub.title = sub.textContent;
+
+    const actions = document.createElement("div");
+    actions.className = "file-item-actions";
+
+    const status = document.createElement("span");
+    status.className = "file-item-status " + (item.status === "loading" ? "status-loading" : item.status === "err" ? "status-err" : "status-ok");
+    status.textContent = item.status === "loading" ? "로드 중..." : item.status === "err" ? "오류" : "완료";
+
+    status.textContent = item.status === "loading"
+      ? "분석 중"
+      : item.status === "err"
+        ? "오류"
+        : `${trimName(item.name, 18)} 완료`;
+
+    const rows = document.createElement("span");
+    rows.className = "file-item-rows";
+    const selectedIndexes = getSelectedSheetIndexes();
+    const relevantStats = selectedIndexes.map((index) => (item.sheetStats || [])[index]).filter(Boolean);
+    if (item.status === "loading") {
+      rows.textContent = "-";
+    } else if (item.status === "err") {
+      rows.textContent = item.error || "로드 실패";
+    } else {
+      const availableSheetCount = relevantStats.filter((sheet) => !sheet.missing).length;
+      const nonEmptySheetCount = relevantStats.filter((sheet) => sheet.rowCount > 0).length;
+      rows.textContent = `${availableSheetCount}/${selectedIndexes.length || availableSheetCount}시트 · 총 ${item.rowCount}행 · 데이터 있는 시트 ${nonEmptySheetCount}개${item.warn ? " · " + item.warn : ""}`;
+      rows.textContent = `${availableSheetCount}/${getTemplateSheets().length || availableSheetCount}시트 · 총 ${item.rowCount}행 · 데이터 있는 시트 ${nonEmptySheetCount}개${item.warn ? " · " + item.warn : ""}`;
+      rows.textContent = `${availableSheetCount}/${selectedIndexes.length || availableSheetCount}시트 · 총 ${item.rowCount}행 · 데이터 있는 시트 ${nonEmptySheetCount}개${item.warn ? " · " + item.warn : ""}`;
+      rows.title = rows.textContent;
+    }
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "file-remove-btn";
+    removeBtn.textContent = "삭제";
+    removeBtn.addEventListener("click", () => removeSchoolFile(item.id));
+
+    main.appendChild(name);
+    main.appendChild(sub);
+    actions.appendChild(status);
+    actions.appendChild(rows);
+    actions.appendChild(removeBtn);
+
+    row.appendChild(icon);
+    row.appendChild(main);
+    row.appendChild(actions);
+    list.appendChild(row);
+  });
+}
+
+async function appendSchoolFiles(files) {
+  for (const file of files) {
+    const item = createSchoolItem(file);
+    schoolData.push(item);
+    renderSchoolFileList();
+
+    try {
+      const { workbook, isXls } = await loadExcelFile(file);
+      if (!workbook.worksheets[0]) throw new Error("워크시트가 없습니다.");
+      const sheetStats = analyzeWorkbookAgainstTemplate(workbook, isXls);
+      const summary = buildSchoolAnalysisSummary(sheetStats);
+      item.workbook = workbook;
+      item.isXls = isXls;
+      item.sheetStats = sheetStats;
+      item.rowCount = summary.rowCount;
+      item.warn = summary.warn;
+      item.status = summary.status;
+      item.error = summary.error;
+    } catch (error) {
+      item.status = "err";
+      item.error = "로드 오류: " + error.message;
+      item.warn = item.error;
+    }
+
+    renderSchoolFileList();
+    updateAggregateButton();
+  }
+}
+
+function buildSheetValidation(school, sheetStat, range, templateSheet, templateIndex, outputSheet, sheetSetting) {
+  const setting = sheetSetting || getSheetSetting(templateIndex);
+  const sourceSheet = school.workbook ? findMatchingWorksheet(school.workbook, templateSheet, templateIndex) : null;
+  const sourceRange = sheetStat && sheetStat.rowCount > 0 && sheetStat.lastDataRow !== null
+    ? { start: setting.startRow, end: sheetStat.lastDataRow }
+    : null;
+  const outputRange = range ? { start: range.start, end: range.end } : null;
+  const maxCols = Math.max(
+    templateSheet ? (templateSheet.columnCount || templateSheet.actualColumnCount || 1) : 1,
+    outputSheet ? (outputSheet.columnCount || outputSheet.actualColumnCount || 1) : 1
+  );
+
+  const sourceFingerprint = sourceSheet && sourceRange ? getRangeFingerprint(sourceSheet, sourceRange.start, sourceRange.end, maxCols) : "";
+  const outputFingerprint = outputSheet && outputRange ? getRangeFingerprint(outputSheet, outputRange.start, outputRange.end, maxCols) : "";
+  const sourceMergeCount = sourceSheet && sourceRange ? countRangeMerges(sourceSheet, sourceRange.start, sourceRange.end) : 0;
+  const outputMergeCount = outputSheet && outputRange ? countRangeMerges(outputSheet, outputRange.start, outputRange.end) : 0;
+  const outputKeys = outputSheet && outputRange ? getRangeKeys(outputSheet, outputRange.start, outputRange.end, setting.lastRowCol) : { firstKey: "", lastKey: "" };
+
+  const rowCountMatch = Boolean(range) && Boolean(sheetStat) && sheetStat.rowCount === range.rowCount;
+  const valueMatch = Boolean(range) && sourceFingerprint === outputFingerprint;
+  const mergeMatch = Boolean(range) && sourceMergeCount === outputMergeCount;
+  const keyMatch = Boolean(range) && Boolean(sheetStat) && sheetStat.firstKey === outputKeys.firstKey && sheetStat.lastKey === outputKeys.lastKey;
+  const formatHeaderMatch = !sheetStat || !sheetStat.formatHeaderRequired || sheetStat.formatHeaderMatched;
+
+  return {
+    sourceSheet,
+    sourceSheetName: sourceSheet ? sourceSheet.name : "",
+    sourceRange,
+    outputRange,
+    rowCountMatch,
+    valueMatch,
+    mergeMatch,
+    keyMatch,
+    formatHeaderMatch,
+    sourceMergeCount,
+    outputMergeCount,
+    startRow: setting.startRow,
+    lastRowCol: setting.lastRowCol,
+    outputFirstKey: outputKeys.firstKey,
+    outputLastKey: outputKeys.lastKey,
+    formatHeaderCellAddress: sheetStat?.formatHeaderCellAddress || "",
+    formatHeaderExpectedText: sheetStat?.formatHeaderExpectedText || "",
+    formatHeaderActualText: sheetStat?.formatHeaderActualText || ""
+  };
+}
+
+function copyWorksheetHeader(templateSheet, outputSheet, maxCols, headerEnd) {
+  for (let col = 1; col <= maxCols; col += 1) {
+    const templateColumn = templateSheet.getColumn(col);
+    const outputColumn = outputSheet.getColumn(col);
+    if (templateColumn.width) outputColumn.width = templateColumn.width;
+    if (templateColumn.hidden !== undefined) outputColumn.hidden = templateColumn.hidden;
+  }
+
+  for (let row = 1; row <= headerEnd; row += 1) {
+    const sourceRow = templateSheet.getRow(row);
+    const targetRow = outputSheet.getRow(row);
+    if (sourceRow.height) targetRow.height = sourceRow.height;
+    if (sourceRow.hidden !== undefined) targetRow.hidden = sourceRow.hidden;
+    for (let col = 1; col <= maxCols; col += 1) {
+      const sourceCell = sourceRow.getCell(col);
+      const targetCell = targetRow.getCell(col);
+      copyCellStyle(sourceCell, targetCell);
+      targetCell.value = getCopyValue(sourceCell, 0);
+    }
+  }
+
+  const templateMerges = (templateSheet.model && templateSheet.model.merges) || [];
+  templateMerges.forEach((range) => {
+    const match = range.match(/([A-Z]+)(\d+):([A-Z]+)(\d+)/);
+    if (!match) return;
+    const start = parseInt(match[2], 10);
+    const end = parseInt(match[4], 10);
+    if (start <= headerEnd && end <= headerEnd) {
+      try { outputSheet.mergeCells(range); } catch (error) {}
+    }
+  });
+}
+
+async function startAggregation() {
+  const validSchools = getOrderedSchoolData(schoolData.filter((item) => item.status !== "err" && item.workbook && hasAggregatableData(item)));
+  const selectedIndexes = getSelectedSheetIndexes();
+  if (!selectedIndexes.length) {
+    alert("취합할 시트를 먼저 선택하세요.");
+    return;
+  }
+  if (!validSchools.length) {
+    alert("취합할 데이터가 있는 학교 파일이 없습니다.");
+    return;
+  }
+
+  const progressWrap = document.getElementById("aggProgress");
+  const progressBar = document.getElementById("progressBar");
+  const progressText = document.getElementById("progressText");
+
+  progressWrap.style.display = "block";
+  progressBar.style.width = "0%";
+  progressText.textContent = "취합 시작...";
+
+  try {
+    outputWorkbook = new ExcelJS.Workbook();
+    sheetAggregationResults = [];
+    const templateSheets = getTemplateSheets();
+
+    for (let selectedOrder = 0; selectedOrder < selectedIndexes.length; selectedOrder += 1) {
+      const templateIndex = selectedIndexes[selectedOrder];
+      const templateSheet = templateSheets[templateIndex];
+      const setting = getSheetSetting(templateIndex);
+      const outputSheet = outputWorkbook.addWorksheet(templateSheet.name || `시트${templateIndex + 1}`);
+      const maxCols = Math.max(templateSheet.columnCount || 1, templateSheet.actualColumnCount || 1);
+      const startRow = setting.startRow;
+      const headerEnd = startRow - 1;
+      const sheetResult = {
+        templateIndex,
+        templateSheetName: templateSheet.name,
+        outputSheetName: outputSheet.name,
+        startRow,
+        lastRowCol: setting.lastRowCol,
+        ranges: []
+      };
+
+      copyWorksheetHeader(templateSheet, outputSheet, maxCols, headerEnd);
+
+      let currentOutputRow = startRow;
+
+      for (let schoolIndex = 0; schoolIndex < validSchools.length; schoolIndex += 1) {
+        const school = validSchools[schoolIndex];
+        const matchMap = buildWorksheetMatchMap(school.workbook);
+        const sheetStat = school.sheetStats[templateIndex];
+        const sourceSheet = findMatchingWorksheet(school.workbook, templateSheet, templateIndex, matchMap);
+        if (!sourceSheet || !sheetStat || sheetStat.rowCount <= 0) continue;
+
+        const schoolStart = currentOutputRow;
+        const lastDataRow = sheetStat.lastDataRow ?? (startRow - 1);
+
+        for (let row = startRow; row <= lastDataRow; row += 1) {
+          const sourceRow = sourceSheet.getRow(row);
+          const targetRow = outputSheet.getRow(currentOutputRow);
+          const offset = currentOutputRow - row;
+          if (sourceRow.height) targetRow.height = sourceRow.height;
+          if (sourceRow.hidden !== undefined) targetRow.hidden = sourceRow.hidden;
+          for (let col = 1; col <= maxCols; col += 1) {
+            const sourceCell = sourceRow.getCell(col);
+            const targetCell = targetRow.getCell(col);
+            copyCellStyle(sourceCell, targetCell);
+            targetCell.value = getCopyValue(sourceCell, offset);
+          }
+          currentOutputRow += 1;
+        }
+
+        const schoolEnd = currentOutputRow - 1;
+        const sourceMerges = (sourceSheet.model && sourceSheet.model.merges) || [];
+        sourceMerges.forEach((range) => {
+          const match = range.match(/([A-Z]+)(\d+):([A-Z]+)(\d+)/);
+          if (!match) return;
+          const mergeStart = parseInt(match[2], 10);
+          const mergeEnd = parseInt(match[4], 10);
+          if (mergeStart >= startRow && mergeEnd <= lastDataRow) {
+            const offset = schoolStart - startRow;
+            const adjusted = `${match[1]}${mergeStart + offset}:${match[3]}${mergeEnd + offset}`;
+            try { outputSheet.mergeCells(adjusted); } catch (error) {}
+          }
+        });
+
+        sheetResult.ranges.push({
+          id: school.id,
+          name: school.name,
+          start: schoolStart,
+          end: schoolEnd,
+          rowCount: sheetStat.rowCount,
+          firstKey: sheetStat.firstKey,
+          lastKey: sheetStat.lastKey,
+          sourceSheetName: sourceSheet.name
+        });
+
+        const completedUnits = selectedOrder * validSchools.length + schoolIndex + 1;
+        const totalUnits = Math.max(selectedIndexes.length * validSchools.length, 1);
+        progressBar.style.width = Math.round(15 + (80 * completedUnits) / totalUnits) + "%";
+        progressText.textContent = `${templateSheet.name} 시트 처리 중: ${school.name}`;
+        await sleep(10);
+      }
+
+      sheetAggregationResults[templateIndex] = sheetResult;
+    }
+
+    progressBar.style.width = "100%";
+    progressText.textContent = "취합 완료!";
+    await sleep(250);
+    progressWrap.style.display = "none";
+
+    buildResultView();
+    buildValidationView();
+    showStep(4);
+  } catch (error) {
+    progressWrap.style.display = "none";
+    alert("취합 중 오류: " + error.message);
+    console.error(error);
+  }
+}
+
+function addTab(tabBar, tabContent, id, label, title, renderFn) {
+  const button = document.createElement("button");
+  button.className = "tab-btn";
+  button.dataset.tabId = id;
+  button.textContent = label;
+  button.title = title || label;
+
+  let rendered = false;
+  button.addEventListener("click", () => {
+    tabBar.querySelectorAll(".tab-btn").forEach((tab) => tab.classList.remove("active"));
+    tabContent.querySelectorAll(".tab-content").forEach((pane) => pane.classList.remove("active"));
+    button.classList.add("active");
+
+    let pane = document.getElementById("tc-" + id);
+    if (!pane) {
+      pane = document.createElement("div");
+      pane.className = "tab-content";
+      pane.id = "tc-" + id;
+      tabContent.appendChild(pane);
+    }
+    if (!rendered) {
+      pane.appendChild(renderFn());
+      rendered = true;
+    }
+    pane.classList.add("active");
+  });
+
+  tabBar.appendChild(button);
+}
+
+function openTabById(tabBarId, tabId) {
+  const tabBar = document.getElementById(tabBarId);
+  if (!tabBar) return false;
+  const button = tabBar.querySelector(`[data-tab-id="${tabId}"]`);
+  if (!button) return false;
+  button.click();
+  return true;
+}
+
+function openSchoolValidationById(id) {
+  showStep(5);
+  if (!openTabById("validationTabBar", "school-" + id)) {
+    buildValidationView();
+    openTabById("validationTabBar", "school-" + id);
+  }
+  const target = document.getElementById("panel5");
+  if (target && typeof target.scrollIntoView === "function") {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function createExcludedFilesNotice(erroredSchools) {
+  const wrapper = document.createElement("div");
+  const notice = document.createElement("div");
+  notice.className = "notice notice-warn clickable-notice";
+  notice.tabIndex = 0;
+  notice.setAttribute("role", "button");
+  notice.setAttribute("aria-expanded", "false");
+  notice.textContent = `제외된 파일 ${erroredSchools.length}개가 있습니다. 해당 파일을 다시 확인해 주세요.`;
+
+  const list = document.createElement("div");
+  list.className = "excluded-file-list";
+  list.style.display = "none";
+
+  erroredSchools.forEach((school) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "excluded-file-btn";
+    button.textContent = school.name;
+    button.title = school.error || school.name;
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      openSchoolValidationById(school.id);
+    });
+    list.appendChild(button);
+  });
+
+  const toggle = () => {
+    const opened = list.style.display !== "none";
+    list.style.display = opened ? "none" : "flex";
+    notice.setAttribute("aria-expanded", opened ? "false" : "true");
+  };
+
+  notice.addEventListener("click", toggle);
+  notice.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      toggle();
+    }
+  });
+
+  wrapper.appendChild(notice);
+  wrapper.appendChild(list);
+  return wrapper;
+}
+
+async function triggerWorkbookDownload(workbook, fileName) {
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+    link.remove();
+  }, 1000);
+}
+
+async function downloadErrorList() {
+  const erroredSchools = getErroredSchools();
+  if (!erroredSchools.length) {
+    alert("다운로드할 오류 파일이 없습니다.");
+    return;
+  }
+
+  try {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("오류 파일 목록");
+    worksheet.columns = [
+      { header: "번호", key: "no", width: 8 },
+      { header: "파일명", key: "name", width: 36 },
+      { header: "상태", key: "status", width: 12 },
+      { header: "오류 내용", key: "error", width: 64 },
+      { header: "데이터 행 수", key: "rowCount", width: 14 },
+      { header: "비고", key: "note", width: 36 }
+    ];
+
+    worksheet.addRow({
+      no: "",
+      name: `오류 파일 ${erroredSchools.length}개`,
+      status: "",
+      error: "파일 업로드/분석 중 제외된 항목 목록",
+      rowCount: "",
+      note: new Date().toLocaleString("ko-KR")
+    });
+
+    erroredSchools.forEach((school, index) => {
+      worksheet.addRow({
+        no: index + 1,
+        name: school.name || "",
+        status: school.status === "err" ? "오류" : school.status || "",
+        error: school.error || "",
+        rowCount: school.rowCount || 0,
+        note: school.warn && school.warn !== school.error ? school.warn : ""
+      });
+    });
+
+    const headerRow = worksheet.getRow(1);
+    headerRow.font = { bold: true };
+    headerRow.alignment = { vertical: "middle", horizontal: "center" };
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFDCE6F1" }
+      };
+      cell.border = {
+        top: { style: "thin", color: { argb: "FFB0BEC5" } },
+        left: { style: "thin", color: { argb: "FFB0BEC5" } },
+        bottom: { style: "thin", color: { argb: "FFB0BEC5" } },
+        right: { style: "thin", color: { argb: "FFB0BEC5" } }
+      };
+    });
+
+    const summaryRow = worksheet.getRow(2);
+    summaryRow.font = { bold: true };
+    summaryRow.getCell(2).font = { bold: true, color: { argb: "FFC62828" } };
+
+    worksheet.views = [{ state: "frozen", ySplit: 1 }];
+    worksheet.autoFilter = {
+      from: "A1",
+      to: "F1"
+    };
+
+    await triggerWorkbookDownload(workbook, "오류파일목록_" + new Date().toISOString().slice(0, 10) + ".xlsx");
+  } catch (error) {
+    alert("오류 파일 목록 다운로드 오류: " + error.message);
+  }
+}
+
+function buildValidationPaneTitle(title, subText) {
+  const wrapper = document.createElement("div");
+  const heading = document.createElement("h4");
+  heading.textContent = title;
+  const paragraph = document.createElement("p");
+  paragraph.textContent = subText;
+  wrapper.appendChild(heading);
+  wrapper.appendChild(paragraph);
+  return wrapper;
+}
+
+function buildResultView() {
+  if (!outputWorkbook) return;
+  const tabBar = document.getElementById("resultTabBar");
+  const tabContent = document.getElementById("resultTabContent");
+  tabBar.innerHTML = "";
+  tabContent.innerHTML = "";
+
+  const resultSheets = sheetAggregationResults.filter(Boolean);
+  const totalRows = resultSheets.reduce((sum, sheet) => sum + sheet.ranges.reduce((sheetSum, range) => sheetSum + range.rowCount, 0), 0);
+  document.getElementById("statTotal").textContent = `총 ${schoolData.length}개 파일 · ${sheetAggregationResults.length}개 시트 · ${totalRows}행 취합 완료`;
+
+  addTab(tabBar, tabContent, "result-summary", "📚 전체 요약", "전체 요약", () => {
+    const wrap = document.createElement("div");
+    const notice = document.createElement("div");
+    notice.className = "notice notice-success";
+    notice.textContent = "템플릿의 모든 시트를 각각 취합했습니다. 이 화면에는 취합 결과만 표시하며, 학교별 원본/결과 비교는 5 학교별 검증에서 확인할 수 있습니다.";
+    wrap.appendChild(notice);
+    const erroredSchools = schoolData.filter((school) => school.error);
+    if (erroredSchools.length) {
+      const errorNotice = document.createElement("div");
+      errorNotice.className = "notice notice-warn";
+      errorNotice.textContent = `제외된 파일 ${erroredSchools.length}개가 있습니다. 해당 파일을 다시 확인해 주세요.`;
+      wrap.appendChild(errorNotice);
+    }
+    if (erroredSchools.length) {
+      const staleWarn = wrap.querySelector(".notice-warn");
+      wrap.appendChild(createExcludedFilesNotice(erroredSchools));
+      if (staleWarn) staleWarn.remove();
+    }
+    resultSheets.forEach((sheetResult) => {
+      const card = document.createElement("div");
+      card.className = "validation-card";
+      const totalSheetRows = sheetResult.ranges.reduce((sum, range) => sum + range.rowCount, 0);
+      card.innerHTML = `
+        <div class="validation-row">
+          <strong>${escapeHtml(sheetResult.templateSheetName)}</strong>
+          <span class="ok-tag">참여 파일 ${sheetResult.ranges.length}개</span>
+          <span class="ok-tag">취합 행 ${totalSheetRows}행</span>
+          <span class="ok-tag">기준 ${sheetResult.startRow}행 / ${colLetter(sheetResult.lastRowCol)}열</span>
+        </div>
+      `;
+      wrap.appendChild(card);
+    });
+    return wrap;
+  });
+
+  resultSheets.forEach((sheetResult, sheetIndex) => {
+    addTab(
+      tabBar,
+      tabContent,
+      "result-sheet-" + sheetIndex,
+      "📄 " + trimName(sheetResult.templateSheetName),
+      sheetResult.templateSheetName,
+      () => {
+        const wrap = document.createElement("div");
+        const notice = document.createElement("div");
+        notice.className = "notice notice-success";
+        const totalSheetRows = sheetResult.ranges.reduce((sum, range) => sum + range.rowCount, 0);
+        notice.textContent = `${sheetResult.templateSheetName} 시트 취합 결과입니다. 참여 파일 ${sheetResult.ranges.length}개, 취합 행 ${totalSheetRows}행입니다.`;
+        wrap.appendChild(notice);
+
+        const preview = document.createElement("div");
+        preview.className = "excel-wrap";
+        const outputSheet = outputWorkbook.getWorksheet(sheetResult.outputSheetName);
+        renderWorksheet(outputSheet, preview);
+        wrap.appendChild(preview);
+        return wrap;
+      }
+    );
+  });
+
+  document.getElementById("statTotal").textContent = `총 ${schoolData.length}개 파일 · ${resultSheets.length}개 시트 · ${totalRows}행 취합 완료`;
+  document.getElementById("statTotal").textContent = `총 ${schoolData.length}개 파일 · ${resultSheets.length}개 시트 · ${totalRows}행 취합 완료`;
+  document.getElementById("statTotal").textContent = `총 ${schoolData.length}개 파일 · ${resultSheets.length}개 시트 · ${totalRows}행 취합 완료`;
+  const firstTab = tabBar.querySelector(".tab-btn");
+  if (firstTab) firstTab.click();
+}
+
+function buildValidationView() {
+  if (!outputWorkbook) return;
+  const tabBar = document.getElementById("validationTabBar");
+  const tabContent = document.getElementById("validationTabContent");
+  tabBar.innerHTML = "";
+  tabContent.innerHTML = "";
+  const selectedIndexes = getSelectedSheetIndexes();
+  const orderedSchools = getOrderedSchoolData(schoolData);
+
+  const totalSheetChecks = schoolData.length * selectedIndexes.length;
+  document.getElementById("statValidation").textContent = `총 ${schoolData.length}개 파일 · ${totalSheetChecks}개 시트 검증`;
+
+  document.getElementById("statValidation").textContent = `총 ${schoolData.length}개 파일 · ${totalSheetChecks}개 시트 검증`;
+  document.getElementById("statValidation").textContent = `총 ${schoolData.length}개 파일 · ${totalSheetChecks}개 시트 검증`;
+  orderedSchools.forEach((school) => {
+    addTab(
+      tabBar,
+      tabContent,
+      "school-" + school.id,
+      "🏫 " + trimName(school.name),
+      school.name,
+      () => {
+        const wrap = document.createElement("div");
+        if (!school.workbook) {
+          const header = document.createElement("div");
+          header.className = "validation-card";
+          const title = document.createElement("strong");
+          title.textContent = school.name;
+          title.title = school.name;
+          header.appendChild(title);
+          const bad = document.createElement("span");
+          bad.className = "bad-tag";
+          bad.textContent = "로드 실패";
+          header.appendChild(bad);
+          const notice = document.createElement("div");
+          notice.className = "notice notice-warn";
+          notice.textContent = school.error || "파일을 불러오지 못해 검증할 수 없습니다.";
+          wrap.appendChild(header);
+          wrap.appendChild(notice);
+          return wrap;
+        }
+
+        const schoolHeader = document.createElement("div");
+        schoolHeader.className = "validation-card";
+        schoolHeader.innerHTML = `
+          <div class="validation-row">
+            <strong title="${escapeHtml(school.name)}">${escapeHtml(school.name)}</strong>
+            <span class="ok-tag">총 ${school.rowCount}행</span>
+            <span class="ok-tag">검토 시트 ${getTemplateSheets().length}개</span>
+          </div>
+        `;
+        const schoolHeaderTags = schoolHeader.querySelectorAll(".ok-tag");
+        if (schoolHeaderTags[1]) schoolHeaderTags[1].textContent = `검토 시트 ${selectedIndexes.length}개`;
+        wrap.appendChild(schoolHeader);
+        if (school.error) {
+          const errorNotice = document.createElement("div");
+          errorNotice.className = "notice notice-warn";
+          errorNotice.textContent = school.error;
+          wrap.appendChild(errorNotice);
+        }
+
+        selectedIndexes.forEach((templateIndex) => {
+          const templateSheet = getTemplateSheets()[templateIndex];
+          const sheetStat = school.sheetStats[templateIndex];
+          const sheetResult = sheetAggregationResults[templateIndex];
+          const range = sheetResult ? sheetResult.ranges.find((item) => item.id === school.id) : null;
+          const outputSheet = sheetResult ? outputWorkbook.getWorksheet(sheetResult.outputSheetName) : null;
+          const validation = buildSheetValidation(
+            school,
+            sheetStat,
+            range,
+            templateSheet,
+            templateIndex,
+            outputSheet,
+            sheetResult ? { startRow: sheetResult.startRow, lastRowCol: sheetResult.lastRowCol } : getSheetSetting(templateIndex)
+          );
+
+          const card = document.createElement("div");
+          card.className = "validation-card";
+
+          const header = document.createElement("div");
+          header.className = "validation-row";
+          const title = document.createElement("strong");
+          title.textContent = `${templateSheet.name}`;
+          title.title = templateSheet.name;
+          header.appendChild(title);
+
+          const overallOk = validation.rowCountMatch && validation.valueMatch && validation.mergeMatch && validation.keyMatch && validation.formatHeaderMatch;
+          const overallTag = document.createElement("span");
+          overallTag.className = overallOk ? "ok-tag" : "warn-tag";
+          overallTag.textContent = overallOk ? "검증 통과" : "확인 필요";
+          header.appendChild(overallTag);
+
+          if (sheetStat && sheetStat.warn) {
+            const warn = document.createElement("span");
+            warn.className = "warn-tag";
+            warn.textContent = sheetStat.warn;
+            header.appendChild(warn);
+          }
+
+          card.appendChild(header);
+
+          const metrics = document.createElement("div");
+          metrics.className = "validation-metrics";
+          metrics.innerHTML = `
+            <div class="v-stat"><strong>원본 시트</strong>${escapeHtml(validation.sourceSheetName || "-")}</div>
+            <div class="v-stat"><strong>적용 기준</strong>${validation.startRow ? `${validation.startRow}행` : "-"} / ${validation.lastRowCol ? `${colLetter(validation.lastRowCol)}열` : "-"}</div>
+            <div class="v-stat"><strong>원본 데이터 범위</strong>${validation.sourceRange ? `${validation.sourceRange.start}~${validation.sourceRange.end}행` : "-"}</div>
+            <div class="v-stat"><strong>취합 결과 범위</strong>${validation.outputRange ? `${validation.outputRange.start}~${validation.outputRange.end}행` : "-"}</div>
+            <div class="v-stat"><strong>행 수 검증</strong>${sheetStat ? sheetStat.rowCount : 0}행 → ${range ? range.rowCount : 0}행 ${validation.rowCountMatch ? "일치" : "불일치"}</div>
+            <div class="v-stat"><strong>기준 열 첫/마지막 값</strong>원본 ${escapeHtml((sheetStat && sheetStat.firstKey) || "-")} / ${escapeHtml((sheetStat && sheetStat.lastKey) || "-")}<br>결과 ${escapeHtml(validation.outputFirstKey || "-")} / ${escapeHtml(validation.outputLastKey || "-")}</div>
+            <div class="v-stat"><strong>병합 셀 검증</strong>원본 ${validation.sourceMergeCount}개 / 결과 ${validation.outputMergeCount}개 ${validation.mergeMatch ? "일치" : "확인 필요"}</div>
+            <div class="v-stat"><strong>서식 기준 텍스트</strong>${validation.formatHeaderCellAddress ? `${validation.formatHeaderCellAddress} ${escapeHtml(formatReferenceTextForMessage(validation.formatHeaderExpectedText))}` : "사용 안 함"}<br>원본 ${escapeHtml(formatReferenceTextForMessage(validation.formatHeaderActualText))}</div>
+          `;
+          card.appendChild(metrics);
+
+          const statusRow = document.createElement("div");
+          statusRow.className = "validation-row";
+          statusRow.innerHTML = `
+            <span class="${validation.rowCountMatch ? "ok-tag" : "bad-tag"}">행 수 ${validation.rowCountMatch ? "일치" : "불일치"}</span>
+            <span class="${validation.valueMatch ? "ok-tag" : "bad-tag"}">셀 값 스냅샷 ${validation.valueMatch ? "일치" : "불일치"}</span>
+            <span class="${validation.keyMatch ? "ok-tag" : "bad-tag"}">기준 열 첫/마지막 값 ${validation.keyMatch ? "일치" : "불일치"}</span>
+            <span class="${validation.mergeMatch ? "ok-tag" : "bad-tag"}">병합 수 ${validation.mergeMatch ? "일치" : "불일치"}</span>
+            <span class="${validation.formatHeaderMatch ? "ok-tag" : "bad-tag"}">서식 기준 ${validation.formatHeaderMatch ? "일치" : "불일치"}</span>
+          `;
+          card.appendChild(statusRow);
+
+          const compare = document.createElement("div");
+          compare.className = "validation-compare";
+
+          const sourcePane = document.createElement("section");
+          sourcePane.className = "compare-pane";
+          sourcePane.appendChild(
+            buildValidationPaneTitle(
+              "원본 파일 미리보기",
+              validation.sourceSheet
+                ? `원본 시트 전체를 표시합니다. 추출 범위는 ${validation.sourceRange ? `${validation.sourceRange.start}~${validation.sourceRange.end}행` : "없음"}이며, 초록색은 첫 데이터 행, 파란색은 행 존재 확인 열입니다.`
+                : "표시할 원본 시트가 없습니다."
+            )
+          );
+          const sourcePreview = document.createElement("div");
+          sourcePreview.className = "excel-wrap source-preview-wrap";
+          sourcePreview.style.maxHeight = "420px";
+          if (validation.sourceSheet) {
+            renderWorksheet(validation.sourceSheet, sourcePreview, {
+              hlRow: validation.startRow,
+              hlCol: validation.lastRowCol
+            });
+          } else {
+            sourcePreview.innerHTML = '<div style="padding:20px;text-align:center;color:#90a4ae">원본 데이터가 없습니다.</div>';
+          }
+          sourcePane.appendChild(sourcePreview);
+
+          const resultPane = document.createElement("section");
+          resultPane.className = "compare-pane";
+          resultPane.appendChild(
+            buildValidationPaneTitle(
+              "취합 결과 미리보기",
+              validation.outputRange
+                ? `취합 결과 ${validation.outputRange.start}~${validation.outputRange.end}행을 표시합니다. 파일명이 길어도 탭 위에 마우스를 올리면 전체 이름을 볼 수 있습니다.`
+                : "취합 결과에 이 시트 데이터가 포함되지 않았습니다."
+            )
+          );
+          const resultPreview = document.createElement("div");
+          resultPreview.className = "excel-wrap";
+          resultPreview.style.maxHeight = "420px";
+          if (validation.outputRange && outputSheet) {
+            renderWorksheet(outputSheet, resultPreview, {
+              rowStart: validation.outputRange.start,
+              rowEnd: validation.outputRange.end,
+              hlCol: validation.lastRowCol
+            });
+          } else {
+            resultPreview.innerHTML = '<div style="padding:20px;text-align:center;color:#90a4ae">취합 결과 범위가 없습니다.</div>';
+          }
+          resultPane.appendChild(resultPreview);
+
+          compare.appendChild(sourcePane);
+          compare.appendChild(resultPane);
+          card.appendChild(compare);
+          wrap.appendChild(card);
+        });
+
+        return wrap;
+      }
+    );
+  });
+
+  const firstTab = tabBar.querySelector(".tab-btn");
+  if (firstTab) firstTab.click();
+}
+
+async function downloadResult() {
+  if (!outputWorkbook) return;
+  try {
+    await triggerWorkbookDownload(outputWorkbook, "취합결과_" + new Date().toISOString().slice(0, 10) + ".xlsx");
+  } catch (error) {
+    alert("다운로드 오류: " + error.message);
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+document.getElementById("templateInput").addEventListener("change", async function onTemplateChange() {
+  const file = this.files[0];
+  if (!file) return;
+
+  const info = document.getElementById("templateFileInfo");
+  info.innerHTML = '<div style="margin-top:12px;color:#607d8b">⏳ 파일 로드 중...</div>';
+
+  try {
+    const { workbook, isXls } = await loadExcelFile(file);
+    templateWorkbook = workbook;
+    templateSheetIndex = 0;
+    sheetSettings = workbook.worksheets.map(() => createEmptySheetSetting());
+    setSelectedSheetIndexes(workbook.worksheets.map((sheet, index) => index));
+    templateWs = getCurrentTemplateSheet();
+    maxColCount = Math.max(...workbook.worksheets.map((sheet) => sheet.columnCount || sheet.actualColumnCount || 1), 1);
+    const sheetSelect = document.getElementById("templateSheetSelect");
+    sheetSelect.innerHTML = workbook.worksheets
+      .map((sheet, index) => `<option value="${index}">${escapeHtml(sheet.name)}</option>`)
+      .join("");
+    sheetSelect.disabled = workbook.worksheets.length === 0;
+    sheetSelect.value = "0";
+    const warning = isXls ? ' <span style="color:#e65100;font-size:11px">⚠️ .xls → .xlsx 변환됨 (일부 서식 차이 가능)</span>' : "";
+    info.innerHTML = `<div class="file-badge">✅ ${escapeHtml(file.name)} · ${(file.size / 1024).toFixed(1)} KB · 시트 ${workbook.worksheets.length}개</div>${warning}`;
+    document.getElementById("btn1Next").disabled = false;
+    renderSheetSelectionStatus();
+    renderSheetSettingStatus();
+    syncSelectionDisplay();
+    renderTemplatePreview();
+  } catch (error) {
+    templateWorkbook = null;
+    templateWs = null;
+    document.getElementById("templateSheetSelect").innerHTML = '<option value="0">시트를 먼저 불러오세요</option>';
+    document.getElementById("templateSheetSelect").disabled = true;
+    info.innerHTML = `<div style="color:#c62828;margin-top:10px">❌ 로드 실패: ${escapeHtml(error.message)}</div>`;
+  }
+});
+
+["dragover", "dragleave", "drop"].forEach((eventName) => {
+  document.getElementById("templateZone").addEventListener(eventName, (event) => {
+    event.preventDefault();
+    if (eventName === "dragover") event.currentTarget.classList.add("drag");
+    if (eventName === "dragleave") event.currentTarget.classList.remove("drag");
+    if (eventName === "drop") {
+      event.currentTarget.classList.remove("drag");
+      if (event.dataTransfer.files[0]) {
+        document.getElementById("templateInput").files = event.dataTransfer.files;
+        document.getElementById("templateInput").dispatchEvent(new Event("change"));
+      }
+    }
+  });
+});
+
+document.getElementById("schoolInput").addEventListener("change", async function onSchoolChange() {
+  const files = Array.from(this.files || []);
+  this.value = "";
+  if (!files.length) return;
+  await appendSchoolFiles(files);
+});
+
+["dragover", "dragleave", "drop"].forEach((eventName) => {
+  document.getElementById("schoolZone").addEventListener(eventName, async (event) => {
+    event.preventDefault();
+    if (eventName === "dragover") event.currentTarget.classList.add("drag");
+    if (eventName === "dragleave") event.currentTarget.classList.remove("drag");
+    if (eventName === "drop") {
+      event.currentTarget.classList.remove("drag");
+      const files = Array.from(event.dataTransfer.files || []);
+      if (files.length) await appendSchoolFiles(files);
+    }
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeGuideVideo();
+    closeFilenameGuide();
+  }
+});
+
+initTheme();
+renderSheetSelectionStatus();
+renderSheetSettingStatus();
+syncSelectionDisplay();
+updateErrorDownloadButtons();
+</script>
+<div id="vibecoding-webdesign-credit">Web design by Kwon O Young.</div>
+<style id="vibecoding-home-style" data-vibecoding-home="persistent">
+#vibecoding-webdesign-credit{padding:18px 16px 76px;text-align:center;color:#6b7280;font:700 12px/1.4 "Malgun Gothic",sans-serif}
+#vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;letter-spacing:-.02em}
+#vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75}
+#vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
+@media(max-width:640px){#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
+@media print{#vibecoding-home-btn,#vibecoding-webdesign-credit{display:none!important}}
+</style>
+<a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
+<script src="./latest-home-nav.js?v=20260812-collect" data-vibecoding-latest-home="1"></script>
+</body>
+</html>
