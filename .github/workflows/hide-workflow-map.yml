@@ -1,0 +1,30 @@
+name: Hide workflow map from home
+on:
+  push:
+    paths:
+      - '.github/workflows/hide-workflow-map.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hide map card on index
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          rule='a.tool[href="map.html"]{display:none!important}'
+          if rule not in s:
+              s=s.replace('</style>', rule+'\n</style>', 1)
+              p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit change
+        run: |
+          git config user.name "kwonoyoung"
+          git config user.email "kwonoyoung77@gmail.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Hide education workflow map from home"
+          git push
