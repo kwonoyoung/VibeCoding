@@ -19,7 +19,7 @@
     <button class="btn" id="sendBtn">관리자 인증메일 보내기</button>
     <div class="loading" id="loading"></div>
     <div class="msg" id="msg"></div>
-    <div class="warn">인증 링크는 등록된 관리자 메일로만 발송됩니다. 인증 후에도 관리자 권한과 승인 상태를 다시 확인합니다.</div>
+    <div class="warn">관리자 로그인 페이지에서는 기존 일반회원 로그인 세션을 자동으로 종료합니다. 인증 링크는 등록된 관리자 이메일로만 발송되며, 인증 후 관리자 권한과 승인 상태를 다시 확인합니다.</div>
     <a class="back" href="index.html">← 첫 화면으로 돌아가기</a>
   </section>
 </main>
@@ -29,26 +29,49 @@ const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
 const ADMIN_EMAIL='kwonoyoung77@gmail.com';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const sendBtn=document.getElementById('sendBtn'),msg=document.getElementById('msg'),loading=document.getElementById('loading');
+let processing=false;
 function show(t,bad=false){msg.textContent=t;msg.classList.add('show');msg.style.background=bad?'#fff0f1':'#eef7f7';msg.style.color=bad?'#922f39':'#275b5a'}
-async function verifyAdminAndMove(){
-  const {data:{session}}=await sb.auth.getSession();
+function hasAuthCallback(){return location.hash.includes('access_token=')||location.search.includes('code=')||location.search.includes('token_hash=');}
+async function verifyAdminAndMove(session){
   if(!session)return false;
   const email=(session.user?.email||'').toLowerCase();
-  if(email!==ADMIN_EMAIL){await sb.auth.signOut();show('관리자 이메일과 일치하지 않는 계정입니다.',true);return false;}
+  if(email!==ADMIN_EMAIL){await sb.auth.signOut();show('기존 일반회원 로그인 상태를 종료했습니다. 아래 버튼을 눌러 관리자 이메일 인증을 진행해 주세요.');return false;}
   const {data:m,error}=await sb.from('vibecoding_members').select('role,status').eq('user_id',session.user.id).single();
-  if(error||!m||m.role!=='admin'||m.status!=='approved'){await sb.auth.signOut();show('관리자 권한이 확인되지 않았습니다.',true);return false;}
+  if(error||!m||m.role!=='admin'||m.status!=='approved'){await sb.auth.signOut();show('관리자 권한 또는 승인 상태를 확인하지 못했습니다.',true);return false;}
   location.replace('admin.html');return true;
 }
-(async()=>{loading.classList.add('on');try{await verifyAdminAndMove()}finally{loading.classList.remove('on')}})();
+(async()=>{
+  loading.classList.add('on');
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(session){
+      if((session.user?.email||'').toLowerCase()===ADMIN_EMAIL){await verifyAdminAndMove(session);}
+      else {await sb.auth.signOut(); if(!hasAuthCallback()) show('기존 일반회원 로그인 상태를 종료했습니다. 관리자 인증메일을 발송해 주세요.');}
+    }
+  }finally{loading.classList.remove('on')}
+})();
 sendBtn.onclick=async()=>{
-  sendBtn.disabled=true;loading.classList.add('on');msg.classList.remove('show');
-  const redirect='https://kwonoyoung.github.io/VibeCoding/admin-login.html';
-  const {error}=await sb.auth.signInWithOtp({email:ADMIN_EMAIL,options:{shouldCreateUser:false,emailRedirectTo:redirect}});
-  loading.classList.remove('on');sendBtn.disabled=false;
-  if(error){show('인증메일 발송에 실패했습니다: '+error.message,true);return;}
-  show('관리자 이메일로 1회용 인증 링크를 보냈습니다. 메일함에서 링크를 클릭해 주세요.');
+  if(processing)return;
+  processing=true;sendBtn.disabled=true;loading.classList.add('on');msg.classList.remove('show');
+  try{
+    await sb.auth.signOut();
+    const redirect='https://kwonoyoung.github.io/VibeCoding/admin-login.html';
+    const {error}=await sb.auth.signInWithOtp({email:ADMIN_EMAIL,options:{shouldCreateUser:false,emailRedirectTo:redirect}});
+    if(error){
+      const text=(error.message||'').toLowerCase();
+      if(text.includes('security purposes')||text.includes('seconds')) show('보안을 위해 인증메일을 연속으로 보낼 수 없습니다. 약 60초 후 다시 눌러 주세요.',true);
+      else show('인증메일 발송에 실패했습니다: '+error.message,true);
+      return;
+    }
+    show('관리자 이메일로 1회용 인증 링크를 보냈습니다. Gmail에서 링크를 클릭하면 관리자 화면으로 이동합니다.');
+  }finally{loading.classList.remove('on');sendBtn.disabled=false;processing=false;}
 };
-sb.auth.onAuthStateChange(async(event,session)=>{if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))await verifyAdminAndMove();});
+sb.auth.onAuthStateChange(async(event,session)=>{
+  if(processing)return;
+  if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')){
+    if((session.user?.email||'').toLowerCase()===ADMIN_EMAIL) await verifyAdminAndMove(session);
+  }
+});
 </script>
 </body>
 </html>
