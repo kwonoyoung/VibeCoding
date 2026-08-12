@@ -1,0 +1,52 @@
+name: Fix Top Login Buttons
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-top-login-buttons.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch-home:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch index.html
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          # Remove the previous account-area admin button and guard loader.
+          s=s.replace('<a href="admin-login.html" class="admin-login-btn">🔐 관리자 로그인</a>','')
+          import re
+          s=re.sub(r'<script src="\./admin-button-guard\.js[^>]*></script>','',s)
+
+          # Make decorative hero layers unable to block clicks.
+          extra_css='''\n.hero:before,.hero:after{pointer-events:none!important}.topline,.account,.account a,.account button{position:relative;z-index:30;pointer-events:auto!important}.admin-left-login{position:absolute;left:18px;top:16px;z-index:99999;display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid rgba(255,255,255,.45);border-radius:999px;background:rgba(255,255,255,.96);color:#0b3c5d!important;text-decoration:none;font-size:12px;font-weight:900;box-shadow:0 8px 22px rgba(0,0,0,.18);pointer-events:auto!important}.admin-left-login:hover{background:#e8fffb;color:#075e58!important;transform:translateY(-1px)}@media(max-width:700px){.admin-left-login{left:12px;top:10px;padding:8px 11px;font-size:11px}.hero-inner{padding-top:64px!important}}\n'''
+          if '.admin-left-login{' not in s:
+              s=s.replace('</style>',extra_css+'</style>',1)
+
+          # Add independent left-top admin login anchor inside hero, outside dynamic account area.
+          marker='<header class="hero">'
+          admin='<a class="admin-left-login" href="admin-login.html" aria-label="관리자 로그인">🔐 관리자 로그인</a>'
+          if admin not in s:
+              s=s.replace(marker,marker+admin,1)
+
+          # Ensure ordinary login/signup remain direct anchors after dynamic refresh.
+          s=s.replace("account.innerHTML='<a href=\"login.html\">로그인</a><a href=\"login.html?mode=signup\">회원가입</a>';return", "account.innerHTML='<a href=\"login.html\" style=\"pointer-events:auto\">로그인</a><a href=\"login.html?mode=signup\" style=\"pointer-events:auto\">회원가입</a>';return")
+
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "kwonoyoung"
+          git config user.email "kwonoyoung77@gmail.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Fix top login buttons and move admin login left"
+            git push
+          fi
