@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>관리자 로그인 | 오춘기 권오영 업무지원 서비스</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:22px;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:radial-gradient(circle at 12% 10%,rgba(12,148,136,.13),transparent 27%),linear-gradient(135deg,#eaf4f7,#f8fbfc);color:#183448}.box{width:min(480px,100%);overflow:hidden;border:1px solid #d7e4ea;border-radius:25px;background:#fff;box-shadow:0 22px 65px rgba(7,54,82,.15)}.head{padding:30px;color:#fff;background:linear-gradient(135deg,#082f4d,#0e5d7f 62%,#0c9488)}.badge{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:7px 11px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.12);font-size:11px;font-weight:900}.badge:before{content:"";width:7px;height:7px;border-radius:50%;background:#63ded4}.head h1{margin:0;font-size:27px;letter-spacing:-.045em}.head p{margin:10px 0 0;color:#d6edf0;font-size:13px;line-height:1.7}.body{padding:28px 30px}.label{margin-bottom:7px;font-size:12px;font-weight:900;color:#526c7b}.email{display:flex;align-items:center;gap:10px;padding:13px 14px;border:1px solid #cddde5;border-radius:12px;background:#f7fafb;color:#24475d;font-size:14px;font-weight:850;word-break:break-all}.email:before{content:"✉";font-size:18px}.btn{width:100%;margin-top:17px;padding:13px 16px;border:0;border-radius:12px;background:linear-gradient(135deg,#0b3c5d,#0c9488);color:#fff;font-size:15px;font-weight:900;cursor:pointer;box-shadow:0 9px 22px rgba(12,148,136,.17)}.btn:disabled{opacity:.55;cursor:not-allowed}.msg{display:none;margin-top:15px;padding:13px;border-radius:11px;background:#eef7f7;color:#275b5a;font-size:13px;line-height:1.65}.msg.show{display:block}.warn{margin-top:16px;padding:12px 13px;border:1px solid #e6e0c8;border-radius:11px;background:#fffaf0;color:#76612d;font-size:12px;line-height:1.65}.back{display:block;margin-top:19px;text-align:center;color:#617988;text-decoration:none;font-size:13px;font-weight:800}.loading{display:none;margin:14px auto 0;width:28px;height:28px;border:3px solid #d9e8eb;border-top-color:#0c9488;border-radius:50%;animation:s .8s linear infinite}.loading.on{display:block}@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<main class="box">
+  <section class="head"><div class="badge">ADMIN SECURE LOGIN</div><h1>관리자 이메일 인증</h1><p>등록된 소유자 이메일로 발송되는 1회용 인증 링크를 통해 로그인합니다.</p></section>
+  <section class="body">
+    <div class="label">관리자 이메일</div>
+    <div class="email">kwonoyoung77@gmail.com</div>
+    <button class="btn" id="sendBtn">관리자 인증메일 보내기</button>
+    <div class="loading" id="loading"></div>
+    <div class="msg" id="msg"></div>
+    <div class="warn">인증 링크는 등록된 관리자 메일로만 발송됩니다. 인증 후에도 관리자 권한과 승인 상태를 다시 확인합니다.</div>
+    <a class="back" href="index.html">← 첫 화면으로 돌아가기</a>
+  </section>
+</main>
+<script>
+const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+const ADMIN_EMAIL='kwonoyoung77@gmail.com';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const sendBtn=document.getElementById('sendBtn'),msg=document.getElementById('msg'),loading=document.getElementById('loading');
+function show(t,bad=false){msg.textContent=t;msg.classList.add('show');msg.style.background=bad?'#fff0f1':'#eef7f7';msg.style.color=bad?'#922f39':'#275b5a'}
+async function verifyAdminAndMove(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session)return false;
+  const email=(session.user?.email||'').toLowerCase();
+  if(email!==ADMIN_EMAIL){await sb.auth.signOut();show('관리자 이메일과 일치하지 않는 계정입니다.',true);return false;}
+  const {data:m,error}=await sb.from('vibecoding_members').select('role,status').eq('user_id',session.user.id).single();
+  if(error||!m||m.role!=='admin'||m.status!=='approved'){await sb.auth.signOut();show('관리자 권한이 확인되지 않았습니다.',true);return false;}
+  location.replace('admin.html');return true;
+}
+(async()=>{loading.classList.add('on');try{await verifyAdminAndMove()}finally{loading.classList.remove('on')}})();
+sendBtn.onclick=async()=>{
+  sendBtn.disabled=true;loading.classList.add('on');msg.classList.remove('show');
+  const redirect='https://kwonoyoung.github.io/VibeCoding/admin-login.html';
+  const {error}=await sb.auth.signInWithOtp({email:ADMIN_EMAIL,options:{shouldCreateUser:false,emailRedirectTo:redirect}});
+  loading.classList.remove('on');sendBtn.disabled=false;
+  if(error){show('인증메일 발송에 실패했습니다: '+error.message,true);return;}
+  show('관리자 이메일로 1회용 인증 링크를 보냈습니다. 메일함에서 링크를 클릭해 주세요.');
+};
+sb.auth.onAuthStateChange(async(event,session)=>{if(session&&(event==='SIGNED_IN'||event==='INITIAL_SESSION'))await verifyAdminAndMove();});
+</script>
+</body>
+</html>
