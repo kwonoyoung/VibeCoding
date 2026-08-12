@@ -1,0 +1,45 @@
+name: Add Admin Login Menu
+
+on:
+  push:
+    paths:
+      - '.github/workflows/add-admin-login-menu.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-home:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add administrator login link
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<div class="account" id="account"><a href="login.html">로그인</a><a href="login.html?mode=signup">회원가입</a></div>'
+          new='<div class="account" id="account"><a href="admin-login.html">🔐 관리자 로그인</a><a href="login.html">로그인</a><a href="login.html?mode=signup">회원가입</a></div>'
+          if 'href="admin-login.html"' not in s:
+              if old not in s:
+                  raise SystemExit('Expected account menu markup not found')
+              s=s.replace(old,new,1)
+              p.write_text(s,encoding='utf-8')
+              print('Administrator login menu added.')
+          else:
+              print('Administrator login menu already present.')
+      - name: Commit
+        run: |
+          if git diff --quiet; then
+            echo "No changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add administrator email login menu"
+          git push
