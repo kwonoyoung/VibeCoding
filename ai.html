@@ -78,6 +78,23 @@
   <a class="home" href="index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
 
   <script>
+    const removeLoginCheckText = root => {
+      const walker = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT);
+      const targets = [];
+      while (walker.nextNode()) {
+        if (/^\s*로그인\s*후?\s*확인\s*$/.test(walker.currentNode.nodeValue || "")) targets.push(walker.currentNode);
+      }
+      targets.forEach(node => node.remove());
+    };
+    removeLoginCheckText();
+    new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (/^\s*로그인\s*후?\s*확인\s*$/.test(node.nodeValue || "")) node.remove();
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        removeLoginCheckText(node);
+      }
+    }))).observe(document.body, {childList:true, subtree:true});
+
     const REVIEWED_AT = "2026-08-11";
     const groups = {
       ai: {
