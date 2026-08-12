@@ -46,8 +46,13 @@
       const cls=member.status==='pending'?'permission-wait':'permission-no';
       tools.forEach(a=>{setBadge(a,label,cls);deny(a,member.status==='pending'?'관리자 승인 후 이용할 수 있습니다.':'현재 차단된 회원입니다.')});return;
     }
+
+    const {data:usage,error:usageError}=await sb.from('vibecoding_menu_usage').select('page_name,use_count').eq('user_id',session.user.id);
+    const usageMap=new Map((usage||[]).map(u=>[u.page_name,Number(u.use_count)||0]));
+    if(usageError)console.error('사용량 조회 오류:',usageError);
+
     if(member.role==='admin'){
-      tools.forEach(a=>setBadge(a,'사용 가능','permission-ok'));
+      tools.forEach(a=>{const page=pageName(a),count=usageMap.get(page)||0;setBadge(a,`사용 가능 · ${count}회`,'permission-ok')});
       return;
     }
     const {data:perms,error}=await sb.from('vibecoding_member_permissions').select('page_name,allowed').eq('user_id',session.user.id);
@@ -55,9 +60,10 @@
     const map=new Map((perms||[]).map(p=>[p.page_name,p.allowed]));
     tools.forEach(a=>{
       const page=pageName(a);
+      const count=usageMap.get(page)||0;
       const allowed=!map.has(page)||map.get(page)!==false;
-      if(allowed)setBadge(a,'사용 가능','permission-ok');
-      else{setBadge(a,'사용 불가','permission-no');deny(a);}
+      if(allowed)setBadge(a,`사용 가능 · ${count}회`,'permission-ok');
+      else{setBadge(a,`사용 불가 · ${count}회`,'permission-no');deny(a);}
     });
   })().catch(console.error);
 })();
