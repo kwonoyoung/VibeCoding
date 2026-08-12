@@ -2,356 +2,46 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="글로벌 AI 기업, AI 에이전트, 클라우드 서비스, 웹앱 개발 및 AI 보이스·음악 커버 플랫폼 현황">
-  <title>글로벌 AI·에이전트·클라우드 플랫폼 현황</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <title>회원 인증 확인 중</title>
   <style>
-    :root{--navy:#0b3657;--blue:#1769aa;--cyan:#0b8fa1;--ink:#172b3a;--muted:#657987;--line:#d8e5eb;--bg:#eef4f7;--card:#fff;--soft:#eaf4fb;--green:#0e766e;--purple:#7354b4;--orange:#b56820}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#e9f3f7 0,#f4f7f9 460px,#eef3f6 100%);letter-spacing:-.02em}
-    a{color:inherit}.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(125deg,#082f4d,#0d5e80 58%,#078b83);padding:54px 20px 46px}.hero:after{content:"";position:absolute;width:420px;height:420px;border:68px solid rgba(255,255,255,.06);border-radius:50%;right:-180px;top:-245px}.hero-inner{position:relative;z-index:1;width:min(1260px,100%);margin:auto}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.1);font-size:12px;font-weight:800;letter-spacing:.08em}.hero h1{max-width:900px;margin:18px 0 12px;font-size:clamp(28px,4vw,42px);line-height:1.15;letter-spacing:-.045em}.hero p{max-width:860px;margin:0;color:#d8edf2;font-size:15px;line-height:1.8}.updated{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:18px;color:#d9f2ef;font-size:12px;font-weight:800}.freshness{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(255,255,255,.1)}.freshness-dot{width:8px;height:8px;border-radius:50%;background:#5ce0c4;box-shadow:0 0 0 4px rgba(92,224,196,.15)}.freshness.review .freshness-dot{background:#ffd166}.freshness.overdue .freshness-dot{background:#ff7b7b}.review-policy{margin-top:12px;max-width:900px;color:#bde3e8;font-size:11px;line-height:1.7}
-    .wrap{width:min(1260px,calc(100% - 28px));margin:auto;padding:26px 0 58px}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:-48px;position:relative;z-index:2}.summary-card{padding:19px 20px;border:1px solid rgba(213,229,236,.9);border-radius:18px;background:rgba(255,255,255,.96);box-shadow:0 15px 38px rgba(21,61,83,.1)}.summary-card.total{background:linear-gradient(135deg,#0b3657,#1769aa);border-color:transparent}.summary-card.total b,.summary-card.total span{color:#fff}.summary-card b{display:block;font-size:26px;color:var(--navy)}.summary-card span{color:var(--muted);font-size:12px;font-weight:700}
-    .toolbar{position:sticky;top:0;z-index:20;margin:22px 0;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(18,54,75,.07)}.toolbar-main{display:flex;gap:10px;align-items:center}.search{flex:1;min-width:0;border:1px solid #cadbe3;border-radius:12px;padding:12px 14px;font:inherit;color:var(--ink);background:#fff}.search:focus{outline:3px solid rgba(23,105,170,.14);border-color:var(--blue)}.tabs{display:flex;gap:7px}.countries,.services{display:grid;flex:1;min-width:0;gap:7px;overflow:hidden}.filter-line{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px}.tab,.country-filter,.service-filter{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--muted);font-weight:800;cursor:pointer;white-space:nowrap}.tab.active,.country-filter.active,.service-filter.active{border-color:var(--blue);background:var(--blue);color:#fff}.filter-row{display:flex;align-items:flex-start;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid #e0eaef}.filter-label{flex:0 0 70px;padding:8px 2px;color:#526a78;font-size:11px;font-weight:900}.country-filter,.service-filter{padding:8px 10px;font-size:11px}.popularity-status{margin-left:auto;padding:8px 2px;color:#718590;font-size:11px;white-space:nowrap}.rank{display:inline-grid;place-items:center;min-width:25px;height:25px;margin-right:7px;border-radius:8px;background:#eaf4fb;color:#1769aa;font-size:10px;font-weight:900}.rank.top{background:#fff1d1;color:#94600a}.clicks{display:block;margin:4px 0 0 32px;color:#738894;font-size:10px;font-weight:700}
-    .section{margin:34px 0 48px;scroll-margin-top:90px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:14px}.section-title{display:flex;gap:12px;align-items:center}.section-no{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--blue);font-weight:900}.section h2{margin:0;font-size:23px;letter-spacing:-.045em}.section-desc{margin:4px 0 0;color:var(--muted);font-size:12px}.count{color:#7e929e;font-size:12px;font-weight:900}.table-box{overflow:auto;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 12px 32px rgba(23,58,78,.07)}table{width:100%;min-width:940px;border-collapse:collapse}thead{background:#edf4f7}th{position:sticky;top:0;padding:14px 16px;color:#526a78;text-align:left;font-size:11px;letter-spacing:.04em}td{padding:14px 16px;border-top:1px solid #e5edf1;vertical-align:middle;font-size:13px;line-height:1.55}tbody tr:hover{background:#f8fbfc}.company{font-weight:900;color:#152f40;white-space:nowrap}.product{font-weight:800;color:#245b7c}.country{white-space:nowrap;color:var(--muted)}.tags{display:flex;flex-wrap:wrap;gap:5px}.tag{display:inline-flex;padding:4px 7px;border-radius:7px;background:#edf4f8;color:#486372;font-size:10px;font-weight:800}.tag.agent{background:#e8f6f2;color:#0d7068}.tag.build{background:#f1ecfb;color:#6845a4}.tag.media{background:#fff1e3;color:#9b581c}.visit{display:inline-flex;align-items:center;justify-content:center;min-width:76px;padding:8px 10px;border-radius:9px;background:var(--navy);color:#fff;text-decoration:none;font-size:11px;font-weight:900;white-space:nowrap}.visit:hover{background:var(--blue)}.note{margin-top:12px;padding:13px 15px;border:1px solid #d9e6ec;border-radius:12px;background:#f8fbfc;color:#5c7380;font-size:11px;line-height:1.7}.empty{display:none;padding:28px;text-align:center;color:var(--muted)}.export-area{display:flex;flex-direction:column;align-items:center;gap:8px;margin:18px 0 4px;padding:28px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 12px 32px rgba(23,58,78,.07)}.export-button{border:0;border-radius:12px;padding:13px 22px;background:linear-gradient(135deg,#0e766e,#10947f);color:#fff;font:inherit;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 8px 20px rgba(14,118,110,.2)}.export-button:hover{filter:brightness(1.06)}.export-help{color:var(--muted);font-size:11px;text-align:center}
-    footer{border-top:1px solid #ccdce4;padding:26px 14px 34px;text-align:center;color:#687c88;font-size:12px;line-height:1.8}.home{position:fixed;right:16px;bottom:16px;z-index:30;padding:11px 16px;border-radius:999px;background:#0a486b;color:#fff;text-decoration:none;font-size:12px;font-weight:900;box-shadow:0 10px 26px rgba(8,47,75,.24)}
-    @media(max-width:1050px){.summary{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:820px){.summary{grid-template-columns:1fr;margin-top:-28px}.toolbar-main{align-items:stretch;flex-direction:column}.tabs{overflow:auto}.tab{flex:0 0 auto}.filter-row{flex-direction:column;gap:3px}.filter-label{flex-basis:auto}.popularity-status{margin-left:0}.hero{padding-top:42px}.section-head{align-items:flex-start;flex-direction:column}.count{margin-left:52px}}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <header class="hero"><div class="hero-inner">
-    <div class="eyebrow">GLOBAL AI DIRECTORY · 2026</div>
-    <h1>글로벌 AI·에이전트·클라우드 플랫폼 현황</h1>
-    <p>주요 생성형 AI와 자율형 에이전트, 글로벌 클라우드, 웹앱 개발, AI 보이스·음악 커버 제작 플랫폼을 공식 서비스 링크 중심으로 정리했습니다.</p>
-    <div class="updated">
-      <span id="freshness" class="freshness"><span class="freshness-dot"></span><span id="freshnessText">검토 상태 확인 중</span></span>
-      <span class="freshness">최근 검토: <strong id="lastReviewed">-</strong></span>
-      <span class="freshness">다음 검토: <strong id="nextReview">-</strong></span>
-    </div>
-    <div class="review-policy">매일 오전 1시(한국시간)에 4개 영역의 신규·종료·명칭 변경·공식 링크와 최신 공개 MAU를 점검합니다. 검증된 내용만 반영하고 확인할 수 없는 수치는 추정하지 않습니다.</div>
-  </div></header>
-
-  <main class="wrap">
-    <div class="summary">
-      <div class="summary-card total"><b id="grandTotal">0</b><span>총항목 개수</span></div>
-      <div class="summary-card"><b id="aiTotal">0</b><span>AI·에이전트 기업 및 서비스</span></div>
-      <div class="summary-card"><b id="cloudTotal">0</b><span>글로벌 클라우드 서비스</span></div>
-      <div class="summary-card"><b id="buildTotal">0</b><span>웹앱 생성·개발 플랫폼</span></div>
-      <div class="summary-card"><b id="coverTotal">0</b><span>AI 보이스·음악 커버 플랫폼</span></div>
-    </div>
-
-    <div class="toolbar" aria-label="목록 검색 및 필터 선택">
-      <div class="toolbar-main">
-        <input id="search" class="search" type="search" placeholder="기업명, 제품명, 국가, 활용 분야 검색" autocomplete="off">
-        <div class="tabs">
-          <button class="tab active" data-target="all">전체 영역</button>
-          <button class="tab" data-target="ai">AI·에이전트</button>
-          <button class="tab" data-target="cloud">클라우드</button>
-          <button class="tab" data-target="build">웹앱·개발</button>
-          <button class="tab" data-target="cover">AI 커버</button>
-        </div>
-      </div>
-      <div class="filter-row">
-        <span class="filter-label">국가별 필터</span>
-        <div id="countries" class="countries" aria-label="국가별 항목 필터"></div>
-      </div>
-      <div class="filter-row">
-        <span class="filter-label">주요 서비스</span>
-        <div id="services" class="services" aria-label="주요 서비스별 항목 필터"></div>
-      </div>
-      <div class="filter-row">
-        <span class="filter-label">MAU 인기순</span>
-        <span class="popularity-status">최신 공개 월간 활성 사용자 수 기준 · 매일 오전 1시 점검</span>
-      </div>
-    </div>
-
-    <div id="sections"></div>
-    <div class="export-area" aria-label="전체 목록 엑셀 다운로드">
-      <button id="downloadExcel" class="export-button" type="button">전체 목록 XLSX 다운로드</button>
-      <span class="export-help">전체 <span id="exportCount">0</span>개 항목과 MAU 순위·기준월·출처·공식 링크를 정식 XLSX 파일로 저장합니다.</span>
-    </div>
+  <main class="box">
+    <div class="mark">🔒</div>
+    <h1>회원 인증 확인 중</h1>
+    <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+    <div class="spin" aria-hidden="true"></div>
   </main>
-
-  <footer>
-    <div>각 항목은 해당 기업의 공식 제품·서비스 페이지를 연결합니다. 서비스 제공 범위와 명칭은 공식 사이트에서 최신 정보를 확인해 주세요.</div>
-    <div>Copyright © 2026 오춘기 권오영 All rights reserved.</div>
-  </footer>
-  <a class="home" href="index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
-
   <script>
-    const REVIEWED_AT = "2026-08-11";
-    const groups = {
-      ai: {
-        no: "01", title: "글로벌 주요 AI 기업 및 에이전트 현황",
-        desc: "범용 모델·멀티모달 생성 AI·검색·코딩·기업 업무 자동화 에이전트",
-        columns: ["기업명", "주요 도구·서비스", "국가", "주요 활용 분야", "공식 사이트"],
-        rows: [
-          ["OpenAI","ChatGPT · Codex · Sora · DALL·E","미국","대화형 AI|코딩 에이전트|문서·데이터|이미지·영상","https://openai.com/"],
-          ["OpenAI","ChatGPT Work · Workspace Agents","미국","장기 실행 업무 에이전트|앱·파일 연결|공유 업무 자동화|승인 기반 작업","https://openai.com/index/chatgpt-for-your-most-ambitious-work/"],
-          ["OpenAI","OpenAI Presence","미국","기업용 음성·채팅 에이전트|고객지원|사내 시스템 연동|정책·가드레일·상담원 이관","https://openai.com/index/introducing-openai-presence/"],
-          ["Google","Gemini · Veo · Imagen · NotebookLM","미국","멀티모달 AI|문서·검색|이미지·영상|업무 자동화","https://gemini.google.com/"],
-          ["Anthropic","Claude · Claude Code","미국","문서 분석|고급 코딩|도구 사용|에이전트","https://www.anthropic.com/"],
-          ["Microsoft","Microsoft Copilot · Copilot Studio","미국","Microsoft 365|기업 에이전트|코딩|업무 자동화","https://copilot.microsoft.com/"],
-          ["Meta","Meta AI · Muse Spark 1.2 · Muse Code · Muse Glimmer · Llama","미국","대화형·멀티에이전트 AI|코딩 에이전트|로컬 실행 오픈웨이트 모델|개발자 API","https://ai.meta.com/"],
-          ["Grok / SpaceXAI (xAI)","Grok · SuperGrok · Grok Imagine · Grok Voice","미국","대화·추론|실시간 웹·X 검색|코딩|음성·이미지·영상|멀티에이전트","https://x.ai/grok"],
-          ["Mistral AI","Vibe (구 Le Chat) · Mistral Models","프랑스","업무 에이전트|코딩 에이전트|기업 검색|모델 API","https://mistral.ai/products/vibe/"],
-          ["Cohere","Command · North","캐나다","기업용 생성 AI|RAG|검색|도구 사용|워크플로","https://cohere.com/command"],
-          ["DeepSeek","DeepSeek Chat · DeepSeek API","중국","추론|코딩|문서|모델 API","https://www.deepseek.com/en/"],
-          ["Alibaba Cloud","Qwen · Tongyi","중국","언어 모델|멀티모달|코딩|기업 AI","https://qwen.ai/"],
-          ["Baidu","ERNIE Bot · ERNIE Models","중국","대화형 AI|검색|멀티모달|기업 AI","https://yiyan.baidu.com/"],
-          ["Zhipu AI","ChatGLM · GLM","중국","대화형 AI|코딩|멀티모달|모델 API","https://www.zhipuai.cn/"],
-          ["Moonshot AI","Kimi","중국","장문 분석|검색|문서|코딩","https://www.kimi.com/"],
-          ["MiniMax","MiniMax · Hailuo AI","중국","언어 모델|음성|음악|영상 생성","https://www.minimax.io/"],
-          ["NVIDIA","NeMo · NIM · AI Enterprise","미국","AI 인프라|모델 배포|에이전트 구축|디지털 트윈","https://www.nvidia.com/en-us/ai/"],
-          ["Hugging Face","Hugging Face Hub · Transformers · Spaces","미국/프랑스","오픈 모델 허브|데이터셋|AI 앱|모델 배포","https://huggingface.co/"],
-          ["Midjourney","Midjourney","미국","이미지 생성|아트워크|디자인","https://www.midjourney.com/"],
-          ["Stability AI","Stable Diffusion · Stable Audio","영국","이미지 생성|오픈 모델|오디오","https://stability.ai/"],
-          ["Runway","Runway · Gen Series","미국","영상 생성|영상 편집|창작 워크플로","https://runwayml.com/"],
-          ["Pika","Pika","미국","영상 생성|영상 효과|콘텐츠 제작","https://pika.art/"],
-          ["HeyGen","HeyGen","미국","AI 아바타|영상 번역|마케팅 영상","https://www.heygen.com/"],
-          ["Synthesia","Synthesia","영국","AI 아바타|교육·기업 영상|다국어 영상","https://www.synthesia.io/"],
-          ["ElevenLabs","ElevenLabs","미국/영국","음성 합성|보이스 에이전트|더빙|오디오","https://elevenlabs.io/"],
-          ["Google","Google AI Studio · Gemini API","미국","Gemini 멀티모달 모델 실험|프롬프트 개발|API 키 발급|코드 생성·앱 통합|장문 컨텍스트","https://aistudio.google.com/"],
-          ["Perplexity AI","Perplexity","미국","AI 검색|리서치|문서 분석|에이전트","https://www.perplexity.ai/"],
-          ["Manus","Manus","싱가포르","범용 AI 에이전트|리서치|문서|코딩","https://manus.im/"],
-          ["Salesforce","Agentforce","미국","CRM 에이전트|고객지원|영업|업무 자동화","https://www.salesforce.com/agentforce/"],
-          ["ServiceNow","ServiceNow AI Agents · AI Agent Studio","미국","기업 워크플로|IT·고객지원|에이전트 구축·관리","https://www.servicenow.com/products/ai-agents.html"],
-          ["UiPath","Agent Builder · Maestro · Autopilot","미국","에이전틱 자동화|RPA|업무 오케스트레이션","https://www.uipath.com/platform/agentic-automation"],
-          ["Glean","Glean Assistant · Glean Agents","미국","기업 검색|지식 연결|업무 에이전트|거버넌스","https://www.glean.com/ai-agents"],
-          ["Anysphere","Cursor","미국","AI 코딩 에이전트|코드 편집|리팩터링|디버깅","https://cursor.com/"],
-          ["Cognition","Devin","미국","자율형 소프트웨어 개발 에이전트|코딩","https://devin.ai/"],
-          ["LangChain","LangChain · LangGraph · LangSmith","미국","에이전트 프레임워크|오케스트레이션|평가·관측","https://www.langchain.com/"],
-          ["CrewAI","CrewAI","미국","멀티에이전트 오케스트레이션|업무 자동화","https://www.crewai.com/"],
-          ["Naver","HyperCLOVA X · CLOVA Studio","대한민국","한국어 생성 AI|문서|검색|기업 AI","https://clova.ai/"],
-          ["Upstage","Solar · Document AI","대한민국","한국어·기업 LLM|문서 인식·분석|모델 API","https://www.upstage.ai/"],
-          ["LG AI Research","EXAONE","대한민국","기업·연구용 생성 AI|멀티모달|오픈 모델","https://www.lgresearch.ai/"],
-          ["Kakao","Kanana","대한민국","한국어 AI|대화형 서비스|카카오 생태계","https://www.kakaocorp.com/page/service/service/Kanana"],
-          ["Genspark","Genspark AI Workspace · Super Agent · SecondBrain · GenTeam","미국","자율형 AI 에이전트|리서치|슬라이드·문서·시트|웹·앱 개발|이미지·영상·음악|협업 자동화","https://www.genspark.ai/"],
-          ["ByteDance","Seedance 2.0 (시댄스)","중국","멀티모달 영상 생성|텍스트·이미지·오디오·비디오 입력|영상 편집·연장|네이티브 오디오|시네마틱 영상","https://seed.bytedance.com/en/blog/official-launch-of-seedance-2-0"],
-          ["VoyagerX","Vrew (브루)","대한민국","문서형 영상 편집|AI 자동 자막·전사|AI 음성·이미지·대본 생성|침묵 구간 제거|영상 제작","https://vrew.ai/ko/"],
-          ["ByteDance","CapCut (캡컷)","중국","AI 영상·사진 편집|AI 영상·이미지 생성|자동 자막·더빙·TTS|배경 제거·업스케일|긴 영상→숏폼","https://www.capcut.com/"],
-          ["Google","Google Flow (구글 플로우)","미국","AI 영화·영상 제작|Veo·Imagen·Gemini 연동|텍스트·이미지→영상|장면·캐릭터 일관성|카메라 제어·네이티브 오디오","https://labs.google/fx/tools/flow"],
-          ["TapNow","TapNow (탭나우)","미국","에이전틱 크리에이티브 캔버스|텍스트·이미지·오디오·영상 모델 통합|AI 광고·영화 제작|스크립트·스토리보드 워크플로|팀 협업·공유","https://www.tapnow.ai/"]
-        ],
-        note: "Meta는 2026년 8월 10일 개인용 GPU에서 에이전틱 작업을 실행하는 오픈웨이트 모델 Muse Glimmer를 공개했습니다. <a href='https://developer.meta.com/ai/models/muse-glimmer/' target='_blank' rel='noopener noreferrer'>Meta 공식 문서</a> · <a href='https://www.reuters.com/world/china/meta-launches-new-ai-model-zuckerberg-champions-open-weight-push-2026-08-10/' target='_blank' rel='noopener noreferrer'>Reuters</a><br>MAU는 최신 공개치 기준이며 집계 범위(독립 앱·통합 서비스·모바일 앱)가 서로 달라 완전히 동일한 모집단 비교는 아닙니다. 공개 수치가 없는 서비스는 순위에서 제외했습니다. 근거: <a href='https://about.fb.com/news/2025/10/improving-your-recommendations-apps-ai-meta/' target='_blank' rel='noopener noreferrer'>Meta</a> · <a href='https://www.reuters.com/technology/chatgpt-app-hits-1-billion-monthly-active-users-record-time-data-shows-2026-06-02/' target='_blank' rel='noopener noreferrer'>ChatGPT·Claude</a> · <a href='https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx' target='_blank' rel='noopener noreferrer'>Gemini</a> · <a href='https://www.ft.com/content/e9c28d31-a962-4684-8b58-c9e6bc68401f' target='_blank' rel='noopener noreferrer'>Perplexity</a>. Grok 수치는 2026년 3월 SpaceX 공시를 인용한 최신 공개 보도 기준입니다."
-      },
-      cloud: {
-        no: "02", title: "글로벌 주요 클라우드 서비스 기업 현황",
-        desc: "컴퓨팅·스토리지·데이터베이스·AI/ML·서버리스·하이브리드 클라우드",
-        columns: ["기업명", "클라우드 서비스", "국가", "주요 서비스 범위", "공식 사이트"],
-        rows: [
-          ["Amazon","Amazon Web Services (AWS)","미국","EC2·S3·RDS|Bedrock·SageMaker|서버리스·글로벌 인프라","https://aws.amazon.com/"],
-          ["Microsoft","Microsoft Azure","미국","컴퓨팅·DB|Azure AI|하이브리드·기업 클라우드","https://azure.microsoft.com/"],
-          ["Google","Google Cloud","미국","BigQuery|Vertex AI|컴퓨팅·스토리지|Kubernetes","https://cloud.google.com/"],
-          ["Oracle","Oracle Cloud Infrastructure (OCI)","미국","기업 DB|컴퓨팅·스토리지|AI·GPU|하이브리드·전용 클라우드","https://www.oracle.com/cloud/"],
-          ["IBM","IBM Cloud","미국","하이브리드·멀티클라우드|AI·자동화|보안·규제 산업","https://www.ibm.com/products/cloud"],
-          ["Alibaba","Alibaba Cloud","중국","컴퓨팅·DB|Qwen AI|아시아 리전|전자상거래 인프라","https://www.alibabacloud.com/"],
-          ["Tencent","Tencent Cloud","중국","컴퓨팅·미디어|게임·영상|AI·DB|아시아 인프라","https://www.tencentcloud.com/"],
-          ["Huawei","Huawei Cloud","중국","컴퓨팅·스토리지|AI·데이터|통신·산업 클라우드","https://www.huaweicloud.com/intl/en-us/"],
-          ["Cloudflare","Cloudflare Developer Platform","미국","Workers·Pages|글로벌 엣지|서버리스·DB·스토리지|Workers AI","https://www.cloudflare.com/developer-platform/"],
-          ["DigitalOcean","DigitalOcean","미국","VM·Kubernetes|PaaS·DB·스토리지|AI 추론·에이전트","https://www.digitalocean.com/"],
-          ["Akamai","Akamai Cloud Computing","미국","분산 클라우드|컴퓨팅·스토리지|CDN·보안","https://www.akamai.com/products/cloud-computing"],
-          ["OVHcloud","OVHcloud","프랑스","퍼블릭·프라이빗 클라우드|베어메탈|데이터 주권","https://www.ovhcloud.com/"],
-          ["Naver Cloud","Naver Cloud Platform","대한민국","공공·기업 클라우드|HyperCLOVA X|DB·보안","https://www.ncloud.com/"],
-          ["KT Cloud","KT Cloud","대한민국","공공·기업 클라우드|AI·GPU|데이터센터·네트워크","https://www.ktcloud.com/"],
-          ["NHN Cloud","NHN Cloud","대한민국","공공·기업 클라우드|게임·결제|AI·데이터","https://www.nhncloud.com/"],
-          ["Kakao Enterprise","KakaoCloud","대한민국","클라우드 인프라|AI·데이터|Kubernetes","https://kakaocloud.com/"]
-        ]
-      },
-      build: {
-        no: "03", title: "웹앱 생성 AI 및 클라우드 개발 플랫폼",
-        desc: "프롬프트 기반 앱 생성·AI 코딩·클라우드 IDE·백엔드·배포·호스팅",
-        columns: ["기업명", "도구·플랫폼", "국가", "주요 서비스", "공식 사이트"],
-        rows: [
-          ["Lovable","Lovable","스웨덴","자연어 기반 풀스택 웹앱 생성|백엔드 연동|배포","https://lovable.dev/"],
-          ["StackBlitz","Bolt.new","미국","브라우저 기반 풀스택 앱 생성·실행|배포","https://bolt.new/"],
-          ["Vercel","v0","미국","AI 에이전트 기반 UI·풀스택 앱·에이전트 생성|Vercel 배포","https://v0.app/"],
-          ["Google","Firebase Studio (종료 예정·기존 사용자 전용)","미국","신규 워크스페이스 생성 종료(2026-06-22)|기존 워크스페이스 개발·이전|2027-03-22 서비스 종료","https://firebase.google.com/docs/studio/migrating-project"],
-          ["Google","Google Antigravity 2.0","미국","멀티에이전트 지휘·병렬 실행|프로젝트·워크스페이스 관리|데스크톱 앱·CLI|예약 작업","https://antigravity.google/product/antigravity-2"],
-          ["Base44","Base44","이스라엘","노코드 AI 앱·웹사이트 생성|데이터·인증·호스팅 통합","https://base44.com/"],
-          ["Replit","Replit Agent","미국","클라우드 IDE|AI 앱 생성·코딩|호스팅·배포","https://replit.com/"],
-          ["Anysphere","Cursor","미국","AI 코딩 에이전트|IDE·CLI|코드베이스 편집","https://cursor.com/"],
-          ["Cognition","Devin","미국","자율형 개발 에이전트|코드 작성·테스트·수정","https://devin.ai/"],
-          ["Windsurf","Windsurf","미국","AI 코딩 에이전트|IDE|코드 생성·리팩터링","https://windsurf.com/"],
-          ["GitHub","GitHub Copilot · GitHub Pages","미국","AI 코딩·코드 리뷰|버전 관리|정적 사이트 배포","https://github.com/features/copilot"],
-          ["OpenAI","Codex","미국","클라우드·로컬 코딩 에이전트|코드 수정·검토·자동화","https://openai.com/codex/"],
-          ["Anthropic","Claude Code","미국","터미널 기반 코딩 에이전트|코드베이스 분석·수정","https://www.anthropic.com/claude-code"],
-          ["Supabase","Supabase","미국","Postgres DB|인증·스토리지|Edge Functions|AI 개발 백엔드","https://supabase.com/"],
-          ["Firebase","Firebase","미국","앱 백엔드|인증·DB·호스팅|AI 앱 개발·운영","https://firebase.google.com/"],
-          ["Cloudflare","Workers · Pages · Workers AI","미국","글로벌 서버리스|프론트·백엔드 배포|DB·AI 추론","https://workers.cloudflare.com/"],
-          ["Netlify","Netlify","미국","웹앱 호스팅|CI/CD|서버리스·엣지 함수","https://www.netlify.com/"],
-          ["Render","Render","미국","웹 서비스·DB·정적 사이트|자동 배포","https://render.com/"],
-          ["Railway","Railway","미국","앱·DB 클라우드 배포|개발자 PaaS","https://railway.com/"],
-          ["Framer","Framer AI","네덜란드","AI 웹사이트 생성|디자인·CMS|호스팅","https://www.framer.com/ai/"],
-          ["Webflow","Webflow AI","미국","노코드 웹 제작|CMS|AI 사이트·콘텐츠 생성","https://webflow.com/ai"],
-          ["Bubble","Bubble AI","미국","노코드 웹앱|AI 앱 생성|워크플로·DB·호스팅","https://bubble.io/ai"],
-          ["Wix","Wix AI Website Builder","이스라엘","AI 웹사이트 생성|비즈니스 기능|호스팅","https://www.wix.com/ai-website-builder"],
-          ["GitLab","GitLab Duo","미국","AI 소프트웨어 개발|DevSecOps|CI/CD·코드 리뷰","https://about.gitlab.com/gitlab-duo/"]
-        ],
-        note: "Firebase Studio는 2026년 6월 22일부터 신규 가입·워크스페이스 생성을 중단했으며 2027년 3월 22일 종료됩니다. 기존 사용자는 Google AI Studio 또는 Google Antigravity로 이전해야 합니다. Glitch는 2025년 7월 8일 프로젝트 호스팅과 사용자 프로필 서비스를 종료하여 활성 플랫폼 목록에서 제외했습니다."
-      },
-      cover: {
-        no: "04", title: "AI 보이스·음악 커버 제작 웹 플랫폼",
-        desc: "AI 노래 커버·보컬 변환·음성 모델 학습·보컬 분리 및 음악 제작 보조",
-        columns: ["플랫폼", "주요 도구·서비스", "국가/지역", "주요 기능", "공식 사이트"],
-        rows: [
-          ["Covers.ai","AI Music Covers · Custom AI Voices","국가 미확인","AI 노래 커버|사용자 음성 모델|가사·언어·장르 변환","https://covers.ai/"],
-          ["Kits AI","AI Voice Generator · Voice Cloning","미국","보컬 변환|사용자 음성 학습|로열티 프리 보이스|보컬 분리","https://www.kits.ai/"],
-          ["Musicfy","AI Voice Song Generator","국가 미확인","AI 노래 커버|사용자 음성 모델|음성 변환|음악 생성","https://musicfy.lol/"],
-          ["Jammable","AI Cover Generator · Voice Changer","영국","AI 노래 커버|음성 모델 탐색|사용자 음성 학습|듀엣","https://www.jammable.com/ai-cover"],
-          ["Audimee","AI Vocal Conversion","스웨덴","보컬 변환|로열티 프리 보이스|사용자 음성 학습|보컬 분리·하모니","https://audimee.com/"],
-          ["FineShare Singify","AI Song Cover Generator","국가 미확인","AI 노래 커버|음원 업로드·녹음|사용자 음성 모델|음악 제작","https://singify.fineshare.com/ai-song-cover"],
-          ["Controlla Voice","AI Singing Voice","미국","노래 음성 변환|음성 복제|합창 생성|다국어 보컬","https://voice.controlla.xyz/"],
-          ["Voice-Swap","AI Voice Transformation","영국","스튜디오급 보컬 변환|보컬 분리|사용자 모델|아티스트 라이선스 보이스","https://voice-swap.ai/"],
-          ["TopMediai","AI Cover Generator","홍콩","AI 노래 커버|음성 모델|사용자 음성 학습|보컬 변환","https://www.topmediai.com/app/ai-cover/"],
-          ["LALAL.AI","Voice Changer","스위스","노래·말소리 음성 변환|보컬 모델 선택|오디오 업로드|스템 처리","https://www.lalal.ai/voice-changer/"],
-          ["Musicful","AI Cover Generator","홍콩","AI 노래 커버|사용자 음성 모델|음원·링크 입력|음성 변환","https://www.musicful.ai/ai-cover/"],
-          ["Mureka","AI Music Generator · AI Radio · Music Maker","국가 미확인","AI 음악·노래 생성|가사·보컬 합성|리믹스·음성 복제|WAV·스템 다운로드|음악 공유","https://www.mureka.ai/"],
-          ["Suno","Suno v5.5 · Voices · Custom Models · Suno Studio","미국","보컬 생성 O|본인 음성 인증·개인 보이스|맞춤형 음악 모델|최대 12개 스템 분리|완성형 노래 제작","https://suno.com/"],
-          ["Udio","AI Music Generator · Song Builder (전환 운영 중)","미국","보컬 생성 O|텍스트·스타일 기반 노래 생성|세밀한 음악·보컬 표현|2025-10-29부터 다운로드 일시 중단","https://www.udio.com/"],
-          ["SOUNDRAW","AI Music Generator","일본","보컬 생성 X|길이·구조·악기·강도 편집|스템 내보내기|유튜브·숏폼 영상 BGM","https://soundraw.io/"],
-          ["Mubert","Mubert Render · API","미국","보컬 생성 X|분위기·장르·길이 맞춤 음악|로열티 프리 배경음악|팟캐스트·스트리밍·영상 BGM","https://mubert.com/"],
-          ["AIVA","AI Music Generation Assistant","룩셈부르크","보컬 생성 X|250개 이상 스타일|오디오·MIDI 영향 입력|트랙 편집·MIDI 출력|게임·영화 음악·작곡 스케치","https://www.aiva.ai/"],
-          ["Stable Audio","Text-to-Audio · Audio-to-Audio","영국","보컬 생성 X(일부 코러스 가능)|텍스트·오디오 기반 음악·효과음|최대 6분·44.1kHz 스테레오|효과음·앰비언트 사운드 디자인","https://stableaudio.com/"]
-        ],
-        note: "Suno는 v5.5의 Voices·Custom Models와 향상된 스템 분리를 제공하고 있습니다. Udio는 UMG와의 전환 기간에 들어가 2025년 10월 29일부터 다운로드 기능을 일시 중단했습니다. <a href='https://suno.com/blog/v5-5' target='_blank' rel='noopener noreferrer'>Suno v5.5</a> · <a href='https://suno.com/blog/stem-separation-updates' target='_blank' rel='noopener noreferrer'>Suno 스템 분리</a> · <a href='https://www.udio.com/blog/a-new-era' target='_blank' rel='noopener noreferrer'>Udio 공식 공지</a><br>자신의 목소리 또는 명시적으로 허가받은 음성·음원을 사용하세요. AI 커버를 공개하거나 수익화하기 전에 원곡 저작권, 음성·초상권, 퍼블리시티권, 해당 플랫폼의 약관과 라이선스를 반드시 확인해야 합니다."
-      }
-    };
-
-    const mauData = {
-      "Meta AI · Muse Spark 1.2 · Muse Code · Muse Glimmer · Llama": {value:1000000001, label:"10억+명", asOf:"2025-10", source:"Meta 공식 발표"},
-      "ChatGPT · Codex · Sora · DALL·E": {value:1000000000, label:"10억명", asOf:"2026-06", source:"Sensor Tower·Reuters"},
-      "Gemini · Veo · Imagen · NotebookLM": {value:950000000, label:"9억 5,000만명", asOf:"2026-07", source:"Alphabet 실적 발표"},
-      "Grok · SuperGrok · Grok Imagine · Grok Voice": {value:117000000, label:"1억 1,700만명", asOf:"2026-03", source:"SpaceX 공시"},
-      "Perplexity": {value:100000000, label:"1억+명", asOf:"2026-03", source:"회사 발표·FT"},
-      "Claude · Claude Code": {value:56000000, label:"5,600만명", asOf:"2026-Q2", source:"Sensor Tower·Reuters"}
-    };
-    groups.ai.rows.sort((a,b)=>(mauData[b[1]]?.value||-1)-(mauData[a[1]]?.value||-1));
-
-    const formatKoreanDate = date => new Intl.DateTimeFormat("ko-KR", {year:"numeric",month:"long",day:"numeric",timeZone:"Asia/Seoul"}).format(date);
-    const reviewedDate = new Date(`${REVIEWED_AT}T00:00:00+09:00`);
-    const nextReviewDate = new Date(reviewedDate.getTime()+86400000);
-    const todayKst = new Date(new Date().toLocaleString("en-US", {timeZone:"Asia/Seoul"}));
-    todayKst.setHours(0,0,0,0);
-    document.getElementById("lastReviewed").textContent = formatKoreanDate(reviewedDate);
-    document.getElementById("nextReview").textContent = formatKoreanDate(nextReviewDate);
-    const freshness = document.getElementById("freshness");
-    const freshnessText = document.getElementById("freshnessText");
-    const daysUntil = Math.ceil((nextReviewDate - todayKst) / 86400000);
-    if (todayKst > nextReviewDate) {
-      freshness.classList.add("overdue");
-      freshnessText.textContent = `검토 기한 ${Math.abs(daysUntil)}일 경과 · 현행화 필요`;
-    } else if (daysUntil <= 2) {
-      freshness.classList.add("review");
-      freshnessText.textContent = `다음 검토까지 ${daysUntil}일`;
-    } else {
-      freshnessText.textContent = `최신 검토 완료 · ${daysUntil}일 후 재검토`;
+  (async()=>{
+    const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+    const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const marker='/VibeCoding/';
+    const path=decodeURIComponent(location.pathname);
+    const pos=path.indexOf(marker);
+    const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+    const returnUrl=encodeURIComponent(location.href);
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){location.replace('login.html?return='+returnUrl);return;}
+      const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+      const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+      if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+      if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+      if(!res.ok){throw new Error(await res.text());}
+      const html=await res.text();
+      document.open();document.write(html);document.close();
+    }catch(err){
+      console.error(err);
+      document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
     }
-
-    const sectionsEl = document.getElementById("sections");
-    const tagClass = text => /에이전트|자동화|워크플로|오케스트/.test(text) ? "agent" : /코딩|개발|앱|배포|프레임워크|IDE/.test(text) ? "build" : /이미지|영상|음성|음악|아바타/.test(text) ? "media" : "";
-    const serviceCategories = [
-      {id:"chat",label:"대화·문서",test:/대화|문서|언어 모델|LLM|생성 AI/},
-      {id:"search",label:"검색·리서치",test:/검색|리서치|RAG|지식|분석/},
-      {id:"code",label:"코딩·개발",test:/코딩|개발|웹앱|앱 생성|IDE|API|프레임워크|DevSecOps/},
-      {id:"agent",label:"에이전트·자동화",test:/에이전트|자동화|워크플로|오케스트|도구 사용|RPA/},
-      {id:"image",label:"이미지·디자인",test:/이미지|사진|디자인|아트워크|스케치/},
-      {id:"video",label:"영상·아바타",test:/영상|비디오|아바타|영화|자막/},
-      {id:"audio",label:"음성·음악",test:/음성|음악|보컬|오디오|노래|더빙|TTS|효과음|사운드/},
-      {id:"cloud",label:"클라우드·인프라",test:/클라우드|컴퓨팅|스토리지|서버리스|인프라|Kubernetes|GPU|CDN|데이터베이스|DB/}
-    ];
-    const serviceIdsForRow = row => {const text=row.slice(1,4).join(" ");return serviceCategories.filter(category=>category.test.test(text)).map(category=>category.id)};
-    const render = () => {
-      sectionsEl.innerHTML = Object.entries(groups).map(([key, group]) => `
-        <section class="section" id="${key}" data-group="${key}">
-          <div class="section-head"><div class="section-title"><div class="section-no">${group.no}</div><div><h2>${group.title}</h2><p class="section-desc">${group.desc}</p></div></div><div class="count"><span class="visible-count">${group.rows.length}</span>개 항목</div></div>
-          <div class="table-box"><table><thead><tr>${group.columns.map(c=>`<th>${c}</th>`).join("")}</tr></thead><tbody>
-            ${group.rows.map((row,index)=>{const mau=key==="ai"?mauData[row[1]]:null;return `<tr data-services="${serviceIdsForRow(row).join(",")}" data-search="${row.join(" ").toLowerCase()}"><td class="company"><span class="rank ${mau&&index<3?"top":""}">${mau?index+1:"-"}</span><span class="company-name">${row[0]}</span><small class="clicks">${key!=="ai"?"MAU 순위 미적용":mau?`MAU ${mau.label} · ${mau.asOf} · ${mau.source}`:"MAU 비공개 · 순위 제외"}</small></td><td class="product">${row[1]}</td><td class="country">${row[2]}</td><td><div class="tags">${row[3].split("|").map(t=>`<span class="tag ${tagClass(t)}">${t}</span>`).join("")}</div></td><td><a class="visit" href="${row[4]}" target="_blank" rel="noopener noreferrer">공식 사이트 ↗</a></td></tr>`}).join("")}
-          </tbody></table><div class="empty">검색 조건과 일치하는 항목이 없습니다.</div></div>
-          ${group.note?`<div class="note">※ ${group.note}</div>`:""}
-        </section>`).join("");
-      document.getElementById("aiTotal").textContent=groups.ai.rows.length;
-      document.getElementById("cloudTotal").textContent=groups.cloud.rows.length;
-      document.getElementById("buildTotal").textContent=groups.build.rows.length;
-      document.getElementById("coverTotal").textContent=groups.cover.rows.length;
-      const total=Object.values(groups).reduce((sum,group)=>sum+group.rows.length,0);
-      document.getElementById("grandTotal").textContent=total;
-      document.getElementById("exportCount").textContent=total;
-    };
-    render();
-
-    let active="all";
-    let activeCountry="all";
-    let activeService="all";
-    const allRows=Object.values(groups).flatMap(group=>group.rows);
-    const countryCounts={};
-    allRows.forEach(row=>row[2].split("/").forEach(country=>{country=country.trim();countryCounts[country]=(countryCounts[country]||0)+1}));
-    const countryOrder=Object.keys(countryCounts).sort((a,b)=>countryCounts[b]-countryCounts[a]||a.localeCompare(b,"ko"));
-    const countryButtons=[`<button class="country-filter active" data-country="all">전체 (${allRows.length})</button>`,...countryOrder.map(country=>`<button class="country-filter" data-country="${country}">${country} (${countryCounts[country]})</button>`)];
-    const countryBreak=Math.ceil(countryButtons.length/2);
-    document.getElementById("countries").innerHTML=`<div class="filter-line">${countryButtons.slice(0,countryBreak).join("")}</div><div class="filter-line">${countryButtons.slice(countryBreak).join("")}</div>`;
-    const serviceCounts=Object.fromEntries(serviceCategories.map(category=>[category.id,allRows.filter(row=>serviceIdsForRow(row).includes(category.id)).length]));
-    const serviceButtons=[`<button class="service-filter active" data-service="all">전체 (${allRows.length})</button>`,...serviceCategories.map(category=>`<button class="service-filter" data-service="${category.id}">${category.label} (${serviceCounts[category.id]})</button>`)];
-    const serviceBreak=Math.ceil(serviceButtons.length/2);
-    document.getElementById("services").innerHTML=`<div class="filter-line">${serviceButtons.slice(0,serviceBreak).join("")}</div><div class="filter-line">${serviceButtons.slice(serviceBreak).join("")}</div>`;
-    const applyFilter=()=>{
-      const q=document.getElementById("search").value.trim().toLowerCase();
-      document.querySelectorAll(".section").forEach(section=>{
-        const groupMatch=active==="all"||section.dataset.group===active;
-        section.style.display=groupMatch?"block":"none";
-        if(!groupMatch)return;
-        let visible=0;
-        section.querySelectorAll("tbody tr").forEach(row=>{const countries=row.children[2].textContent.split("/").map(value=>value.trim());const countryMatch=activeCountry==="all"||countries.includes(activeCountry);const serviceMatch=activeService==="all"||row.dataset.services.split(",").includes(activeService);const show=countryMatch&&serviceMatch&&(!q||row.dataset.search.includes(q));row.style.display=show?"":"none";if(show)visible++});
-        section.querySelector(".visible-count").textContent=visible;
-        section.querySelector(".empty").style.display=visible?"none":"block";
-      });
-    };
-    document.getElementById("search").addEventListener("input",applyFilter);
-    document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");active=btn.dataset.target;applyFilter();if(active!=="all")document.getElementById(active).scrollIntoView({behavior:"smooth",block:"start"})}));
-    document.querySelectorAll(".country-filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".country-filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");activeCountry=btn.dataset.country;applyFilter()}));
-    document.querySelectorAll(".service-filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".service-filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");activeService=btn.dataset.service;applyFilter()}));
-    const xmlEscape=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[char]));
-    const utf8=new TextEncoder();
-    const crcTable=(()=>{const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;table[n]=c>>>0}return table})();
-    const crc32=bytes=>{let crc=0xffffffff;for(const byte of bytes)crc=crcTable[(crc^byte)&0xff]^(crc>>>8);return (crc^0xffffffff)>>>0};
-    const write16=(view,offset,value)=>view.setUint16(offset,value,true);
-    const write32=(view,offset,value)=>view.setUint32(offset,value>>>0,true);
-    const joinBytes=parts=>{const total=parts.reduce((sum,part)=>sum+part.length,0);const output=new Uint8Array(total);let offset=0;for(const part of parts){output.set(part,offset);offset+=part.length}return output};
-    const makeXlsxZip=files=>{
-      const localParts=[],centralParts=[];let localOffset=0;
-      const now=new Date();const dosTime=(now.getHours()<<11)|(now.getMinutes()<<5)|(now.getSeconds()>>1);const dosDate=((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
-      files.forEach(file=>{const name=utf8.encode(file.name),data=utf8.encode(file.content),crc=crc32(data);const local=new Uint8Array(30+name.length);const lv=new DataView(local.buffer);write32(lv,0,0x04034b50);write16(lv,4,20);write16(lv,6,0x0800);write16(lv,8,0);write16(lv,10,dosTime);write16(lv,12,dosDate);write32(lv,14,crc);write32(lv,18,data.length);write32(lv,22,data.length);write16(lv,26,name.length);write16(lv,28,0);local.set(name,30);localParts.push(local,data);
-        const central=new Uint8Array(46+name.length);const cv=new DataView(central.buffer);write32(cv,0,0x02014b50);write16(cv,4,20);write16(cv,6,20);write16(cv,8,0x0800);write16(cv,10,0);write16(cv,12,dosTime);write16(cv,14,dosDate);write32(cv,16,crc);write32(cv,20,data.length);write32(cv,24,data.length);write16(cv,28,name.length);write16(cv,30,0);write16(cv,32,0);write16(cv,34,0);write16(cv,36,0);write32(cv,38,0);write32(cv,42,localOffset);central.set(name,46);centralParts.push(central);localOffset+=local.length+data.length});
-      const centralData=joinBytes(centralParts);const end=new Uint8Array(22);const ev=new DataView(end.buffer);write32(ev,0,0x06054b50);write16(ev,4,0);write16(ev,6,0);write16(ev,8,files.length);write16(ev,10,files.length);write32(ev,12,centralData.length);write32(ev,16,localOffset);write16(ev,20,0);return joinBytes([...localParts,centralData,end]);
-    };
-    const xlsxCell=(value,column,row,header=false)=>`<c r="${column}${row}" t="inlineStr"${header?' s="1"':""}><is><t xml:space="preserve">${xmlEscape(value)}</t></is></c>`;
-    const downloadExcel=()=>{
-      const headers=["영역","MAU 순위","기업·플랫폼","주요 도구·서비스","국가·지역","주요 기능","MAU","MAU 기준월","MAU 출처","공식 사이트"];
-      const rows=[];
-      Object.entries(groups).forEach(([key,group])=>group.rows.forEach((row,index)=>{
-        const mau=key==="ai"?mauData[row[1]]:null;
-        rows.push([`${group.no} ${group.title}`,mau?index+1:"",row[0],row[1],row[2],row[3].replaceAll("|"," · "),mau?mau.label:key==="ai"?"비공개":"순위 미적용",mau?.asOf||"",mau?.source||"",row[4]]);
-      }));
-      const columns="ABCDEFGHIJ";
-      const sheetRows=[`<row r="1">${headers.map((value,index)=>xlsxCell(value,columns[index],1,true)).join("")}</row>`,...rows.map((row,rowIndex)=>`<row r="${rowIndex+2}">${row.map((value,columnIndex)=>xlsxCell(value,columns[columnIndex],rowIndex+2)).join("")}</row>`)].join("");
-      const files=[
-        {name:"[Content_Types].xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`},
-        {name:"_rels/.rels",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
-        {name:"xl/workbook.xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="AI 플랫폼 현황" sheetId="1" r:id="rId1"/></sheets></workbook>`},
-        {name:"xl/_rels/workbook.xml.rels",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`},
-        {name:"xl/styles.xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="10"/><name val="Malgun Gothic"/></font><font><b/><sz val="10"/><color rgb="FF173B55"/><name val="Malgun Gothic"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFDCEAF2"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`},
-        {name:"xl/worksheets/sheet1.xml",content:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:J${rows.length+1}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${[22,10,22,40,14,52,16,14,22,44].map((width,index)=>`<col min="${index+1}" max="${index+1}" width="${width}" customWidth="1"/>`).join("")}</cols><sheetData>${sheetRows}</sheetData><autoFilter ref="A1:J${rows.length+1}"/></worksheet>`}
-      ];
-      const blob=new Blob([makeXlsxZip(files)],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-      const url=URL.createObjectURL(blob);
-      const link=document.createElement("a");
-      link.href=url;
-      link.download=`글로벌_AI_플랫폼_현황_${REVIEWED_AT}.xlsx`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(()=>URL.revokeObjectURL(url),1000);
-    };
-    document.getElementById("downloadExcel").addEventListener("click",downloadExcel);
+  })();
   </script>
 </body>
 </html>

@@ -1,76 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <meta name="theme-color" content="#2563a8">
-  <title>경력기간 계산기 | 공무원 경력기간 계산</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <title>회원 인증 확인 중</title>
   <style>
-    :root{--bg:#f0f3f7;--card:#fff;--text:#1a2735;--sub:#536475;--muted:#748394;--line:#dce4ec;--input:#f8fafc;--primary:#3182ce;--primary-hover:#2569aa;--radio:#f1f5f9;--blue-bg:#ebf8ff;--blue-line:#bee3f8;--blue-text:#2c5282;--green-bg:#f0fff4;--green-line:#c6f6d5;--green-text:#276749;--info:#f8fafc;--alert-bg:#fff5f5;--alert:#cf3f3f;--shadow:0 22px 65px rgba(42,62,84,.12)}
-    html.dark{--bg:#0b1437;--card:#111c44;--text:#f3f6fb;--sub:#b6c3d3;--muted:#8795a8;--line:#2b3674;--input:#182450;--primary:#4299e1;--primary-hover:#63b3ed;--radio:#182450;--blue-bg:#17365c;--blue-line:#2c5282;--blue-text:#c7e7ff;--green-bg:#173e35;--green-line:#276749;--green-text:#c6f6d5;--info:#182450;--alert-bg:#4a2020;--alert:#feb2b2;--shadow:0 22px 65px rgba(0,0,0,.28)}
-    *{box-sizing:border-box}html{font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--text);transition:background .25s,color .25s}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,rgba(49,130,206,.12),transparent 36%);padding:72px 16px 58px}.top-actions{position:fixed;right:20px;top:18px;z-index:20}.theme{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);box-shadow:0 7px 22px rgba(15,23,42,.08);font-size:19px;cursor:pointer}.theme:hover{transform:translateY(-1px)}
-    .container{width:min(700px,100%);margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:23px;box-shadow:var(--shadow);padding:34px;transition:background .25s,border-color .25s}.title{text-align:center;margin:0 0 30px;color:var(--text);font-size:clamp(25px,5vw,34px);letter-spacing:-.045em}.subtitle{text-align:center;margin:-18px 0 28px;color:var(--muted);font-size:12px}.input-group{position:relative;margin-bottom:21px}.input-group>label,.label{display:block;margin-bottom:9px;color:var(--sub);font-size:13px;font-weight:800}.radio-group{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:5px;background:var(--radio);border:1px solid var(--line);border-radius:13px}.radio-option{display:flex;align-items:center;justify-content:center;min-height:43px;border-radius:9px;color:var(--sub);font-size:13px;font-weight:800;cursor:pointer}.radio-option input{position:absolute;opacity:0;pointer-events:none}.radio-option.selected{background:var(--card);color:var(--primary);box-shadow:0 2px 8px rgba(0,0,0,.07)}.calc-alert{display:none;margin-top:9px;padding:10px 12px;border-radius:9px;background:var(--alert-bg);color:var(--alert);font-size:11px;font-weight:700}
-    .date-selector{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:8px}.date-selector input,.date-selector select,.full-width{width:100%;height:48px;border:1px solid var(--line);border-radius:11px;background:var(--input);color:var(--text);padding:0 12px;font-size:15px;font-weight:700;outline:none}.date-selector input:focus,.date-selector select:focus,.full-width:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(49,130,206,.13)}.rate-wrap{position:relative}.rate-wrap .full-width{padding-right:42px}.percent{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:800}.calculate{width:100%;height:50px;border:0;border-radius:12px;background:linear-gradient(115deg,var(--primary),#2b6cb0);color:#fff;font-size:15px;font-weight:900;cursor:pointer;box-shadow:0 10px 25px rgba(49,130,206,.23)}.calculate:hover{background:linear-gradient(115deg,var(--primary-hover),var(--primary));transform:translateY(-1px)}
-    .section-title{margin:28px 0 10px;color:var(--sub);font-size:13px;font-weight:900}.result-box{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:13px;border:1px solid var(--blue-line);border-radius:14px;background:var(--blue-bg)}.result-box.converted{border-color:var(--green-line);background:var(--green-bg)}.result-item{text-align:center;padding:11px 5px}.result-item span:first-child{display:block;margin-bottom:7px;color:var(--blue-text);font-size:11px;font-weight:800}.result-item strong,.result-item span:last-child{color:var(--blue-text);font-size:25px;font-weight:900}.result-box.converted .result-item span{color:var(--green-text)}
-    .footer-info{margin-top:28px;padding:19px;border:1px solid var(--line);border-radius:14px;background:var(--info)}.footer-title{display:flex;align-items:center;gap:8px;color:var(--text);font-size:14px;font-weight:900}.footer-title:before{content:"✓";display:grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--primary);color:#fff;font-size:11px}.footer-content{margin-top:11px;color:var(--sub);font-size:12px;line-height:1.75}.footer-content p{margin:4px 0}.highlight{color:var(--primary);font-weight:900}.credit{text-align:center;margin:24px 0 0;color:var(--muted);font-size:11px;font-weight:700}
-    #vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;letter-spacing:-.02em;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}#vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75;box-shadow:0 14px 32px rgba(0,0,0,.24)}#vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
-    @media(max-width:640px){body{padding:65px 10px 80px}.top-actions{right:12px;top:12px}.container{padding:25px 15px;border-radius:18px}.title{font-size:26px}.date-selector{grid-template-columns:1fr 1fr 1fr;gap:6px}.date-selector input,.date-selector select{padding:0 7px;font-size:13px}.result-item strong,.result-item span:last-child{font-size:22px}#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
-    @media print{.top-actions,#vibecoding-home-btn{display:none!important}body{background:#fff;padding:0}.container{box-shadow:none;border:0}}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <div class="top-actions"><button class="theme" id="theme-btn" type="button" aria-label="화면 테마 전환">🌙</button></div>
-  <main class="container">
-    <h1 class="title">경력기간 계산기</h1>
-    <p class="subtitle">공무원 경력기간 및 환산 경력을 계산합니다.</p>
-    <div class="input-group">
-      <span class="label">계산 구분</span>
-      <div class="radio-group">
-        <label class="radio-option selected" id="opt-include"><input type="radio" name="calcType" value="include" checked>경력 계산</label>
-        <label class="radio-option" id="opt-exclude"><input type="radio" name="calcType" value="exclude">퇴직일 제외</label>
-      </div>
-      <div class="calc-alert" id="exclude-alert">※ 퇴직일은 근무일수에서 제외합니다. (종료일 - 1일)</div>
-    </div>
-    <div class="input-group"><label for="sYear">시작날짜</label><div class="date-selector"><input type="tel" id="sYear" placeholder="YYYY" maxlength="4" inputmode="numeric"><select id="sMonth" aria-label="시작 월"></select><select id="sDay" aria-label="시작 일"></select></div></div>
-    <div class="input-group"><label for="eYear">종료날짜</label><div class="date-selector"><input type="tel" id="eYear" placeholder="YYYY" maxlength="4" inputmode="numeric"><select id="eMonth" aria-label="종료 월"></select><select id="eDay" aria-label="종료 일"></select></div></div>
-    <div class="input-group"><label for="rate">환산율</label><div class="rate-wrap"><input type="number" id="rate" class="full-width" value="100" min="0" step="0.01" placeholder="예: 80"><span class="percent">%</span></div></div>
-    <button class="calculate" id="calculate" type="button">계산하기</button>
-    <div class="section-title">1. 경력계산 (단순합산)</div>
-    <div class="result-box" aria-live="polite"><div class="result-item"><span>경력 (년)</span><strong id="resYear">0</strong></div><div class="result-item"><span>경력 (월)</span><strong id="resMonth">0</strong></div><div class="result-item"><span>경력 (일)</span><strong id="resDay">0</strong></div></div>
-    <div class="section-title">2. 환산계산 (환산율 적용)</div>
-    <div class="result-box converted" aria-live="polite"><div class="result-item"><span>환산 (년)</span><strong id="convYear">0</strong></div><div class="result-item"><span>환산 (월)</span><strong id="convMonth">0</strong></div><div class="result-item"><span>환산 (일)</span><strong id="convDay">0</strong></div></div>
-    <div class="footer-info"><div class="footer-title">공무원 경력기간의 계산</div><div class="footer-content"><p>기간계산에 있어 <span class="highlight">임용일은 산입하고 퇴직일은 제외</span>함.</p><p>다만, 근무기간이 정하여진 <strong>임기제공무원(기간제교원 포함)</strong> 등의 <span class="highlight">계약기간 만료일은 산입</span>함.</p></div></div>
-    <p class="credit">2026. Program by Kwon O Young. · 오춘기 권오영</p>
+  <main class="box">
+    <div class="mark">🔒</div>
+    <h1>회원 인증 확인 중</h1>
+    <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+    <div class="spin" aria-hidden="true"></div>
   </main>
-  <a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
-  <script src="./latest-home-nav.js?v=20260807-2341" data-vibecoding-latest-home="1"></script>
   <script>
-    const $=id=>document.getElementById(id);
-    function daysInMonth(year,month){return new Date(year,month,0).getDate()}
-    function makeDate(year,month,day){return new Date(year,month-1,day)}
-    function sameDate(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
-    function eomonth(date,offset){return new Date(date.getFullYear(),date.getMonth()+offset+1,0)}
-    function mod(n,d){return ((n%d)+d)%d}
-    function preciseSub(a,b){return parseFloat((a-b).toPrecision(12))}
-    function updateDays(prefix,setDay=null){const year=parseInt($(prefix+'Year').value,10)||new Date().getFullYear();const month=parseInt($(prefix+'Month').value,10)||1;const select=$(prefix+'Day');const wanted=setDay||parseInt(select.value,10)||1;const last=daysInMonth(year,month);select.innerHTML=Array.from({length:last},(_,i)=>`<option value="${i+1}">${i+1}일</option>`).join('');select.value=String(Math.min(wanted,last))}
-    function init(){const now=new Date();const opts=Array.from({length:12},(_,i)=>`<option value="${i+1}">${i+1}월</option>`).join('');$('sMonth').innerHTML=opts;$('eMonth').innerHTML=opts;for(const p of ['s','e']){$(p+'Year').value=now.getFullYear();$(p+'Month').value=now.getMonth()+1;updateDays(p,now.getDate())}}
-    function selectedDate(prefix){const y=parseInt($(prefix+'Year').value,10),m=parseInt($(prefix+'Month').value,10),d=parseInt($(prefix+'Day').value,10);if(!y||y<1||!m||!d)return null;const value=makeDate(y,m,d);return value.getFullYear()===y&&value.getMonth()===m-1&&value.getDate()===d?value:null}
-    function resetResults(){for(const id of ['resYear','resMonth','resDay','convYear','convMonth','convDay'])$(id).textContent='0'}
-    function careerParts(start,end){
-      const startYear=start.getFullYear(),endYear=end.getFullYear(),startMonth=start.getMonth()+1,endMonth=end.getMonth()+1,startDay=start.getDate(),endDay=end.getDate();
-      const endOfEndMonth=eomonth(end,0);const checkDateYear=makeDate(endYear,startMonth,startDay);checkDateYear.setDate(checkDateYear.getDate()-1);
-      const years=(endYear-startYear)+((startMonth===1&&startDay===1&&endMonth===12&&endDay===31)?1:0)-(end<checkDateYear?1:0);
-      const months=mod((endMonth-startMonth)+(startDay===1&&sameDate(end,endOfEndMonth)?1:0)+(end<checkDateYear?12:0)-(endDay<startDay-1?1:0)+(sameDate(end,endOfEndMonth)&&endOfEndMonth.getDate()<startDay-1?1:0),12);
-      const cond1=startDay===1&&sameDate(end,endOfEndMonth),cond2=endDay===startDay-1,cond3=sameDate(end,endOfEndMonth)&&endOfEndMonth.getDate()<startDay-1;
-      let days=0;if(!(cond1||cond2||cond3)){const prevEnd=eomonth(end,-1);const sub1=startDay-1<endDay?startDay-1:0;const add1=endDay<startDay-1&&startDay-1<prevEnd.getDate()?prevEnd.getDate()-startDay+1:0;const sub2=(startDay+29===endDay)||(prevEnd.getDate()===31&&startDay-2===endDay)?1:0;days=endDay-sub1+add1-sub2}
-      return {years,months,days};
+  (async()=>{
+    const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+    const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const marker='/VibeCoding/';
+    const path=decodeURIComponent(location.pathname);
+    const pos=path.indexOf(marker);
+    const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+    const returnUrl=encodeURIComponent(location.href);
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){location.replace('login.html?return='+returnUrl);return;}
+      const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+      const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+      if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+      if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+      if(!res.ok){throw new Error(await res.text());}
+      const html=await res.text();
+      document.open();document.write(html);document.close();
+    }catch(err){
+      console.error(err);
+      document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
     }
-    function convertedParts(parts,rate){const yValue=parts.years*rate,y=Math.trunc(yValue),yDecimal=preciseSub(yValue,y),monthsFromYear=yDecimal*12,mfy=Math.trunc(monthsFromYear),mfyDecimal=preciseSub(monthsFromYear,mfy),monthValue=parts.months*rate,md=Math.trunc(monthValue),mdDecimal=preciseSub(monthValue,md),rawDays=Math.trunc(mfyDecimal*30)+Math.trunc(mdDecimal*30)+Math.trunc(parts.days*rate),day=mod(rawDays,30),monthCarry=Math.trunc(rawDays/30),rawMonths=mfy+md+monthCarry;return {years:y+Math.trunc(rawMonths/12),months:mod(rawMonths,12),days:day}}
-    function calculate(){let start=selectedDate('s'),end=selectedDate('e');const type=document.querySelector('input[name="calcType"]:checked').value,rate=Number($('rate').value);if(!start||!end){alert('정확한 연도를 입력하고 날짜를 선택해주세요.');return}if(!Number.isFinite(rate)||rate<0){alert('환산율을 0 이상의 숫자로 입력해주세요.');return}start.setHours(0,0,0,0);end.setHours(0,0,0,0);if(type==='exclude')end.setDate(end.getDate()-1);if(start>end){resetResults();alert(type==='exclude'?'퇴직일 제외 후 계산 가능한 근무기간이 없습니다.':'종료일(계산일)이 시작일보다 앞섭니다.');return}const parts=careerParts(start,end),conv=convertedParts(parts,rate/100);$('resYear').textContent=parts.years;$('resMonth').textContent=parts.months;$('resDay').textContent=parts.days;$('convYear').textContent=conv.years;$('convMonth').textContent=conv.months;$('convDay').textContent=conv.days}
-    document.querySelectorAll('input[name="calcType"]').forEach(r=>r.addEventListener('change',()=>{document.querySelectorAll('.radio-option').forEach(x=>x.classList.remove('selected'));r.parentElement.classList.add('selected');$('exclude-alert').style.display=r.value==='exclude'?'block':'none'}));
-    for(const p of ['s','e']){$(p+'Year').addEventListener('input',()=>updateDays(p));$(p+'Month').addEventListener('change',()=>updateDays(p))}
-    $('calculate').addEventListener('click',calculate);$('rate').addEventListener('keydown',e=>{if(e.key==='Enter')calculate()});
-    const themeBtn=$('theme-btn'),root=document.documentElement;function themeIcon(){themeBtn.textContent=root.classList.contains('dark')?'☀️':'🌙'}themeBtn.addEventListener('click',()=>{root.classList.toggle('dark');localStorage.setItem('datacount-theme',root.classList.contains('dark')?'dark':'light');themeIcon()});const saved=localStorage.getItem('datacount-theme');if(saved==='dark'||(!saved&&matchMedia('(prefers-color-scheme: dark)').matches))root.classList.add('dark');themeIcon();init();
+  })();
   </script>
 </body>
 </html>

@@ -1,35 +1,47 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ffffff">
-<title>교육행정 업무 흐름지도</title>
-<style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8f6f0;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif}
-.map-frame{position:fixed;inset:0;width:100%;height:100%;border:0;background:#fff}
-.home-btn{position:fixed;z-index:100002;top:16px;right:18px;display:inline-flex;align-items:center;gap:8px;padding:10px 15px;border:1px solid rgba(15,23,42,.14);border-radius:999px;background:rgba(255,255,255,.96);color:#1f2937;text-decoration:none;font-size:13px;font-weight:800;letter-spacing:-.02em;box-shadow:0 8px 24px rgba(15,23,42,.14);backdrop-filter:blur(10px);transition:.18s ease}
-.home-btn:hover{transform:translateY(-1px);background:#fff;box-shadow:0 11px 28px rgba(15,23,42,.18)}
-.home-icon{width:24px;height:24px;display:grid;place-items:center;border-radius:8px;background:#111827;color:#fff;font-size:14px}
-.fallback{position:fixed;z-index:100001;left:50%;bottom:78px;transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:rgba(17,24,39,.88);color:#fff;font-size:12px;text-decoration:none;opacity:0;pointer-events:none;transition:.2s}.fallback.show{opacity:1;pointer-events:auto}
-.copyright-bar{position:fixed;z-index:100003;left:0;right:0;bottom:0;min-height:64px;display:flex;align-items:center;justify-content:center;padding:18px 20px;background:linear-gradient(180deg,rgba(255,255,255,.97),#fff);border-top:1px solid #e5e7eb;box-shadow:0 -8px 28px rgba(15,23,42,.08);color:#6b7280;font-size:13px;font-weight:600;text-align:center;letter-spacing:-.01em}
-@media(max-width:700px){.home-btn{top:10px;right:10px;padding:8px 12px;font-size:12px}.home-icon{width:22px;height:22px}.copyright-bar{min-height:56px;padding:15px 12px;font-size:11.5px}.fallback{bottom:68px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <title>회원 인증 확인 중</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<a class="home-btn" href="index.html" aria-label="홈으로 이동"><span class="home-icon">⌂</span><span>홈</span></a>
-<iframe id="mapFrame" class="map-frame" src="https://gyohaeng.pages.dev/workflow-map#overview" title="교육행정 업무 흐름지도" loading="eager" referrerpolicy="no-referrer-when-downgrade"></iframe>
-<a id="fallback" class="fallback" href="https://gyohaeng.pages.dev/workflow-map#overview" target="_blank" rel="noopener">원본 업무 흐름지도 새 창에서 열기</a>
-<footer class="copyright-bar">Copyright © 2026 오춘기 권오영 All rights reserved.</footer>
-<script>
-(function(){
- const frame=document.getElementById('mapFrame');
- const fallback=document.getElementById('fallback');
- let loaded=false;
- frame.addEventListener('load',()=>{loaded=true;fallback.classList.remove('show');});
- setTimeout(()=>{if(!loaded) fallback.classList.add('show');},5000);
-})();
-</script>
+  <main class="box">
+    <div class="mark">🔒</div>
+    <h1>회원 인증 확인 중</h1>
+    <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+    <div class="spin" aria-hidden="true"></div>
+  </main>
+  <script>
+  (async()=>{
+    const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+    const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const marker='/VibeCoding/';
+    const path=decodeURIComponent(location.pathname);
+    const pos=path.indexOf(marker);
+    const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+    const returnUrl=encodeURIComponent(location.href);
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){location.replace('login.html?return='+returnUrl);return;}
+      const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+      const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+      if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+      if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+      if(!res.ok){throw new Error(await res.text());}
+      const html=await res.text();
+      document.open();document.write(html);document.close();
+    }catch(err){
+      console.error(err);
+      document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
+    }
+  })();
+  </script>
 </body>
 </html>

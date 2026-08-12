@@ -1,54 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#365f25">
-<meta name="description" content="2019년 4월 1일부터 2026년 1월 31일까지 접수된 압류명령 신청사건 기준 급여채권 압류금지금액과 압류가능금액 계산기">
-<title>급여채권압류 계산기 | 2019.4.1.~2026.1.31.</title>
-<style>
-:root{--bg:#f2f6f8;--card:#fff;--ink:#172c3b;--sub:#687d8b;--line:#d9e4ea;--primary:#365f25;--primary2:#668c37;--soft:#e7f1df;--yellow:#fff4c8;--red:#c52a2a;--green:#167548;--shadow:0 18px 50px rgba(20,54,75,.12)}
-*{box-sizing:border-box}html{font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--ink)}body{margin:0;min-height:100vh;padding:30px 15px 86px;background:radial-gradient(circle at 50% -12%,var(--soft),transparent 38%),var(--bg);letter-spacing:-.02em}button,input{font:inherit}.wrap{width:min(980px,100%);margin:auto}.hero{position:relative;overflow:hidden;padding:30px 30px 27px;border-radius:23px 23px 0 0;background:linear-gradient(128deg,var(--primary),var(--primary2));color:#fff;box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;width:230px;height:230px;right:-105px;top:-135px;border:36px solid rgba(255,255,255,.08);border-radius:50%}.tag{position:relative;z-index:1;display:inline-flex;padding:7px 11px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(255,255,255,.12);font-size:11px;font-weight:900}.hero h1{position:relative;z-index:1;margin:12px 0 7px;font-size:clamp(26px,4vw,38px);letter-spacing:-.05em}.hero p{position:relative;z-index:1;margin:0;color:rgba(255,255,255,.84);font-size:13px;line-height:1.7;font-weight:700}.panel{padding:25px;border:1px solid var(--line);border-top:0;border-radius:0 0 23px 23px;background:var(--card);box-shadow:var(--shadow)}.period-notice{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;padding:13px 15px;border:1px solid #c8ddba;border-radius:13px;background:#f1f8ec;color:#315721;font-size:12px;font-weight:800;line-height:1.6}.period-notice b{font-size:16px}.input-card{display:grid;grid-template-columns:1fr 1.45fr;align-items:center;border:2px solid var(--primary);border-radius:15px;overflow:hidden}.input-label{height:100%;display:flex;align-items:center;justify-content:center;padding:18px;background:var(--soft);font-size:14px;font-weight:900}.money-wrap{position:relative;padding:14px;background:var(--yellow)}.money-wrap input{width:100%;height:52px;padding:0 47px 0 15px;border:1px solid rgba(31,66,88,.22);border-radius:11px;background:#fff;text-align:right;color:var(--ink);font-size:24px;font-weight:900;outline:none}.money-wrap input:focus{border-color:var(--primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 16%,transparent)}.won{position:absolute;right:29px;top:50%;transform:translateY(-50%);color:var(--sub);font-weight:900}.help{margin:8px 3px 0;color:var(--sub);font-size:11px}.actions{display:flex;justify-content:center;gap:9px;margin:17px 0 21px}.btn{min-height:44px;padding:0 18px;border:0;border-radius:11px;font-size:13px;font-weight:900;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 9px 22px color-mix(in srgb,var(--primary) 24%,transparent)}.btn-secondary{background:#edf2f4;color:#526875}.btn-outline{border:1px solid var(--line);background:#fff;color:var(--primary)}.btn:hover{transform:translateY(-1px)}.results{display:grid;grid-template-columns:1fr 1fr;gap:12px}.result{padding:20px;border:1px solid var(--line);border-radius:15px;background:#f8fafb;text-align:center}.result.protected{background:#edf7f1;border-color:#c6e5d2}.result.attachable{background:#fff0eb;border-color:#f1d0c3}.result span{display:block;color:var(--sub);font-size:12px;font-weight:800}.result strong{display:block;margin-top:8px;font-size:clamp(23px,4vw,31px);letter-spacing:-.03em}.result.protected strong{color:var(--green)}.result.attachable strong{color:var(--red)}.result em{display:block;margin-top:6px;color:var(--sub);font-size:10px;font-style:normal}.section-title{margin:27px 0 11px;font-size:15px}.criteria-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:13px}.criteria{width:100%;min-width:720px;border-collapse:collapse;font-size:11px}.criteria th{padding:11px 9px;background:var(--primary);color:#fff}.criteria td{padding:11px 9px;border-bottom:1px solid var(--line);text-align:center}.criteria tr:last-child td{border-bottom:0}.criteria tr.active td{background:#edf6e8;font-weight:900;color:#315721}.legal{margin-top:18px;padding:17px;border:1px solid var(--line);border-radius:13px;background:#f7f9fa;color:var(--sub);font-size:11px;line-height:1.75}.legal p{margin:3px 0}.legal a{color:var(--primary);font-weight:900}.switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:17px;padding:14px 15px;border:1px dashed #b8c9d2;border-radius:12px;background:#fbfcfd}.switch span{color:var(--sub);font-size:11px;line-height:1.5}.credit{text-align:center;margin:23px 0 0;color:#738692;font-size:11px;font-weight:800}
-#vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;letter-spacing:-.02em;transition:transform .16s ease,box-shadow .16s ease,background .16s ease}#vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75;box-shadow:0 14px 32px rgba(0,0,0,.24)}#vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
-@media(max-width:650px){body{padding:12px 8px 78px}.hero{padding:24px 18px 22px}.hero h1{font-size:25px}.panel{padding:16px 12px}.input-card{grid-template-columns:1fr}.input-label{padding:12px}.money-wrap{padding:11px}.money-wrap input{font-size:21px}.results{grid-template-columns:1fr}.switch{align-items:stretch;flex-direction:column}.switch .btn{width:100%}#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}
-@media print{body{padding:0;background:#fff}.hero,.panel{box-shadow:none}.actions,.switch,#vibecoding-home-btn{display:none!important}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <title>회원 인증 확인 중</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<main class="wrap">
-<header class="hero"><span class="tag">2019.4.1. 개정 기준</span><h1>급여채권압류 계산기</h1><p>2019년 4월 1일부터 2026년 1월 31일까지 접수된 압류명령 신청사건 기준<br>월 세후 실수령 급여를 기준으로 압류금지금액과 압류가능금액을 계산합니다.</p></header>
-<section class="panel">
-<div class="period-notice"><b>!</b><span>이 계산기는 2026년 1월 31일까지 접수된 압류명령 신청사건에 적용되는 185만 원 기준입니다.</span></div>
-<div class="input-card"><div class="input-label">월 실수령 급여</div><div class="money-wrap"><input id="salary" type="text" inputmode="numeric" autocomplete="off" placeholder="금액을 입력하세요" aria-label="월 실수령 급여"><span class="won">원</span></div></div>
-<p class="help">세금과 공과금을 공제한 실수령액을 입력하세요. 여러 직장의 급여는 합산합니다.</p>
-<div class="actions"><button class="btn btn-secondary" id="clear" type="button">입력 지우기</button><button class="btn btn-primary" id="calculate" type="button">압류가능금액 계산</button></div>
-<div class="results" aria-live="polite"><div class="result protected"><span>압류금지금액</span><strong id="protected">0원</strong><em>채무자에게 보장되는 금액</em></div><div class="result attachable"><span>압류가능금액</span><strong id="attachable">0원</strong><em>급여에서 압류할 수 있는 금액</em></div></div>
-<h2 class="section-title">월 급여별 계산 기준</h2>
-<div class="criteria-wrap"><table class="criteria"><thead><tr><th>구분</th><th>월 실수령 급여 범위</th><th>압류금지금액</th><th>압류가능금액</th></tr></thead><tbody>
-<tr data-band="1"><td>1구간</td><td>185만 원 이하</td><td>급여 전액</td><td>0원</td></tr>
-<tr data-band="2"><td>2구간</td><td>185만 원 초과 ~ 370만 원 이하</td><td>185만 원 정액</td><td>급여 − 185만 원</td></tr>
-<tr data-band="3"><td>3구간</td><td>370만 원 초과 ~ 600만 원 이하</td><td>급여의 1/2</td><td>급여의 1/2</td></tr>
-<tr data-band="4"><td>4구간</td><td>600만 원 초과</td><td>300만 원 + (600만 원 초과분 × 1/4)</td><td>300만 원 + (600만 원 초과분 × 3/4)</td></tr>
-</tbody></table></div>
-<div class="legal"><p><strong>근거:</strong> 민사집행법 제246조제1항제4호, 민사집행법 시행령 제3조·제4조</p><p>민사집행법 시행령의 2019년 4월 1일 개정으로 압류금지 최저금액이 185만 원으로 조정되었습니다.</p><p><a href="https://ecfs.scourt.go.kr/psp/index.on?m=PSP735M05" target="_blank" rel="noopener">대한민국 법원 급여채권 압류 안내 ↗</a> · <a href="https://www.law.go.kr/LSW/lsRvsDocListP.do?chrClsCd=010202&lsId=010014&lsRvsGubun=all" target="_blank" rel="noopener">국가법령정보센터 ↗</a></p><p>이 계산기는 참고용 보조 도구입니다. 실제 압류 범위는 법원의 명령과 개별 사건의 사정에 따라 달라질 수 있습니다.</p></div>
-<div class="switch"><span>2026년 2월 1일 이후 접수된 사건은 250만 원 기준 계산기를 사용하세요.</span><a class="btn btn-outline" href="garnishment2.html">2026.2.1. 이후 계산기</a></div>
-<p class="credit">2026. Program by Kwon O Young. · 오춘기 권오영</p>
-</section>
-</main>
-<a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
-<script src="./latest-home-nav.js?v=20260807-2341" data-vibecoding-latest-home="1"></script>
-<script>
-const MIN=1850000,DOUBLE=3700000;
-const $=id=>document.getElementById(id),fmt=n=>Math.round(n).toLocaleString('ko-KR')+'원';
-function numeric(){return Number($('salary').value.replace(/[^0-9]/g,''))}
-function compute(s){if(s<=MIN)return{protected:s,attachable:0,band:1};if(s<=DOUBLE)return{protected:MIN,attachable:s-MIN,band:2};if(s<=6000000)return{protected:s/2,attachable:s/2,band:3};const protectedAmount=3000000+(s/2-3000000)/2;return{protected:protectedAmount,attachable:Math.max(0,s-protectedAmount),band:4}}
-function render(showAlert=true){const salary=numeric();if(!Number.isFinite(salary)||salary<=0){$('protected').textContent='0원';$('attachable').textContent='0원';document.querySelectorAll('[data-band]').forEach(x=>x.classList.remove('active'));if(showAlert)alert('월 실수령 급여를 0원보다 큰 금액으로 입력해주세요.');return null}const r=compute(salary);$('protected').textContent=fmt(r.protected);$('attachable').textContent=fmt(r.attachable);document.querySelectorAll('[data-band]').forEach(x=>x.classList.toggle('active',Number(x.dataset.band)===r.band));return r}
-$('salary').addEventListener('input',e=>{const value=e.target.value.replace(/[^0-9]/g,'');e.target.value=value?Number(value).toLocaleString('ko-KR'):''});
-$('salary').addEventListener('keydown',e=>{if(e.key==='Enter')render(true)});
-$('calculate').addEventListener('click',()=>render(true));
-$('clear').addEventListener('click',()=>{$('salary').value='';$('protected').textContent=$('attachable').textContent='0원';document.querySelectorAll('[data-band]').forEach(x=>x.classList.remove('active'));$('salary').focus()});
-window.garnishmentCalculator={compute};
-</script>
+  <main class="box">
+    <div class="mark">🔒</div>
+    <h1>회원 인증 확인 중</h1>
+    <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+    <div class="spin" aria-hidden="true"></div>
+  </main>
+  <script>
+  (async()=>{
+    const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+    const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const marker='/VibeCoding/';
+    const path=decodeURIComponent(location.pathname);
+    const pos=path.indexOf(marker);
+    const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+    const returnUrl=encodeURIComponent(location.href);
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){location.replace('login.html?return='+returnUrl);return;}
+      const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+      const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+      if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+      if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+      if(!res.ok){throw new Error(await res.text());}
+      const html=await res.text();
+      document.open();document.write(html);document.close();
+    }catch(err){
+      console.error(err);
+      document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
+    }
+  })();
+  </script>
 </body>
 </html>
-

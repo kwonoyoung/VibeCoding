@@ -1,41 +1,47 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>기간제교원 퇴직금 자동 계산</title>
-<style>
-html,body{margin:0;padding:0;background:#f3f5f9;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;color:#64748b}
-#appFrame{display:block;width:100%;border:0;min-height:100vh;background:#f3f5f9}
-.footer-credit{width:100%;box-sizing:border-box;text-align:center;padding:22px 16px 28px;font-size:13px;font-weight:700;letter-spacing:.02em;color:#7b8794;background:#f3f5f9}
-@media(max-width:700px){.footer-credit{font-size:12px;padding:18px 12px 24px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <title>회원 인증 확인 중</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<iframe id="appFrame" src="tea-core.html" title="기간제교원 퇴직금 자동 계산"></iframe>
-<footer class="footer-credit">Program by Kwon O Young.</footer>
-<script>
-(function(){
- const f=document.getElementById('appFrame');
- function fit(){
-   try{
-     const d=f.contentDocument||f.contentWindow.document;
-     const h=Math.max(d.documentElement.scrollHeight,d.body?d.body.scrollHeight:0,window.innerHeight-60);
-     f.style.height=h+'px';
-   }catch(e){f.style.height='calc(100vh - 60px)';}
- }
- f.addEventListener('load',function(){
-   fit();
-   try{
-     const d=f.contentDocument||f.contentWindow.document;
-     if(window.ResizeObserver){new ResizeObserver(fit).observe(d.documentElement);}
-     const mo=new MutationObserver(function(){setTimeout(fit,50)});
-     mo.observe(d.documentElement,{subtree:true,childList:true,attributes:true,characterData:false});
-   }catch(e){}
-   setTimeout(fit,300);setTimeout(fit,1000);
- });
- window.addEventListener('resize',fit);
-})();
-</script>
+  <main class="box">
+    <div class="mark">🔒</div>
+    <h1>회원 인증 확인 중</h1>
+    <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+    <div class="spin" aria-hidden="true"></div>
+  </main>
+  <script>
+  (async()=>{
+    const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+    const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const marker='/VibeCoding/';
+    const path=decodeURIComponent(location.pathname);
+    const pos=path.indexOf(marker);
+    const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+    const returnUrl=encodeURIComponent(location.href);
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){location.replace('login.html?return='+returnUrl);return;}
+      const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+      const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+      if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+      if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+      if(!res.ok){throw new Error(await res.text());}
+      const html=await res.text();
+      document.open();document.write(html);document.close();
+    }catch(err){
+      console.error(err);
+      document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
+    }
+  })();
+  </script>
 </body>
 </html>

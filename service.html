@@ -1,48 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="나이스 복무 근무상황관리 엑셀 자료에서 종별 사용 기간을 합산하는 계산기">
-<title>나이스 복무 근무상황관리 종별 기간 계산기 | 오춘기 권오영 업무지원 서비스</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
-:root{--navy:#0b3c5d;--blue:#216a93;--green:#24834e;--orange:#eb7d22;--bg:#f1f5f7;--card:#fff;--ink:#172f40;--muted:#697d89;--line:#d7e2e7;--soft:#eaf4f8;--shadow:0 14px 38px rgba(16,54,78,.1)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:linear-gradient(180deg,#edf5f7,#f7f8f9 380px);color:var(--ink);font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;line-height:1.55}button,input,select{font:inherit}.wrap{width:min(1080px,calc(100% - 28px));margin:24px auto 70px}.hero{padding:28px clamp(20px,5vw,46px);border-radius:22px 22px 0 0;color:#fff;background:linear-gradient(125deg,#082f4d,#0d5d7d 60%,#14827d);box-shadow:var(--shadow)}.eyebrow{margin:0;color:#c3eeea;font-size:13px;font-weight:800;letter-spacing:.07em}.hero h1{margin:4px 0;font-size:clamp(23px,4vw,36px);line-height:1.3}.hero p{margin:8px 0 0;color:#daedf2}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.hero-link{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:9px 18px;border-radius:10px;font-weight:800;text-decoration:none;transition:.15s transform,.15s background}.hero-link:hover{transform:translateY(-2px)}.hero-guide{background:#fff;color:#0b5270}.hero-home{border:1px solid rgba(255,255,255,.65);background:rgba(255,255,255,.12);color:#fff}.hero-home:hover{background:rgba(255,255,255,.22)}.notice{padding:13px 18px;border:1px solid #edcf9c;border-top:0;background:#fff7e7;color:#6e5016;font-size:13px}.panel{margin-top:18px;padding:20px;border:1px solid var(--line);border-radius:17px;background:var(--card);box-shadow:0 8px 24px rgba(16,54,78,.06)}.step-title{display:flex;align-items:center;gap:10px;margin:0 0 16px;font-size:19px}.step-title i{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--navy);color:#fff;font-style:normal;font-size:14px}.upload{display:grid;place-items:center;min-height:150px;padding:20px;border:2px dashed #a9c2cd;border-radius:13px;background:#f9fcfd;text-align:center}.upload strong{font-size:16px}.upload p{margin:5px 0 12px;color:var(--muted);font-size:12px}.btn{min-height:44px;padding:9px 20px;border:0;border-radius:10px;cursor:pointer;font-weight:800}.btn:disabled{opacity:.45;cursor:not-allowed}.primary{color:#fff;background:linear-gradient(135deg,#155b82,#138b82)}.green{color:#fff;background:linear-gradient(135deg,#227445,#34a15f)}.orange{color:#fff;background:#d86b19}.light{color:var(--navy);background:#e8eff2}.file-info{display:none;margin-top:12px;padding:11px 14px;border-radius:10px;background:#edf8f5;color:#17654a;font-size:13px;font-weight:700}.file-info.show{display:block}.controls{display:grid;grid-template-columns:1.2fr .8fr auto;gap:12px;align-items:end}.field label{display:block;margin-bottom:6px;font-size:13px;font-weight:800}.field select,.field input{width:100%;height:45px;padding:8px 11px;border:1px solid #aebfc8;border-radius:9px;background:#fff}.field select:focus,.field input:focus{outline:3px solid rgba(19,139,130,.18);border-color:#138b82}.actions{display:flex;gap:8px;flex-wrap:wrap}.summary{display:grid;grid-template-columns:1fr 1fr;gap:12px}.summary-card{padding:18px;border:1px solid #cddce2;border-radius:14px;background:#f8fbfc}.summary-card span{display:block;color:var(--muted);font-size:12px;font-weight:700}.summary-card strong{display:block;margin-top:5px;color:var(--navy);font-size:25px}.summary-card.total{background:linear-gradient(135deg,#0c4868,#14827d);border-color:transparent}.summary-card.total span,.summary-card.total strong{color:#fff}.table-wrap{margin-top:16px;overflow:auto;border:1px solid var(--line);border-radius:12px}.result-table{width:100%;min-width:700px;border-collapse:collapse;background:#fff}.result-table th{padding:10px;background:#0d5778;color:#fff;font-size:13px;white-space:nowrap}.result-table td{padding:10px;border-bottom:1px solid #e2e9ec;text-align:center;font-size:13px}.result-table td:nth-child(2){text-align:left}.empty{padding:30px!important;color:var(--muted)}.status{min-height:23px;margin-top:12px;color:#17654a;font-size:13px;font-weight:800}.error{color:#a9271f}.guide{margin:0;padding-left:20px;color:#4e6471;font-size:13px}.guide li+li{margin-top:6px}.credit{text-align:center;margin-top:28px;color:#71828d;font-size:12px;font-weight:700}
-#vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);backdrop-filter:blur(10px);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic",sans-serif!important}#vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75}#vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
-@media(max-width:760px){.controls{grid-template-columns:1fr}.summary{grid-template-columns:1fr}.panel{padding:15px}.actions .btn{flex:1}.hero h1{font-size:24px}}
-@media print{#vibecoding-home-btn,.upload,.controls,.actions{display:none!important}.wrap{width:100%;margin:0}.panel{box-shadow:none}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <title>회원 인증 확인 중</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<main class="wrap">
- <header class="hero"><p class="eyebrow">나이스 복무 업무지원</p><h1>근무상황관리 종별 기간 계산기</h1><p>나이스에서 내려받은 근무상황관리 파일을 불러와 종별 사용 기간을 자동으로 합산합니다.</p><div class="hero-actions"><a href="manual.html" class="hero-link hero-guide">사용 설명서</a><a href="index.html" class="hero-link hero-home">🏠 오춘기 권오영 홈</a></div></header>
- <div class="notice">※ 모든 계산은 현재 브라우저에서 처리되며 파일 내용은 서버로 전송하거나 저장하지 않습니다.</div>
- <section class="panel"><h2 class="step-title"><i>1</i> 근무상황관리 파일 불러오기</h2><div class="upload"><strong>나이스에서 내려받은 파일을 선택하세요.</strong><p>지원 형식: .xlsx, .xls, .csv · 첫 번째 시트의 ‘종별’과 ‘일수/기간’ 열을 자동으로 찾습니다.</p><button id="pickBtn" class="btn primary" type="button">파일 불러오기</button><input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden></div><div id="fileInfo" class="file-info"></div><div id="loadStatus" class="status" aria-live="polite"></div></section>
- <section class="panel"><h2 class="step-title"><i>2</i> 조회할 종별 선택</h2><div class="controls"><div class="field"><label for="leaveType">종별</label><select id="leaveType" disabled><option>먼저 파일을 불러오세요</option></select></div><div class="field"><label for="hoursPerDay">1일 환산 시간</label><input id="hoursPerDay" type="number" min="1" max="24" step="0.5" value="8"></div><div class="actions"><button id="calcBtn" class="btn green" type="button" disabled>계산 실행</button><button id="allBtn" class="btn orange" type="button" disabled>종별 합산기간 보기</button><button id="resetBtn" class="btn light" type="button">초기화</button></div></div><p class="status">나이스의 일·시간·분 혼합 표기를 합산합니다. 하루 근무시간이 다른 경우 ‘1일 환산 시간’을 변경하세요.</p></section>
- <section id="resultPanel" class="panel" hidden><h2 class="step-title"><i>3</i> 계산 결과</h2><div class="summary"><div class="summary-card"><span>조회 종별</span><strong id="selectedLabel">-</strong></div><div class="summary-card total"><span>합계</span><strong id="grandTotal">0일 0시간 0분</strong></div></div><div class="table-wrap"><table class="result-table"><thead><tr><th>번호</th><th>종별</th><th>원본 기간</th><th>인식 결과</th><th>원본 행</th></tr></thead><tbody id="detailBody"></tbody></table></div><div id="calcStatus" class="status" aria-live="polite"></div></section>
- <section id="allPanel" class="panel" hidden><h2 class="step-title"><i>4</i> 종별 합산 결과</h2><div class="table-wrap"><table class="result-table"><thead><tr><th>번호</th><th>종별</th><th>건수</th><th>합산 기간</th></tr></thead><tbody id="allBody"></tbody></table></div></section>
- <section class="panel"><h2 class="step-title"><i>?</i> 나이스 파일 다운로드 방법</h2><ol class="guide"><li>나이스에서 <b>복무 → 근무상황관리</b>로 이동합니다.</li><li>기간과 부서, 근무상황 및 결재상태를 설정한 뒤 조회합니다.</li><li><b>엑셀내려받기</b>로 저장한 파일을 위의 ‘파일 불러오기’에서 선택합니다.</li></ol></section>
- <div class="credit">2026. Program by Kwon O Young. · 오춘기 권오영</div>
-</main>
-<a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
-<script src="./latest-home-nav.js?v=20260807-2341" data-vibecoding-latest-home="1"></script>
-<script>
-(()=>{'use strict';const $=id=>document.getElementById(id);let rows=[],typeHeader='',durationHeader='';
-const clean=v=>String(v??'').replace(/[\s\r\n]+/g,'').trim();
-function findHeader(grid){for(let r=0;r<Math.min(grid.length,20);r++){const row=grid[r]||[];let t=-1,d=-1;for(let c=0;c<Math.min(row.length,50);c++){const h=clean(row[c]);if(t<0&&h.includes('종별'))t=c;if(d<0&&(h.includes('일수/기간')||h==='일수기간'||h==='사용기간'||h==='일수'))d=c}if(t>=0&&d>=0)return{row:r,type:t,duration:d}}return null}
-function parseDuration(value,hoursPerDay=8){if(value===null||value===undefined||value==='')return null;if(typeof value==='number'&&Number.isFinite(value)){const minutes=Math.round(value*hoursPerDay*60);return{minutes,label:formatDuration(minutes,hoursPerDay)}}const s=String(value).trim();if(!s)return null;let days=0,hours=0,mins=0,matched=false;const dm=s.match(/(-?\d+(?:\.\d+)?)\s*일/),hm=s.match(/(-?\d+(?:\.\d+)?)\s*시간/),mm=s.match(/(-?\d+(?:\.\d+)?)\s*분/);if(dm){days=Number(dm[1]);matched=true}if(hm){hours=Number(hm[1]);matched=true}if(mm){mins=Number(mm[1]);matched=true}if(!matched){const colon=s.match(/^\s*(\d{1,3}):([0-5]\d)(?::[0-5]\d)?\s*$/);if(colon){hours=Number(colon[1]);mins=Number(colon[2]);matched=true}else if(/^\d+(?:\.\d+)?$/.test(s)){days=Number(s);matched=true}}if(!matched)return null;const minutes=Math.round(days*hoursPerDay*60+hours*60+mins);return{minutes,label:formatDuration(minutes,hoursPerDay)}}
-function formatDuration(total,hpd=8){const sign=total<0?'-':'';let n=Math.abs(Math.round(total)),dayMin=Math.round(hpd*60),d=Math.floor(n/dayMin);n-=d*dayMin;const h=Math.floor(n/60),m=n%60;return`${sign}${d}일 ${h}시간 ${m}분`}
-function setStatus(msg,error=false){$('loadStatus').textContent=msg;$('loadStatus').className='status'+(error?' error':'')}
-function loadArray(grid,fileName){const found=findHeader(grid);if(!found)throw new Error("첫 20행에서 ‘종별’과 ‘일수/기간’ 열을 찾지 못했습니다.");typeHeader=String(grid[found.row][found.type]||'종별');durationHeader=String(grid[found.row][found.duration]||'일수/기간');rows=[];for(let r=found.row+1;r<grid.length;r++){const type=String((grid[r]||[])[found.type]??'').trim(),raw=(grid[r]||[])[found.duration];if(type)rows.push({type,raw,row:r+1})}if(!rows.length)throw new Error('종별 데이터가 없습니다. 조회 조건과 파일 내용을 확인하세요.');const types=[...new Set(rows.map(x=>x.type))].sort((a,b)=>a.localeCompare(b,'ko'));$('leaveType').innerHTML='<option value="[전체합산]">[전체합산]</option>'+types.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('');$('leaveType').disabled=false;$('calcBtn').disabled=false;$('allBtn').disabled=false;$('fileInfo').textContent=`${fileName} · ${rows.length.toLocaleString()}건 · ${typeHeader} / ${durationHeader}`;$('fileInfo').classList.add('show');setStatus(`${types.length}개 종별을 불러왔습니다.`);$('resultPanel').hidden=true;$('allPanel').hidden=true}
-function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
-async function readFile(file){if(typeof XLSX==='undefined')throw new Error('엑셀 처리 모듈을 불러오지 못했습니다. 인터넷 연결 후 다시 시도하세요.');const ext=file.name.split('.').pop().toLowerCase(),data=ext==='csv'?await file.text():await file.arrayBuffer();const wb=XLSX.read(data,{type:ext==='csv'?'string':'array',cellDates:false,raw:true});const ws=wb.Sheets[wb.SheetNames[0]],grid=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:true});loadArray(grid,file.name)}
-function selectedRows(){const choice=$('leaveType').value;return choice==='[전체합산]'?rows:rows.filter(x=>x.type===choice)}
-function calculate(){const hpd=Number($('hoursPerDay').value);if(!Number.isFinite(hpd)||hpd<=0||hpd>24){setStatus('1일 환산 시간은 1~24시간으로 입력하세요.',true);return}const choice=$('leaveType').value,list=selectedRows(),parsed=list.map(x=>({...x,parsed:parseDuration(x.raw,hpd)})),valid=parsed.filter(x=>x.parsed),total=valid.reduce((s,x)=>s+x.parsed.minutes,0);$('selectedLabel').textContent=choice;$('grandTotal').textContent=formatDuration(total,hpd);$('detailBody').innerHTML=parsed.length?parsed.map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(x.type)}</td><td>${escapeHtml(x.raw)}</td><td>${x.parsed?escapeHtml(x.parsed.label):'<span class="error">인식 불가</span>'}</td><td>${x.row}</td></tr>`).join(''):'<tr><td class="empty" colspan="5">해당 종별 자료가 없습니다.</td></tr>';$('calcStatus').textContent=`총 ${parsed.length}건 중 ${valid.length}건을 합산했습니다.${parsed.length-valid.length?` 인식하지 못한 ${parsed.length-valid.length}건은 표에서 확인하세요.`:''}`;$('resultPanel').hidden=false;$('resultPanel').scrollIntoView({behavior:'smooth',block:'start'})}
-function viewAll(){const hpd=Number($('hoursPerDay').value);if(!Number.isFinite(hpd)||hpd<=0||hpd>24){setStatus('1일 환산 시간은 1~24시간으로 입력하세요.',true);return}const map=new Map;for(const x of rows){const p=parseDuration(x.raw,hpd);if(!map.has(x.type))map.set(x.type,{count:0,minutes:0,valid:0});const a=map.get(x.type);a.count++;if(p){a.minutes+=p.minutes;a.valid++}}const list=[...map.entries()].sort((a,b)=>a[0].localeCompare(b[0],'ko'));$('allBody').innerHTML=list.map(([type,a],i)=>`<tr><td>${i+1}</td><td>${escapeHtml(type)}</td><td>${a.valid}/${a.count}건</td><td>${formatDuration(a.minutes,hpd)}</td></tr>`).join('');$('allPanel').hidden=false;$('allPanel').scrollIntoView({behavior:'smooth',block:'start'})}
-function reset(){rows=[];$('fileInput').value='';$('leaveType').innerHTML='<option>먼저 파일을 불러오세요</option>';$('leaveType').disabled=true;$('calcBtn').disabled=true;$('allBtn').disabled=true;$('fileInfo').classList.remove('show');$('fileInfo').textContent='';$('resultPanel').hidden=true;$('allPanel').hidden=true;setStatus('초기화했습니다. 새 파일을 선택하세요.')}
-$('pickBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;setStatus('파일을 읽는 중입니다…');try{await readFile(f)}catch(err){setStatus(`불러오기 오류: ${err.message}`,true);reset();setStatus(`불러오기 오류: ${err.message}`,true)}});$('calcBtn').addEventListener('click',calculate);$('allBtn').addEventListener('click',viewAll);$('resetBtn').addEventListener('click',reset);$('leaveType').addEventListener('change',()=>{$('resultPanel').hidden=true});
-const tests=[parseDuration('1일 2시간 30분',8)?.minutes===630,parseDuration('02:30',8)?.minutes===150,parseDuration(1.5,8)?.minutes===720,formatDuration(630,8)==='1일 2시간 30분'];document.documentElement.dataset.selftest=tests.every(Boolean)?'passed':'failed';
-})();
-</script>
-</body></html>
+  <main class="box">
+    <div class="mark">🔒</div>
+    <h1>회원 인증 확인 중</h1>
+    <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+    <div class="spin" aria-hidden="true"></div>
+  </main>
+  <script>
+  (async()=>{
+    const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+    const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const marker='/VibeCoding/';
+    const path=decodeURIComponent(location.pathname);
+    const pos=path.indexOf(marker);
+    const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+    const returnUrl=encodeURIComponent(location.href);
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){location.replace('login.html?return='+returnUrl);return;}
+      const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+      const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+      if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+      if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+      if(!res.ok){throw new Error(await res.text());}
+      const html=await res.text();
+      document.open();document.write(html);document.close();
+    }catch(err){
+      console.error(err);
+      document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
+    }
+  })();
+  </script>
+</body>
+</html>

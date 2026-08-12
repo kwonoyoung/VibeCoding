@@ -1,27 +1,47 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="나이스 복무 근무상황관리 파일 다운로드 방법 사용 설명서">
-<title>나이스 복무 근무상황관리 파일 다운로드 방법 - 오춘기 권오영</title>
-<style>
-:root{--bg:#f8fafc;--card:#fff;--text:#111827;--sub:#4b5563;--border:#e2e8f0;--accent:#0b6a75;--soft:#e9f7f5;--tag:#dff3f0;--shadow:0 1px 2px rgba(15,23,42,.05)}
-*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:var(--bg);color:var(--text);line-height:1.65;word-break:keep-all}.wrapper{max-width:980px;margin:auto;padding:56px 20px 70px}header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:32px;padding-bottom:20px;border-bottom:2px solid var(--text)}h1{font-size:clamp(1.5rem,4vw,1.9rem);letter-spacing:-.04em}.subtitle{margin-top:5px;color:var(--sub)}.header-right{display:flex;gap:10px;flex-wrap:wrap}.sub-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:var(--card);color:var(--text);font-size:.92rem;font-weight:800;text-decoration:none}.sub-link:hover{transform:translateY(-1px);border-color:var(--accent);color:var(--accent)}.sub-link-home{background:var(--tag);color:#075c65;border-color:#7fc4bd}.content-box{margin-bottom:24px;padding:30px;border:1px solid var(--border);border-radius:16px;background:var(--card);box-shadow:var(--shadow)}.box-title{margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);font-size:1.35rem}.lead{color:var(--sub)}.route{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:18px}.route span{padding:7px 11px;border-radius:999px;background:var(--soft);color:#075c65;font-weight:800;font-size:.9rem}.route b{color:#93a4ad}.steps{list-style:none;counter-reset:step}.steps li{position:relative;margin-top:14px;padding:18px 18px 18px 62px;border:1px solid var(--border);border-radius:13px;background:#fcfefe;color:var(--sub)}.steps li:before{counter-increment:step;content:counter(step);position:absolute;left:17px;top:17px;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;font-weight:900}.steps strong{display:block;margin-bottom:3px;color:var(--text)}.info{margin-top:18px;padding:16px 18px;border:1px solid #b9dbd6;border-radius:12px;background:var(--soft);color:#285f5a}.image-card{overflow:hidden;border:1px solid var(--border);border-radius:14px;background:#fff}.image-card img{display:block;width:100%;height:auto}.caption{padding:13px 16px;color:var(--sub);font-size:.9rem}.check-list{padding-left:22px;color:var(--sub)}.check-list li+li{margin-top:8px}.check-list strong{color:var(--text)}footer{padding:22px;text-align:center;color:#71828d;font-size:12px;font-weight:700}
-#vibecoding-home-btn{position:fixed;right:18px;bottom:18px;z-index:2147483647;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:82px;height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(9,52,78,.94);color:#fff!important;box-shadow:0 10px 28px rgba(0,0,0,.20);text-decoration:none!important;font:800 14px/1.2 "Malgun Gothic","Apple SD Gothic Neo",sans-serif!important;letter-spacing:-.02em}#vibecoding-home-btn:hover{transform:translateY(-2px);background:#0a6a75}#vibecoding-home-btn:focus-visible{outline:3px solid #ffd43b;outline-offset:3px}
-@media(max-width:640px){.wrapper{padding:30px 14px 70px}.content-box{padding:20px 16px}.header-right{width:100%}.sub-link{flex:1}.steps li{padding-left:56px}#vibecoding-home-btn{right:12px;bottom:12px;height:42px;min-width:76px;padding:0 14px;font-size:13px}}@media print{#vibecoding-home-btn,.header-right{display:none!important}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+  <title>회원 인증 확인 중</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-<main class="wrapper">
- <header><div><h1>나이스 복무 근무상황관리 파일 다운로드 방법</h1><p class="subtitle">종별 기간 계산기에 사용할 나이스 엑셀파일 내려받기 안내</p></div><div class="header-right"><a href="index.html" class="sub-link sub-link-home">오춘기 권오영 홈</a><a href="service.html" class="sub-link">도구로 이동</a></div></header>
- <section class="content-box"><h2 class="box-title">이동 경로</h2><p class="lead">나이스에 로그인한 뒤 다음 순서로 근무상황관리 화면을 엽니다.</p><div class="route"><span>나이스</span><b>→</b><span>복무</span><b>→</b><span>근무상황관리</span></div></section>
- <section class="content-box"><h2 class="box-title">파일 내려받기 순서</h2><ol class="steps"><li><strong>조회 조건 설정</strong>기간을 지정하고 부서, 근무상황, 결재상태, 인사구분 및 성명 조건을 선택합니다.</li><li><strong>결재상태 확인</strong>계산 대상이 확정된 자료라면 결재상태를 <b>완결</b>로 설정합니다.</li><li><strong>대상자 조회</strong>필요하면 성명을 입력해 대상자를 찾은 뒤 오른쪽의 <b>조회</b> 버튼을 누릅니다.</li><li><strong>엑셀 내려받기</strong>조회 결과가 표시되면 목록 위의 초록색 <b>엑셀내려받기</b> 버튼을 누르고 파일을 저장합니다.</li><li><strong>계산기에 파일 불러오기</strong>저장한 파일을 종별 기간 계산기의 <b>파일 불러오기</b> 버튼으로 선택합니다.</li></ol><div class="info">안내 이미지의 예시는 특정 사용자와 부서를 보여주기 위한 화면입니다. 실제 이용 시 본인의 권한과 조회 대상에 맞게 조건을 설정하세요.</div></section>
- <section class="content-box"><h2 class="box-title">원본 안내 화면</h2><div class="image-card"><img src="neis-download-guide.jpg" alt="나이스 복무 근무상황관리 파일 다운로드 방법 화면 안내"><p class="caption">① 기간·부서·근무상황·결재상태 등 조회 조건 설정 및 조회 → ② 엑셀내려받기</p></div></section>
- <section class="content-box"><h2 class="box-title">불러오기 전 확인</h2><ul class="check-list"><li>파일 확장자는 <strong>.xlsx, .xls 또는 .csv</strong>인지 확인합니다.</li><li>첫 번째 시트에 <strong>종별</strong>과 <strong>일수/기간</strong> 열이 포함되어 있어야 합니다.</li><li>파일 내용을 임의로 삭제하거나 열 이름을 변경하지 않은 원본을 사용하는 것이 안전합니다.</li></ul></section>
- <footer>2026. Program by Kwon O Young. · 오춘기 권오영</footer>
-</main>
-<a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="/VibeCoding/index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ 홈</a>
-<script src="./latest-home-nav.js?v=20260807-2341" data-vibecoding-latest-home="1"></script>
+  <main class="box">
+    <div class="mark">🔒</div>
+    <h1>회원 인증 확인 중</h1>
+    <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+    <div class="spin" aria-hidden="true"></div>
+  </main>
+  <script>
+  (async()=>{
+    const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+    const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const marker='/VibeCoding/';
+    const path=decodeURIComponent(location.pathname);
+    const pos=path.indexOf(marker);
+    const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+    const returnUrl=encodeURIComponent(location.href);
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){location.replace('login.html?return='+returnUrl);return;}
+      const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+      const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+      if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+      if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+      if(!res.ok){throw new Error(await res.text());}
+      const html=await res.text();
+      document.open();document.write(html);document.close();
+    }catch(err){
+      console.error(err);
+      document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
+    }
+  })();
+  </script>
 </body>
 </html>
