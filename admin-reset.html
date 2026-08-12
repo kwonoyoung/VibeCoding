@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>관리자 비밀번호 1회 재설정</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:22px;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:radial-gradient(circle at 12% 10%,rgba(12,148,136,.13),transparent 27%),linear-gradient(135deg,#eaf4f7,#f8fbfc);color:#183448}.box{width:min(520px,100%);overflow:hidden;border:1px solid #d7e4ea;border-radius:25px;background:#fff;box-shadow:0 22px 65px rgba(7,54,82,.15)}.head{padding:30px;color:#fff;background:linear-gradient(135deg,#082f4d,#0e5d7f 62%,#0c9488)}.badge{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;padding:7px 11px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(255,255,255,.12);font-size:11px;font-weight:900}.badge:before{content:"";width:7px;height:7px;border-radius:50%;background:#63ded4}.head h1{margin:0;font-size:27px;letter-spacing:-.045em}.head p{margin:10px 0 0;color:#d6edf0;font-size:13px;line-height:1.7}.body{padding:28px 30px}.label{margin:15px 0 7px;font-size:12px;font-weight:900;color:#526c7b}.field{width:100%;padding:13px 14px;border:1px solid #cddde5;border-radius:12px;background:#fff;color:#24475d;font-size:14px;outline:none}.field:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.12)}.email{padding:13px 14px;border:1px solid #cddde5;border-radius:12px;background:#f7fafb;color:#24475d;font-size:14px;font-weight:850}.btn{width:100%;margin-top:20px;padding:13px 16px;border:0;border-radius:12px;background:linear-gradient(135deg,#0b3c5d,#0c9488);color:#fff;font-size:15px;font-weight:900;cursor:pointer;box-shadow:0 9px 22px rgba(12,148,136,.17)}.btn:disabled{opacity:.55;cursor:not-allowed}.msg{display:none;margin-top:15px;padding:13px;border-radius:11px;background:#eef7f7;color:#275b5a;font-size:13px;line-height:1.65}.msg.show{display:block}.warn{margin-top:16px;padding:12px 13px;border:1px solid #e6e0c8;border-radius:11px;background:#fffaf0;color:#76612d;font-size:12px;line-height:1.65}.back{display:block;margin-top:19px;text-align:center;color:#617988;text-decoration:none;font-size:13px;font-weight:800}.hint{margin-top:6px;color:#78909d;font-size:11px;line-height:1.55}
+</style>
+</head>
+<body>
+<main class="box">
+<section class="head"><div class="badge">ONE-TIME ADMIN RESET</div><h1>관리자 비밀번호 1회 재설정</h1><p>관리자 본인이 새 비밀번호를 직접 입력합니다. 비밀번호는 GitHub에 저장되지 않습니다.</p></section>
+<section class="body">
+<div class="label">관리자 이메일</div>
+<div class="email">kwonoyoung77@gmail.com</div>
+<div class="label">1회용 재설정 코드</div>
+<input class="field" id="token" autocomplete="off" spellcheck="false" placeholder="1회용 재설정 코드 입력">
+<div class="label">새 비밀번호</div>
+<input class="field" id="password" type="password" autocomplete="new-password" placeholder="12자 이상">
+<div class="hint">영문, 숫자, 특수문자를 각각 1자 이상 포함해 주세요.</div>
+<div class="label">새 비밀번호 확인</div>
+<input class="field" id="confirm" type="password" autocomplete="new-password" placeholder="새 비밀번호 다시 입력">
+<button class="btn" id="resetBtn">관리자 비밀번호 변경</button>
+<div class="msg" id="msg"></div>
+<div class="warn">이 재설정 코드는 1회만 사용할 수 있으며, 성공 즉시 폐기됩니다. 새 비밀번호는 이 페이지나 GitHub 저장소에 저장되지 않습니다.</div>
+<a class="back" href="admin-login.html">← 관리자 로그인으로 돌아가기</a>
+</section>
+</main>
+<script>
+const ENDPOINT='https://eqpiuszmgrwituwprgdc.supabase.co/functions/v1/reset-vibecoding-admin-password';
+const token=document.getElementById('token'),password=document.getElementById('password'),confirmPw=document.getElementById('confirm'),btn=document.getElementById('resetBtn'),msg=document.getElementById('msg');
+function show(text,bad=false){msg.textContent=text;msg.classList.add('show');msg.style.background=bad?'#fff0f1':'#eef7f7';msg.style.color=bad?'#922f39':'#275b5a'}
+btn.onclick=async()=>{
+  const t=token.value.trim(),p=password.value,c=confirmPw.value;
+  msg.classList.remove('show');
+  if(!t){show('1회용 재설정 코드를 입력해 주세요.',true);return}
+  if(p.length<12){show('새 비밀번호는 12자 이상으로 설정해 주세요.',true);return}
+  if(!/[A-Za-z]/.test(p)||!/[0-9]/.test(p)||!/[^A-Za-z0-9]/.test(p)){show('비밀번호에는 영문, 숫자, 특수문자를 각각 1자 이상 포함해 주세요.',true);return}
+  if(p!==c){show('새 비밀번호와 확인값이 일치하지 않습니다.',true);return}
+  btn.disabled=true;btn.textContent='변경 중...';
+  try{
+    const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:t,password:p})});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok){show(data.error||'비밀번호 변경에 실패했습니다.',true);return}
+    password.value='';confirmPw.value='';token.value='';
+    show('관리자 비밀번호가 변경되었습니다. 잠시 후 관리자 로그인 화면으로 이동합니다.');
+    setTimeout(()=>location.href='admin-login.html',1800);
+  }catch(e){show('서버 연결 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',true)}
+  finally{btn.disabled=false;btn.textContent='관리자 비밀번호 변경'}
+};
+</script>
+</body>
+</html>
