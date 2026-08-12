@@ -1,0 +1,121 @@
+name: Secure VibeCoding Protected Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/secure-pages.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  secure-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Encrypt protected HTML and replace public files with secure loader
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -f .vibecoding-secured-v1 ]; then
+            echo "Security conversion already completed."
+            exit 0
+          fi
+
+          mkdir -p secure
+          cat > /tmp/vibecoding-loader.html <<'EOF'
+          <!DOCTYPE html>
+          <html lang="ko">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex">
+            <title>회원 인증 확인 중</title>
+            <style>
+              *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#eef5f8;color:#173042}body{min-height:100vh;display:grid;place-items:center;padding:24px}.box{width:min(520px,100%);padding:34px;border:1px solid #d7e4ea;border-radius:22px;background:#fff;box-shadow:0 20px 55px rgba(6,46,76,.12);text-align:center}.mark{width:54px;height:54px;margin:0 auto 16px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(135deg,#073c60,#098e86);color:#fff;font-size:25px}.box h1{margin:0 0 10px;font-size:22px}.box p{margin:0;color:#697f8c;line-height:1.7;font-size:14px}.spin{width:34px;height:34px;margin:22px auto 0;border:4px solid #dce9ed;border-top-color:#078e84;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+            </style>
+            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+          </head>
+          <body>
+            <main class="box">
+              <div class="mark">🔒</div>
+              <h1>회원 인증 확인 중</h1>
+              <p>승인된 회원에게만 업무 페이지를 안전하게 불러옵니다.</p>
+              <div class="spin" aria-hidden="true"></div>
+            </main>
+            <script>
+            (async()=>{
+              const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+              const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+              const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+              const marker='/VibeCoding/';
+              const path=decodeURIComponent(location.pathname);
+              const pos=path.indexOf(marker);
+              const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
+              const returnUrl=encodeURIComponent(location.href);
+              try{
+                const {data:{session}}=await sb.auth.getSession();
+                if(!session){location.replace('login.html?return='+returnUrl);return;}
+                const endpoint=SUPABASE_URL+'/functions/v1/vibecoding-page?page='+encodeURIComponent(page);
+                const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
+                if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
+                if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
+                if(!res.ok){throw new Error(await res.text());}
+                const html=await res.text();
+                document.open();document.write(html);document.close();
+              }catch(err){
+                console.error(err);
+                document.querySelector('.box').innerHTML='<div class="mark">!</div><h1>보호 페이지를 열 수 없습니다</h1><p>로그인 상태 또는 네트워크 연결을 확인한 뒤 다시 시도해 주세요.</p>';
+              }
+            })();
+            </script>
+          </body>
+          </html>
+          EOF
+
+          PUBLIC=' index.html login.html admin.html '
+          count=0
+          while IFS= read -r -d '' file; do
+            rel="${file#./}"
+            case "$rel" in
+              .github/*) continue ;;
+            esac
+            if [[ "$PUBLIC" == *" $rel "* ]]; then
+              echo "PUBLIC: $rel"
+              continue
+            fi
+
+            echo "Encrypting $rel"
+            out="secure/${rel}.enc"
+            mkdir -p "$(dirname "$out")"
+            curl --fail --silent --show-error --retry 3 \
+              -X POST \
+              -H 'Content-Type: text/plain; charset=utf-8' \
+              --data-binary "@$rel" \
+              'https://eqpiuszmgrwituwprgdc.supabase.co/functions/v1/vibecoding-encrypt' > "$out"
+
+            cp /tmp/vibecoding-loader.html "$rel"
+            count=$((count+1))
+          done < <(find . -type f -name '*.html' -print0)
+
+          echo "secured $(date -u +%FT%TZ) / $count protected html files" > .vibecoding-secured-v1
+
+      - name: Commit secure deployment files
+        shell: bash
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Protect all member pages with encrypted server-gated delivery"
+          git push
