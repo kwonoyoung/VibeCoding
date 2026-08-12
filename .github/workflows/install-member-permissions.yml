@@ -1,0 +1,43 @@
+name: Install member permissions UI
+
+on:
+  push:
+    paths:
+      - '.github/workflows/install-member-permissions.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add permission UI scripts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          targets = {
+              'index.html': '<script src="member-permissions-home.js?v=20260812"></script>',
+              'admin.html': '<script src="member-permissions-admin.js?v=20260812"></script>',
+          }
+          for fn, tag in targets.items():
+              p = Path(fn)
+              text = p.read_text(encoding='utf-8')
+              if tag not in text:
+                  if '</body>' not in text:
+                      raise SystemExit(f'</body> not found in {fn}')
+                  text = text.replace('</body>', tag + '\n</body>', 1)
+                  p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "kwonoyoung"
+          git config user.email "kwonoyoung77@gmail.com"
+          git add index.html admin.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Connect member menu permission UI"
+            git push
+          fi
