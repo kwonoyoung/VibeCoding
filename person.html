@@ -21,12 +21,58 @@
   (async()=>{
     const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
     const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+    const ADMIN_EMAIL='kwonoyoung77@gmail.com';
+    const PERSON_SESSION_KEY='person-directory-supabase-session';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
     const marker='/VibeCoding/';
     const path=decodeURIComponent(location.pathname);
     const pos=path.indexOf(marker);
     const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
     const returnUrl=encodeURIComponent(location.href);
+
+    function buildPersonPasswordPatch(){
+      return `
+<style id="person-admin-password-style">
+#personAdminPwModal{position:fixed;inset:0;z-index:2147483647;display:none;place-items:center;padding:20px;background:rgba(8,31,45,.58);backdrop-filter:blur(5px)}
+#personAdminPwModal.show{display:grid}#personAdminPwBox{width:min(420px,100%);padding:25px;border-radius:20px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.28);color:#173042}
+#personAdminPwBox h3{margin:0 0 9px;font-size:21px}#personAdminPwBox p{margin:0 0 16px;color:#637a88;font-size:13px;line-height:1.65}
+#personAdminPwBox .email{margin-bottom:10px;padding:11px 12px;border:1px solid #d3e0e6;border-radius:10px;background:#f6f9fa;font-weight:800;font-size:13px}
+#personAdminPwBox input{width:100%;padding:12px 13px;border:1px solid #c8d8e0;border-radius:10px;font-size:14px;outline:none}#personAdminPwBox input:focus{border-color:#0c8d84;box-shadow:0 0 0 3px rgba(12,141,132,.12)}
+#personAdminPwBox .actions{display:flex;gap:8px;margin-top:13px}#personAdminPwBox button{flex:1;padding:11px 12px;border:0;border-radius:10px;font-weight:850;cursor:pointer}#personAdminPwLogin{background:#0b6176;color:#fff}#personAdminPwCancel{background:#edf3f5;color:#365361}
+#personAdminPwMsg{min-height:18px;margin-top:10px;font-size:12px;color:#b43d46}
+</style>
+<div id="personAdminPwModal" aria-hidden="true"><div id="personAdminPwBox"><h3>관리자 로그인</h3><p>등록·갱신·삭제 기능은 관리자만 이용할 수 있습니다.</p><div class="email">${ADMIN_EMAIL}</div><input id="personAdminPwInput" type="password" autocomplete="current-password" placeholder="관리자 비밀번호"><div class="actions"><button id="personAdminPwCancel" type="button">취소</button><button id="personAdminPwLogin" type="button">로그인</button></div><div id="personAdminPwMsg"></div></div></div>
+<script>
+(()=>{
+ const U='${SUPABASE_URL}', K='${SUPABASE_KEY}', E='${ADMIN_EMAIL}', SK='${PERSON_SESSION_KEY}';
+ function wire(){
+   const old=document.getElementById('btnSendLoginLink'); if(!old)return;
+   const btn=old.cloneNode(true); btn.textContent='관리자 로그인'; btn.disabled=false; old.replaceWith(btn);
+   const modal=document.getElementById('personAdminPwModal'), input=document.getElementById('personAdminPwInput'), msg=document.getElementById('personAdminPwMsg'), login=document.getElementById('personAdminPwLogin'), cancel=document.getElementById('personAdminPwCancel');
+   const close=()=>{modal.classList.remove('show');modal.setAttribute('aria-hidden','true');input.value='';msg.textContent='';};
+   btn.addEventListener('click',()=>{modal.classList.add('show');modal.setAttribute('aria-hidden','false');setTimeout(()=>input.focus(),50);});
+   cancel.addEventListener('click',close); modal.addEventListener('click',e=>{if(e.target===modal)close();});
+   async function doLogin(){
+     const password=input.value; if(!password){msg.textContent='관리자 비밀번호를 입력해 주세요.';return;}
+     login.disabled=true;msg.style.color='#607984';msg.textContent='로그인 확인 중입니다...';
+     try{
+       const r=await fetch(U+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:K,'Content-Type':'application/json'},body:JSON.stringify({email:E,password})});
+       const d=await r.json().catch(()=>({}));
+       if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'이메일 또는 비밀번호를 확인해 주세요.');
+       const ur=await fetch(U+'/auth/v1/user',{headers:{apikey:K,Authorization:'Bearer '+d.access_token}}); const user=await ur.json();
+       if(!ur.ok||String(user.email||'').toLowerCase()!==E){throw new Error('관리자 계정이 아닙니다.');}
+       localStorage.setItem(SK,JSON.stringify(d));
+       msg.style.color='#187455';msg.textContent='관리자 로그인 성공. 화면을 다시 불러옵니다.';
+       setTimeout(()=>location.reload(),350);
+     }catch(e){msg.style.color='#b43d46';msg.textContent=e.message||'로그인에 실패했습니다.';login.disabled=false;}
+   }
+   login.addEventListener('click',doLogin); input.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(wire,0));else setTimeout(wire,0);
+})();
+<\/script>`;
+    }
+
     try{
       const {data:{session}}=await sb.auth.getSession();
       if(!session){location.replace('login.html?return='+returnUrl);return;}
@@ -35,7 +81,13 @@
       if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
       if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
       if(!res.ok){throw new Error(await res.text());}
-      const html=await res.text();
+      let html=await res.text();
+      const currentEmail=String(session.user?.email||'').toLowerCase();
+      if(currentEmail===ADMIN_EMAIL){
+        localStorage.setItem(PERSON_SESSION_KEY,JSON.stringify(session));
+      }
+      const patch=buildPersonPasswordPatch();
+      html=html.replace(/<\/body>/i,patch+'</body>');
       document.open();document.write(html);document.close();
     }catch(err){
       console.error(err);
