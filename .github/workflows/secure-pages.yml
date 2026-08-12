@@ -80,7 +80,7 @@ jobs:
           </html>
           EOF
 
-          PUBLIC=' index.html login.html admin.html '
+          PUBLIC=' index.html login.html admin.html ai.html '
           count=0
           while IFS= read -r -d '' file; do
             rel="${file#./}"
