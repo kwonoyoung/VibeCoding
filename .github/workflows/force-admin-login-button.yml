@@ -1,0 +1,47 @@
+name: Force Admin Login Button
+
+on:
+  push:
+    paths:
+      - '.github/workflows/force-admin-login-button.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Patch index.html
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<a href="admin-login.html">🔐 관리자 로그인</a>'
+          new='<a href="admin-login.html" class="admin-login-btn">🔐 관리자 로그인</a>'
+          if old in s:
+              s=s.replace(old,new,1)
+          elif 'admin-login.html' not in s:
+              s=s.replace('<div class="account" id="account">','<div class="account" id="account"><a href="admin-login.html" class="admin-login-btn">🔐 관리자 로그인</a>',1)
+          css='.admin-login-btn{background:#fff!important;color:#0b3c5d!important;border:1px solid rgba(255,255,255,.95)!important;box-shadow:0 8px 20px rgba(0,0,0,.16)!important;font-weight:900!important;padding:9px 15px!important}.admin-login-btn:hover{transform:translateY(-1px);background:#e9fffb!important;color:#075e58!important}'
+          if '.admin-login-btn{' not in s:
+              s=s.replace('</style>',css+'</style>',1)
+          p.write_text(s,encoding='utf-8')
+
+      - name: Commit
+        run: |
+          if git diff --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Make admin login button prominent on home"
+          git push
