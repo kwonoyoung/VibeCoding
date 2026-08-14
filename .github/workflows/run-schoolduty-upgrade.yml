@@ -1,0 +1,27 @@
+name: Run schoolduty upgrade
+
+on:
+  push:
+    paths:
+      - 'scripts/upgrade_schoolduty_dashboard.py'
+      - '.github/workflows/run-schoolduty-upgrade.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run upgrade script
+        run: python3 scripts/upgrade_schoolduty_dashboard.py
+      - name: Commit changes
+        run: |
+          git config user.name "kwonoyoung"
+          git config user.email "kwonoyoung77@gmail.com"
+          git add schoolduty.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Upgrade schoolduty dashboard UI and team balance"
+          git push
