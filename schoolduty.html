@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학교 업무 표준화</title>
+<style>
+:root{--navy:#102c3a;--green:#267a59;--cream:#f5f1e8;--line:#d7ddd8;--muted:#697a7e}*{box-sizing:border-box}body{margin:0;color:var(--navy);font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#f7f8f6}button,input,select{font:inherit}.app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}.side{position:sticky;top:0;height:100vh;padding:30px 20px;background:#102c3a;color:white}.logo{font-size:20px;font-weight:900;margin-bottom:4px}.sub{font-size:10px;letter-spacing:.15em;color:#a9c0c8}.nav{display:grid;gap:7px;margin-top:36px}.nav button{border:0;border-radius:11px;padding:13px 14px;text-align:left;background:transparent;color:#dbe7e9;font-weight:800;cursor:pointer}.nav button:hover,.nav button.on{background:#f3efe6;color:#173747}.side-note{position:absolute;left:20px;right:20px;bottom:25px;color:#a9bdc4;font-size:11px;line-height:1.65}.main{padding:26px 34px 54px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:18px;padding-bottom:20px;border-bottom:1px solid var(--line)}.school{font-size:21px;font-weight:900}.meta{font-size:11px;color:var(--muted);margin-bottom:5px}.top-actions{display:flex;align-items:center;gap:9px}.saved{font-size:11px;color:var(--green);font-weight:800}.home{padding:9px 13px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--navy);text-decoration:none;font-size:12px;font-weight:900}.page{display:none}.page.on{display:block}.hero{display:flex;justify-content:space-between;gap:24px;align-items:end;padding:38px 0 24px}.eyebrow{color:var(--green);font-size:11px;font-weight:900;letter-spacing:.13em}.hero h1{margin:8px 0 8px;font-family:"Noto Serif KR",serif;font-size:clamp(27px,4vw,43px);line-height:1.22}.hero p{margin:0;color:var(--muted);line-height:1.7}.primary,.soft,.danger{border:0;border-radius:11px;padding:11px 16px;font-weight:900;cursor:pointer}.primary{background:var(--green);color:#fff}.soft{background:#e9efeb;color:#284b3c}.danger{background:#fbe9e6;color:#a54436}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:0 10px 28px rgba(24,55,50,.05)}.card{padding:18px}.card small{color:var(--muted);font-weight:700}.card strong{display:block;font-size:26px;margin-top:8px}.panel{padding:22px;margin-top:18px}.panel h2{margin:0 0 16px;font-size:19px}.bar-row{display:grid;grid-template-columns:95px 1fr 55px;gap:12px;align-items:center;margin:12px 0;font-size:12px}.bar{height:12px;background:#e8eeeb;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,#2d8261,#75b58f);border-radius:99px}.toolbar{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}.toolbar input,.toolbar select,.field input,.field select{border:1px solid var(--line);background:white;border-radius:10px;padding:10px 11px;color:var(--navy)}.toolbar input{min-width:240px;flex:1}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:white}table{width:100%;border-collapse:collapse;font-size:12px}th{position:sticky;top:0;background:#edf2ee;text-align:left;padding:11px;color:#345047}td{padding:10px 11px;border-top:1px solid #e8ece9}td input,td select{width:100%;min-width:74px;border:1px solid transparent;background:transparent;padding:6px;border-radius:7px}td input:focus,td select:focus{border-color:#74a68e;background:white}.pill{display:inline-block;padding:4px 8px;border-radius:99px;background:#e7f2ec;color:#227452;font-weight:900}.pill.over{background:#fdebea;color:#b44a3c}.pill.low{background:#eef0fb;color:#5a66a9}.people-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.person{padding:18px;border:1px solid var(--line);border-radius:15px;background:white}.person-head{display:flex;justify-content:space-between;align-items:center}.person input{margin-top:10px;width:100%;padding:9px;border:1px solid var(--line);border-radius:9px}.settings{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field label{display:block;font-size:12px;font-weight:900;margin-bottom:7px}.field input,.field select{width:100%}.export-grid,.guide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.action-card{padding:20px;border:1px solid var(--line);border-radius:14px;background:white}.action-card h3{margin:0 0 6px}.action-card p{color:var(--muted);font-size:12px;line-height:1.65}.footer{text-align:center;color:#7a898d;font-size:11px;margin-top:35px}.mobile-menu{display:none}@media(max-width:850px){.app{display:block}.side{position:static;height:auto;padding:17px}.nav{grid-template-columns:repeat(3,1fr);margin-top:16px}.side-note{display:none}.main{padding:18px}.cards{grid-template-columns:repeat(2,1fr)}.people-grid,.settings,.export-grid,.guide-grid{grid-template-columns:1fr}.top{align-items:flex-start}.hero{align-items:flex-start;flex-direction:column}.nav button{text-align:center;padding:9px 5px;font-size:11px}}@media print{.side,.top-actions,.hero button,.toolbar,.no-print{display:none!important}.app{display:block}.main{padding:0}.page{display:none!important}#export.page{display:block!important}.panel{box-shadow:none;border:0;padding:0}.tablewrap{overflow:visible}th{position:static}}
+</style></head><body><div class="app"><aside class="side"><div class="logo">▦ 학교 업무 표준화</div><div class="sub">SCHOOL ADMINISTRATION</div><nav class="nav" id="nav"><button data-page="dash" class="on">업무 대시보드</button><button data-page="duties">업무 관리</button><button data-page="people">담당자 현황</button><button data-page="export">출력 · 내보내기</button><button data-page="settings">학교 기본설정</button><button data-page="guide">사용 매뉴얼</button></nav><div class="side-note">현재 브라우저에 자동 보관<br>공유 전에는 JSON 백업 파일을 저장하세요.</div></aside><main class="main"><header class="top"><div><div class="meta" id="topMeta"></div><div class="school" id="topSchool"></div></div><div class="top-actions"><span class="saved" id="saved">저장됨</span><a class="home" href="index.html">⌂ 오춘기 권오영 홈</a></div></header>
+<section id="dash" class="page on"><div class="hero"><div><div class="eyebrow">OVERVIEW · SCHOOL DUTY</div><h1>업무 배정의 균형을 확인합니다.</h1><p>업무시간과 중요도를 함께 반영해 담당자별 업무량과 편차를 계산합니다.</p></div><button class="primary" data-go="duties">업무 항목 관리</button></div><div class="cards" id="summaryCards"></div><div class="panel"><h2>담당자별 업무량 분포</h2><div id="bars"></div></div><div class="panel"><h2>업무분야별 업무량</h2><div id="fields"></div></div></section>
+<section id="duties" class="page"><div class="hero"><div><div class="eyebrow">DUTY REGISTER</div><h1>업무를 배정하고 조정합니다.</h1><p>업무시간·중요도·담당자를 바꾸면 업무량과 균형 지수가 즉시 갱신됩니다.</p></div><button class="primary" id="addDuty">+ 업무 추가</button></div><div class="toolbar"><input id="search" placeholder="업무분야, 단위업무, 담당자 검색"><select id="fieldFilter"><option value="">전체 분야</option></select><select id="roleFilter"><option value="">전체 담당자</option></select><span id="dutyCount"></span></div><div class="tablewrap"><table><thead><tr><th>NO.</th><th>업무분야</th><th>단위업무</th><th>업무시간</th><th>중요도</th><th>업무량</th><th>담당자</th><th>관리</th></tr></thead><tbody id="dutyRows"></tbody></table></div></section>
+<section id="people" class="page"><div class="hero"><div><div class="eyebrow">TEAM BALANCE</div><h1>담당자별 업무 편차를 검토합니다.</h1><p>담당자 성명을 입력하면 인쇄 자료에도 함께 반영됩니다.</p></div></div><div class="people-grid" id="peopleGrid"></div></section>
+<section id="export" class="page"><div class="hero"><div><div class="eyebrow">REPORT & ARCHIVE</div><h1>업무분장표를 공유하고 보관합니다.</h1><p>인쇄, Excel 호환 CSV, JSON 백업과 복원을 지원합니다.</p></div><button class="primary" onclick="window.print()">업무분장표 인쇄</button></div><div class="export-grid no-print"><div class="action-card"><h3>CSV 내려받기</h3><p>Excel에서 열 수 있는 업무분장표를 저장합니다.</p><button class="soft" id="csvBtn">내려받기</button></div><div class="action-card"><h3>JSON 백업</h3><p>학교 설정, 담당자와 업무 전체를 보관합니다.</p><button class="soft" id="jsonBtn">백업 저장</button></div><div class="action-card"><h3>백업 파일 복원</h3><p>이전에 저장한 JSON 파일을 불러옵니다.</p><button class="soft" id="restoreBtn">파일 선택</button><input hidden type="file" id="restoreFile" accept="application/json"></div><div class="action-card"><h3>원본으로 되돌리기</h3><p>69개 표준 업무와 기본 설정으로 복원합니다.</p><button class="danger" id="resetBtn">초기화</button></div></div><div class="panel"><h2 id="printTitle"></h2><div class="tablewrap"><table><thead><tr><th>순</th><th>업무분야</th><th>단위업무</th><th>업무량</th><th>중요도</th><th>담당자</th></tr></thead><tbody id="printRows"></tbody></table></div></div></section>
+<section id="settings" class="page"><div class="hero"><div><div class="eyebrow">SCHOOL PROFILE</div><h1>학교 기본설정을 구성합니다.</h1><p>학교 기본정보와 업무분장 방식을 설정합니다.</p></div><button class="primary" id="saveSettings">설정 저장</button></div><div class="panel"><h2>기본 정보</h2><div class="settings"><div class="field"><label>학교명</label><input id="schoolName"></div><div class="field"><label>학교급</label><select id="schoolType"><option>유치원</option><option>초등학교</option><option>중학교</option><option>고등학교</option><option>특수학교</option><option>기타</option></select></div><div class="field"><label>행정인원</label><select id="staffCount"></select></div><div class="field"><label>작성 기준일</label><input type="date" id="baseDate"></div></div></div><div class="panel"><h2>업무분장 방식</h2><p style="color:var(--muted);line-height:1.7">표준안은 69개 단위업무를 사용합니다. 사용자 선택은 현재 수정한 업무를 유지합니다.</p><button class="soft" id="standardBtn">표준안 다시 적용</button></div></section>
+<section id="guide" class="page"><div class="hero"><div><div class="eyebrow">USER GUIDE</div><h1>업무분장 작성 순서를 안내합니다.</h1><p>기본설정부터 업무 배정, 균형 점검, 출력·백업까지 순서대로 이용하세요.</p></div></div><div class="guide-grid"><div class="action-card"><h3>01 학교 기본설정</h3><p>학교명, 학교급, 행정인원과 작성 기준일을 입력합니다.</p><button class="soft" data-go="settings">화면으로 이동</button></div><div class="action-card"><h3>02 업무 배정</h3><p>단위업무, 시간, 중요도와 담당자를 수정합니다.</p><button class="soft" data-go="duties">화면으로 이동</button></div><div class="action-card"><h3>03 업무량 점검</h3><p>평균 대비 ±15%를 기준으로 과다·적정·여유를 확인합니다.</p><button class="soft" data-go="people">화면으로 이동</button></div><div class="action-card"><h3>04 출력 및 백업</h3><p>출력 전 JSON 백업을 저장하고 CSV 또는 인쇄 자료를 만듭니다.</p><button class="soft" data-go="export">화면으로 이동</button></div></div></section><div class="footer">Copyright © 2026 오춘기 권오영 All rights reserved.</div></main></div>
+<script>
+const TSV=`행정실총괄\t행정실업무 총괄\t9\t5\t실장
+인사·복무\t지방공무원 인사관리\t3\t6\t실장
+인사·복무\t지방공무원 복무관리\t1\t6\t주무관1
+인사·복무\t지방공무원 교육훈련(연수)관리\t5\t2\t주무관1
+인사·복무\t당직 관리\t5\t1\t주무관3
+학교운영위원회\t학교운영위원회 선출관리\t3\t7\t주무관3
+학교운영위원회\t학교운영위원회 회의운영\t5\t7\t실장
+학교운영위원회\t학교운영위원회 행정업무\t5\t4\t주무관3
+감사\t감사 일반관리\t1\t5\t주무관1
+감사\t감사 세부업무\t2\t5\t주무관2
+학교회계예결산\t학교회계 예산관리\t3\t5\t주무관1
+학교회계예결산\t학교회계 예산업무\t5\t5\t주무관1
+학교회계예결산\t학교회계 결산관리\t3\t4\t주무관1
+학교회계예결산\t학교환경개선 현안사업관리\t1\t5\t주무관1
+학교회계수입\t학교회계 세입업무(수익자부담)\t9\t6\t주무관5
+학교회계수입\t학교회계 세입업무(수익자부담외 세입)\t7\t3\t주무관5
+학교회계수입\t교특회계 세입업무\t3\t3\t주무관5
+학교회계수입\t수입회계 장부관리\t5\t2\t주무관5
+학교회계지출\t학교회계 지출업무(일반)\t10\t7\t주무관2
+학교회계지출\t학교회계 지출업무(경직성경비)\t6\t4\t주무관3
+학교회계지출\t학교회계 지출업무(공공요금, 출장비)\t5\t2\t주무관3
+학교회계지출\t학교회계 지출업무(인건비, 강사수당)\t5\t2\t주무관3
+학교회계지출\t학교회계 대가지급\t4\t3\t실장
+학교회계지출\t지출회계 장부관리\t4\t4\t주무관2
+학교회계지출\t신용카드 관리\t8\t3\t주무관2
+학교회계지출\t세출 공개업무(업무추진비 등)\t5\t2\t주무관2
+학교회계지출\t각종 의무구매 관리\t5\t2\t주무관2
+계약\t학교회계 계약업무(2인이상 계약)\t4\t7\t주무관1
+계약\t학교회계 계약업무(1인 계약)\t8\t3\t주무관2
+계약\t학교 용역(시설관리)계약\t4\t5\t주무관2
+계약\t학교 급식계약\t4\t2\t주무관2
+계약\t방과후강사 등 계약업무지원\t3\t7\t주무관1
+세입세출외현금\t세입세출외현금 관리\t7\t3\t주무관3
+학교발전기금\t학교발전기금 관리\t3\t3\t주무관1
+학교발전기금\t학교발전기금 회계업무\t3\t3\t주무관3
+보수\t교직원 급여관리\t5\t4\t주무관4
+보수\t교직원(교육공무직원) 연말정산\t3\t4\t주무관4
+보수\t교직원 기타급여관리\t4\t2\t주무관4
+보수\t교직원 맞춤형복지관리\t2\t2\t주무관4
+보수\t초과근무 관리\t5\t3\t주무관4
+교육공무직원등\t교육공무직원등 인사관리\t4\t4\t주무관1
+교육공무직원등\t교육공무직원등 일반관리\t5\t3\t주무관4
+교육공무직원등\t교육공무직원등 급여관리\t6\t2\t주무관4
+교육공무직원등\t교육공무직원등 기타급여관리\t4\t4\t주무관4
+재산·물품\t재산 관리\t4\t3\t주무관4
+재산·물품\t물품 관리\t6\t3\t주무관4
+재산·물품\t소모품 관리\t5\t1\t주무관4
+학교시설관리\t학교발주공사 감독관리\t5\t5\t실장
+학교시설관리\t학교시설물 관리\t5\t4\t실장
+학교시설관리\t학교시설물 업무\t6\t3\t주무관3
+학교시설관리\t에너지 관리(냉난방기 등)\t5\t2\t주무관3
+학교시설관리\t학교시설물 사용허가관리\t3\t2\t주무관3
+학교시설관리\t석면 관리\t4\t1\t주무관3
+학교시설관리\t관사(사택)등 관리\t1\t2\t주무관3
+학교시설관리\t학교시설 재난안전관리\t4\t3\t주무관1
+학교시설관리\t학교시설 재난안전업무\t5\t3\t주무관3
+민원·정보공개\t제증명발급 등 민원업무\t7\t2\t주무관5
+민원·정보공개\t학교 정보공시\t5\t2\t주무관5
+민원·정보공개\t행정정보 공개\t2\t2\t주무관5
+민원·정보공개\t교육통계 등 각종 통계업무\t5\t2\t주무관5
+일반행정\t행정실 업무분장\t1\t5\t주무관1
+일반행정\t행정실 소관규정 자체정비\t1\t5\t주무관1
+일반행정\t사무인수인계업무\t1\t7\t주무관1
+일반행정\t학교관인 관리\t6\t1\t주무관5
+일반행정\t기록물(서고) 관리\t5\t2\t주무관4
+일반행정\t보안(대외비) 업무\t3\t2\t주무관4
+기타행정\t급식 행정업무\t1\t2\t주무관4
+기타행정\t학교 통학버스(차량) 행정업무\t2\t1\t주무관4
+기타행정\t기타행정에 관한 업무\t2\t1\t주무관4`;
+const roles=['실장','주무관1','주무관2','주무관3','주무관4','주무관5'];
+const fresh=()=>({school:{name:'남원여자고등학교',type:'고등학교',staff:6,date:'2021-01-07'},names:{},duties:TSV.split('\n').map((x,i)=>{const a=x.split('\t');return{id:i+1,field:a[0],title:a[1],hours:+a[2],importance:+a[3],role:a[4]}})});
+let data;try{data=JSON.parse(localStorage.getItem('schoolDutyV1'))||fresh()}catch(e){data=fresh()}
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],weight=d=>d.hours*d.importance/10,activeRoles=()=>roles.slice(0,data.school.staff);
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function save(){localStorage.setItem('schoolDutyV1',JSON.stringify(data));$('#saved').textContent='저장됨';renderAll()}
+function stats(){const rs=activeRoles().map(role=>{const ds=data.duties.filter(d=>d.role===role);return{role,count:ds.length,total:ds.reduce((s,d)=>s+weight(d),0),duties:ds}});const total=rs.reduce((s,r)=>s+r.total,0),avg=total/(rs.length||1);return{rs,total,avg}}
+function status(total,avg){if(total>avg*1.15)return['과다','over'];if(total<avg*.85)return['여유','low'];return['적정','']}
+function go(id){$$('.page').forEach(x=>x.classList.toggle('on',x.id===id));$$('#nav button').forEach(x=>x.classList.toggle('on',x.dataset.page===id));scrollTo(0,0);renderAll()}
+function renderTop(){const s=data.school;$('#topMeta').textContent=s.type+' · 행정인원 '+s.staff+'명 · 표준안';$('#topSchool').textContent=s.name}
+function renderDash(){const s=stats(),mx=Math.max(...s.rs.map(r=>r.total),1),bad=s.rs.filter(r=>status(r.total,s.avg)[0]==='과다').length;$('#summaryCards').innerHTML='<div class="card"><small>업무량 균형 지수</small><strong>'+Math.max(0,100-Math.round(s.rs.reduce((n,r)=>n+Math.abs(r.total-s.avg),0)))+'점</strong></div><div class="card"><small>균형 점검</small><strong>'+bad+'건</strong></div><div class="card"><small>관리 업무</small><strong>'+data.duties.length+'</strong></div><div class="card"><small>배정 담당자</small><strong>'+s.rs.length+'명</strong></div>';$('#bars').innerHTML=s.rs.map(r=>'<div class="bar-row"><b>'+r.role+'</b><div class="bar"><i style="width:'+(r.total/mx*100)+'%"></i></div><strong>'+r.total.toFixed(1)+'</strong></div>').join('');const fs={};data.duties.forEach(d=>fs[d.field]=(fs[d.field]||0)+weight(d));$('#fields').innerHTML=Object.entries(fs).sort((a,b)=>b[1]-a[1]).slice(0,10).map(x=>'<div class="bar-row"><b>'+esc(x[0])+'</b><div class="bar"><i style="width:'+(x[1]/Math.max(...Object.values(fs))*100)+'%"></i></div><strong>'+x[1].toFixed(1)+'</strong></div>').join('')}
+function filters(){const fields=[...new Set(data.duties.map(d=>d.field))].sort(),fv=$('#fieldFilter').value,rv=$('#roleFilter').value;$('#fieldFilter').innerHTML='<option value="">전체 분야</option>'+fields.map(x=>'<option '+(x===fv?'selected':'')+'>'+esc(x)+'</option>').join('');$('#roleFilter').innerHTML='<option value="">전체 담당자</option>'+activeRoles().map(x=>'<option '+(x===rv?'selected':'')+'>'+x+'</option>').join('')}
+function renderDuties(){filters();const q=$('#search').value.trim().toLowerCase(),f=$('#fieldFilter').value,r=$('#roleFilter').value,list=data.duties.filter(d=>(!q||(d.field+d.title+d.role).toLowerCase().includes(q))&&(!f||d.field===f)&&(!r||d.role===r));$('#dutyCount').textContent=list.length+' / '+data.duties.length+'개';$('#dutyRows').innerHTML=list.map((d,i)=>'<tr><td>'+String(i+1).padStart(2,'0')+'</td><td><input data-id="'+d.id+'" data-k="field" value="'+esc(d.field)+'"></td><td><input data-id="'+d.id+'" data-k="title" value="'+esc(d.title)+'"></td><td><input type="number" min="0" step=".5" data-id="'+d.id+'" data-k="hours" value="'+d.hours+'"></td><td><input type="number" min="1" max="10" data-id="'+d.id+'" data-k="importance" value="'+d.importance+'"></td><td><b>'+weight(d).toFixed(1)+'</b></td><td><select data-id="'+d.id+'" data-k="role">'+activeRoles().map(x=>'<option '+(x===d.role?'selected':'')+'>'+x+'</option>').join('')+'</select></td><td><button class="danger del" data-id="'+d.id+'">삭제</button></td></tr>').join('')}
+function renderPeople(){const s=stats();$('#peopleGrid').innerHTML=s.rs.map(r=>{const st=status(r.total,s.avg);return'<div class="person"><div class="person-head"><div><b>'+r.role+'</b><div style="color:var(--muted);font-size:11px">'+r.count+'개 업무 · '+r.total.toFixed(1)+'</div></div><span class="pill '+st[1]+'">'+st[0]+'</span></div><input class="nameInput" data-role="'+r.role+'" placeholder="성명 입력" value="'+esc(data.names[r.role]||'')+'"><p style="font-size:11px;color:var(--muted);line-height:1.6">'+r.duties.slice(0,5).map(d=>'• '+esc(d.title)).join('<br>')+(r.count>5?'<br>외 '+(r.count-5)+'개':'')+'</p></div>'}).join('')}
+function renderExport(){$('#printTitle').textContent=data.school.name+' 행정실 업무분장표';$('#printRows').innerHTML=data.duties.map((d,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(d.field)+'</td><td>'+esc(d.title)+'</td><td>'+weight(d).toFixed(1)+'</td><td>'+d.importance+'</td><td>'+esc(data.names[d.role]||d.role)+'</td></tr>').join('')}
+function renderSettings(){$('#schoolName').value=data.school.name;$('#schoolType').value=data.school.type;$('#staffCount').innerHTML=[2,3,4,5,6].map(n=>'<option value="'+n+'" '+(n===data.school.staff?'selected':'')+'>'+n+'인</option>').join('');$('#baseDate').value=data.school.date}
+function renderAll(){renderTop();renderDash();renderDuties();renderPeople();renderExport();renderSettings()}
+$('#nav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(b.dataset.page)});document.body.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});['search','fieldFilter','roleFilter'].forEach(id=>$('#'+id).addEventListener(id==='search'?'input':'change',renderDuties));
+$('#dutyRows').addEventListener('change',e=>{const el=e.target,id=+el.dataset.id,k=el.dataset.k;if(!id||!k)return;const d=data.duties.find(x=>x.id===id);d[k]=['hours','importance'].includes(k)?+el.value:el.value;save()});$('#dutyRows').addEventListener('click',e=>{const b=e.target.closest('.del');if(b&&confirm('이 업무를 삭제할까요?')){data.duties=data.duties.filter(x=>x.id!==+b.dataset.id);save()}});
+$('#addDuty').onclick=()=>{data.duties.push({id:Date.now(),field:'기타행정',title:'새 단위업무',hours:1,importance:1,role:activeRoles()[0]});save();setTimeout(()=>{const w=$('.tablewrap');w.scrollTop=w.scrollHeight},0)};$('#peopleGrid').addEventListener('change',e=>{if(e.target.classList.contains('nameInput')){data.names[e.target.dataset.role]=e.target.value;save()}});
+$('#saveSettings').onclick=()=>{data.school={name:$('#schoolName').value.trim()||'학교명 미입력',type:$('#schoolType').value,staff:+$('#staffCount').value,date:$('#baseDate').value};const ar=activeRoles();data.duties.forEach(d=>{if(!ar.includes(d.role))d.role=ar[0]});save();alert('설정을 저장했습니다.')};$('#standardBtn').onclick=()=>{if(confirm('현재 업무 목록을 69개 표준안으로 되돌릴까요?')){const s=data.school,n=data.names;data=fresh();data.school=s;data.names=n;save()}};
+function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$('#csvBtn').onclick=()=>download('학교업무분장표.csv',[['순','업무분야','단위업무','업무시간','중요도','업무량','담당자'],...data.duties.map((d,i)=>[i+1,d.field,d.title,d.hours,d.importance,weight(d).toFixed(1),data.names[d.role]||d.role])].map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\n'),'text/csv;charset=utf-8');$('#jsonBtn').onclick=()=>download('학교업무분장_백업.json',JSON.stringify(data,null,2),'application/json');$('#restoreBtn').onclick=()=>$('#restoreFile').click();$('#restoreFile').onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!x.school||!Array.isArray(x.duties))throw 0;data=x;save();alert('백업을 복원했습니다.')}catch(err){alert('올바른 백업 파일이 아닙니다.')}};$('#resetBtn').onclick=()=>{if(confirm('모든 변경 내용을 지우고 원본으로 되돌릴까요?')){data=fresh();save()}};renderAll();
+</script></body></html>
