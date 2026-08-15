@@ -1,0 +1,4 @@
+project_id = "eqpiuszmgrwituwprgdc"
+
+[functions.confirm-support-payment]
+verify_jwt = false
