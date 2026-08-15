@@ -15,7 +15,28 @@
     a.innerHTML='<span aria-hidden="true">💛</span><span>구독료 후원</span>';
     document.body.appendChild(a);
   }
+
+  function addNoteMenu(){
+    if(document.querySelector('a.tool[href="note.html"]'))return;
+    const sections=[...document.querySelectorAll('.section')];
+    const section=sections.find(s=>s.querySelector('.section-title h2')?.textContent.trim()==='공문서·업무지원');
+    if(!section)return;
+    const grid=section.querySelector('.grid');
+    if(!grid)return;
+    const a=document.createElement('a');
+    a.className='tool doc';
+    a.href='note.html';
+    a.innerHTML='<div class="tool-top"><div class="tool-icon">📒</div><div class="arrow">→</div></div><h3>교행노트</h3><p>교육행정 실무 노트와 업무 매뉴얼을 분류·검색해서 확인합니다.</p>';
+    grid.appendChild(a);
+    const count=section.querySelector('.section-count');
+    if(count){
+      const n=grid.querySelectorAll('a.tool').length;
+      count.textContent=n+'개 도구';
+    }
+  }
+
   addSupportButton();
+  addNoteMenu();
 
   const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
   const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
