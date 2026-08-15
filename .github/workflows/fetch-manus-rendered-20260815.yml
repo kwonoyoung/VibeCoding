@@ -1,0 +1,71 @@
+name: Fetch rendered Manus schoolduty 20260815
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fetch-manus-rendered-20260815.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch static assets
+        shell: bash
+        run: |
+          mkdir -p .github/tmp-manus
+          curl --fail --location --retry 3 'https://schoolduty-eiwebfme.manus.space/assets/index-D26nw_Kw.js' -o .github/tmp-manus/app.js
+          curl --fail --location --retry 3 'https://schoolduty-eiwebfme.manus.space/assets/index-0H8kj-qt.css' -o .github/tmp-manus/app.css
+      - name: Render page DOM
+        shell: bash
+        run: |
+          CHROME=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)
+          if [ -z "$CHROME" ]; then
+            echo 'Chrome not found' >&2
+            exit 1
+          fi
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --virtual-time-budget=8000 --dump-dom 'https://schoolduty-eiwebfme.manus.space/' > .github/tmp-manus/rendered.html
+      - name: Extract readable structure
+        shell: python
+        run: |
+          from pathlib import Path
+          from html.parser import HTMLParser
+          import re
+
+          html = Path('.github/tmp-manus/rendered.html').read_text(encoding='utf-8', errors='replace')
+          html = re.sub(r'<script\b[^>]*>.*?</script>', '', html, flags=re.S|re.I)
+          html = re.sub(r'<style\b[^>]*>.*?</style>', '', html, flags=re.S|re.I)
+
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.stack=[]; self.rows=[]; self.capture={'h1','h2','h3','h4','button','a','label','option','p','span','th','td','input','select'}
+              def handle_starttag(self, tag, attrs):
+                  d=dict(attrs); self.stack.append((tag,d,[]))
+                  if tag=='input':
+                      self.rows.append(f"INPUT id={d.get('id','')} type={d.get('type','')} placeholder={d.get('placeholder','')} value={d.get('value','')}")
+              def handle_data(self,data):
+                  if self.stack: self.stack[-1][2].append(data)
+              def handle_endtag(self,tag):
+                  if not self.stack: return
+                  item=self.stack.pop()
+                  if item[0]!=tag: return
+                  txt=' '.join(''.join(item[2]).split())
+                  if tag in self.capture and txt:
+                      d=item[1]
+                      self.rows.append(f"{tag.upper()} id={d.get('id','')} class={d.get('class','')} href={d.get('href','')} :: {txt}")
+                  if self.stack and txt:
+                      self.stack[-1][2].append(' '+txt+' ')
+          p=P(); p.feed(html)
+          Path('.github/tmp-manus/structure.txt').write_text('\n'.join(p.rows),encoding='utf-8')
+          Path('.github/tmp-manus/plaintext.txt').write_text(' '.join(re.sub(r'<[^>]+>',' ',html).split()),encoding='utf-8')
+      - name: Commit rendered analysis files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/tmp-manus
+          git commit -m "Fetch rendered Manus schoolduty for analysis"
+          git push
