@@ -19,7 +19,6 @@ jobs:
         run: |
           python <<'PY'
           from pathlib import Path
-          import re
 
           path = Path('schoolduty.html')
           text = path.read_text(encoding='utf-8')
@@ -28,14 +27,8 @@ jobs:
           if xlsx_script not in text:
               text = text.replace('</head>', '  ' + xlsx_script + '\n</head>', 1)
 
-          text = text.replace(
-              'CSV 내보내기와 JSON 백업·복원을 통해 현재 작업 내용을 안전하게 보관할 수 있습니다.',
-              'Excel 내보내기와 JSON 백업·복원을 통해 현재 작업 내용을 안전하게 보관할 수 있습니다.'
-          )
-          text = text.replace(
-              '<h3>CSV 내려받기</h3><p>전체 단위업무를 Excel에서 열 수 있는 CSV 파일로 저장합니다.</p><button class="btn btn-muted" onclick="downloadCSV()">CSV 저장</button>',
-              '<h3>엑셀로 내려받기</h3><p>전체 단위업무를 Excel 통합문서(.xlsx) 파일로 저장합니다.</p><button class="btn btn-muted" onclick="downloadXLSX()">엑셀 저장 (.xlsx)</button>'
-          )
+          text = text.replace('CSV 내보내기와 JSON 백업·복원을 통해 현재 작업 내용을 안전하게 보관할 수 있습니다.', 'Excel 내보내기와 JSON 백업·복원을 통해 현재 작업 내용을 안전하게 보관할 수 있습니다.')
+          text = text.replace('<h3>CSV 내려받기</h3><p>전체 단위업무를 Excel에서 열 수 있는 CSV 파일로 저장합니다.</p><button class="btn btn-muted" onclick="downloadCSV()">CSV 저장</button>', '<h3>엑셀로 내려받기</h3><p>전체 단위업무를 Excel 통합문서(.xlsx) 파일로 저장합니다.</p><button class="btn btn-muted" onclick="downloadXLSX()">엑셀 저장 (.xlsx)</button>')
           text = text.replace('인쇄 미리보기, CSV/JSON 백업 데이터', '인쇄 미리보기, Excel/JSON 백업 데이터')
           text = text.replace('최종 배정 후 인쇄하거나 CSV로 내려받고,', '최종 배정 후 인쇄하거나 Excel(.xlsx)로 내려받고,')
 
@@ -44,30 +37,28 @@ jobs:
           if start == -1 or end == -1:
               raise SystemExit('CSV export function not found')
 
-          new_function = """    function downloadXLSX(){
-      if(typeof XLSX==='undefined'){toast('엑셀 모듈을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.');return}
-      const head=['순번','업무분야','단위업무','업무시간','중요도','업무량','담당자','성명','메모'];
-      const rows=state.duties.map((d,i)=>[i+1,d.category,d.task,Number(d.time),Number(d.importance),Number(workload(d).toFixed(1)),d.assignee,state.names[d.assignee]||'',d.memo||'']);
-      const ws=XLSX.utils.aoa_to_sheet([head,...rows]);
-      ws['!cols']=[{wch:7},{wch:18},{wch:38},{wch:10},{wch:10},{wch:10},{wch:12},{wch:12},{wch:30}];
-      const wb=XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb,ws,'업무분장표');
-      XLSX.writeFile(wb,'업무분장표.xlsx',{compression:true});
-      toast('엑셀(.xlsx) 파일을 내려받았습니다.');
-    }
-"""
-          text = text[:start] + new_function + text[end:]
-
-          required = [
-              '엑셀로 내려받기',
-              'onclick="downloadXLSX()"',
-              "XLSX.writeFile(wb,'업무분장표.xlsx'",
-              xlsx_script,
+          lines = [
+              '    function downloadXLSX(){',
+              "      if(typeof XLSX==='undefined'){toast('엑셀 모듈을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.');return}",
+              "      const head=['순번','업무분야','단위업무','업무시간','중요도','업무량','담당자','성명','메모'];",
+              "      const rows=state.duties.map((d,i)=>[i+1,d.category,d.task,Number(d.time),Number(d.importance),Number(workload(d).toFixed(1)),d.assignee,state.names[d.assignee]||'',d.memo||'']);",
+              "      const ws=XLSX.utils.aoa_to_sheet([head,...rows]);",
+              "      ws['!cols']=[{wch:7},{wch:18},{wch:38},{wch:10},{wch:10},{wch:10},{wch:12},{wch:12},{wch:30}];",
+              "      const wb=XLSX.utils.book_new();",
+              "      XLSX.utils.book_append_sheet(wb,ws,'업무분장표');",
+              "      XLSX.writeFile(wb,'업무분장표.xlsx',{compression:true});",
+              "      toast('엑셀(.xlsx) 파일을 내려받았습니다.');",
+              '    }',
+              ''
           ]
+          text = text[:start] + '\n'.join(lines) + text[end:]
+
+          required = ['엑셀로 내려받기', 'onclick="downloadXLSX()"', "XLSX.writeFile(wb,'업무분장표.xlsx'", xlsx_script]
           for item in required:
               if item not in text:
                   raise SystemExit('Missing XLSX implementation: ' + item)
-          for item in ['onclick="downloadCSV()"', '<h3>CSV 내려받기</h3>', "download('업무분장표.csv'"]:
+          forbidden = ['onclick="downloadCSV()"', '<h3>CSV 내려받기</h3>', "download('업무분장표.csv'"]
+          for item in forbidden:
               if item in text:
                   raise SystemExit('Old CSV export remains: ' + item)
 
