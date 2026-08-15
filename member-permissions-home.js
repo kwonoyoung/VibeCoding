@@ -16,10 +16,20 @@
     document.body.appendChild(a);
   }
 
+  function findSupportSection(){
+    const sections=[...document.querySelectorAll('.section')];
+    return sections.find(s=>s.querySelector('.section-title h2')?.textContent.trim()==='공문서·업무지원');
+  }
+
+  function updateSectionCount(section){
+    const grid=section?.querySelector('.grid');
+    const count=section?.querySelector('.section-count');
+    if(grid&&count)count.textContent=grid.querySelectorAll('a.tool').length+'개 도구';
+  }
+
   function addNoteMenu(){
     if(document.querySelector('a.tool[href="note.html"]'))return;
-    const sections=[...document.querySelectorAll('.section')];
-    const section=sections.find(s=>s.querySelector('.section-title h2')?.textContent.trim()==='공문서·업무지원');
+    const section=findSupportSection();
     if(!section)return;
     const grid=section.querySelector('.grid');
     if(!grid)return;
@@ -28,15 +38,26 @@
     a.href='note.html';
     a.innerHTML='<div class="tool-top"><div class="tool-icon">📒</div><div class="arrow">→</div></div><h3>오춘기노트</h3><p>교육행정 실무 노트를 분류·검색해서 빠르게 확인합니다.</p>';
     grid.appendChild(a);
-    const count=section.querySelector('.section-count');
-    if(count){
-      const n=grid.querySelectorAll('a.tool').length;
-      count.textContent=n+'개 도구';
-    }
+    updateSectionCount(section);
+  }
+
+  function addSchoolBudgetMenu(){
+    if(document.querySelector('a.tool[href="school_budget.html"]'))return;
+    const section=findSupportSection();
+    if(!section)return;
+    const grid=section.querySelector('.grid');
+    if(!grid)return;
+    const a=document.createElement('a');
+    a.className='tool doc';
+    a.href='school_budget.html';
+    a.innerHTML='<div class="tool-top"><div class="tool-icon">₩</div><div class="arrow">→</div></div><h3>학교회계 예산 업무 도구</h3><p>학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.</p>';
+    grid.appendChild(a);
+    updateSectionCount(section);
   }
 
   addSupportButton();
   addNoteMenu();
+  addSchoolBudgetMenu();
 
   const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
   const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
