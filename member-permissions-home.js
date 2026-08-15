@@ -26,7 +26,7 @@
     const a=document.createElement('a');
     a.className='tool doc';
     a.href='note.html';
-    a.innerHTML='<div class="tool-top"><div class="tool-icon">📒</div><div class="arrow">→</div></div><h3>교행노트</h3><p>교육행정 실무 노트와 업무 매뉴얼을 분류·검색해서 확인합니다.</p>';
+    a.innerHTML='<div class="tool-top"><div class="tool-icon">📒</div><div class="arrow">→</div></div><h3>오춘기노트</h3><p>교육행정 실무 노트를 분류·검색해서 빠르게 확인합니다.</p>';
     grid.appendChild(a);
     const count=section.querySelector('.section-count');
     if(count){
