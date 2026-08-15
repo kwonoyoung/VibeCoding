@@ -1,0 +1,38 @@
+name: Validate schoolduty 20260815
+
+on:
+  push:
+    paths:
+      - '.github/workflows/validate-schoolduty-20260815.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check HTML structure and JavaScript syntax
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('schoolduty.html').read_text(encoding='utf-8')
+          assert '⌂ 오춘기 권오영 홈' in s
+          assert 'href="index.html"' in s
+          assert s.count('data-page=') >= 6
+          idx=Path('index.html').read_text(encoding='utf-8')
+          assert 'href="schoolduty.html"' in idx
+          assert '<h3>학교 업무 표준화</h3>' in idx
+          scripts=re.findall(r'<script>(.*?)</script>',s,re.S)
+          assert scripts
+          Path('/tmp/schoolduty.js').write_text(scripts[-1],encoding='utf-8')
+          PY
+          node --check /tmp/schoolduty.js
+      - name: Render locally in headless Chrome
+        shell: bash
+        run: |
+          CHROME=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)
+          test -n "$CHROME"
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --allow-file-access-from-files --virtual-time-budget=1500 --dump-dom "file://$PWD/schoolduty.html" > /tmp/rendered.html
+          grep -q '업무 배정의 균형을 확인합니다.' /tmp/rendered.html
+          grep -q '업무량 균형 지수' /tmp/rendered.html
