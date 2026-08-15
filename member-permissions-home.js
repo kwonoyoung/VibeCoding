@@ -1,4 +1,22 @@
 (()=>{
+  function addSupportButton(){
+    if(document.querySelector('.support-float-btn'))return;
+    const style=document.createElement('style');
+    style.textContent=`
+      .support-float-btn{position:fixed;left:22px;bottom:22px;z-index:99998;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border:1px solid #f0d98b;border-radius:999px;background:linear-gradient(135deg,#fff9d8,#ffe98b);color:#654d00!important;text-decoration:none;font-size:12px;font-weight:950;box-shadow:0 10px 28px rgba(77,62,13,.20);transition:.16s;pointer-events:auto!important}
+      .support-float-btn:hover{transform:translateY(-2px);background:linear-gradient(135deg,#fff4b8,#ffdf62)}
+      @media(max-width:700px){.support-float-btn{left:12px;bottom:12px;padding:9px 12px;font-size:11px}}
+    `;
+    document.head.appendChild(style);
+    const a=document.createElement('a');
+    a.className='support-float-btn';
+    a.href='support.html';
+    a.setAttribute('aria-label','구독료 후원');
+    a.innerHTML='<span aria-hidden="true">💛</span><span>구독료 후원</span>';
+    document.body.appendChild(a);
+  }
+  addSupportButton();
+
   const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
   const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
   if(!window.supabase)return;
