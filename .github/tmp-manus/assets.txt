@@ -1,0 +1,10 @@
+https://fonts.googleapis.com
+https://fonts.gstatic.com
+https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=Noto+Serif+KR:wght@600;700;900&display=swap
+/assets/index-D26nw_Kw.js
+/assets/index-0H8kj-qt.css
+https://schoolduty-eiwebfme.manus.space/
+/__manus/pwa/manifest.webmanifest
+https://manus-analytics.com/umami
+https://files.manuscdn.com/manus-space-dispatcher/spaceEditor-DPV-_I11.js
+https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js
