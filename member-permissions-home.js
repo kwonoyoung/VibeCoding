@@ -24,7 +24,6 @@
   }
 
   addSupportButton();
-  addMenu({sectionTitle:'공문서·업무지원',href:'note.html',cls:'doc',icon:'📒',title:'오춘기노트',desc:'교육행정 실무 노트를 분류·검색해서 빠르게 확인합니다.'});
   addMenu({sectionTitle:'공문서·업무지원',href:'school_budget.html',cls:'doc',icon:'₩',title:'학교 예산 현황 분석',desc:'학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.'});
   addMenu({sectionTitle:'복무·인사',href:'resource.html',cls:'people',icon:'👥',title:'인사발령 자료 분석',desc:'학교·기관별, 지역별, 직렬·직군·과목별 전입·전출 명단을 집계합니다.'});
   addToolSearch();
