@@ -50,7 +50,7 @@
     const a=document.createElement('a');
     a.className='tool doc';
     a.href='school_budget.html';
-    a.innerHTML='<div class="tool-top"><div class="tool-icon">₩</div><div class="arrow">→</div></div><h3>학교회계 예산 업무 도구</h3><p>학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.</p>';
+    a.innerHTML='<div class="tool-top"><div class="tool-icon">₩</div><div class="arrow">→</div></div><h3>학교 예산 현황 분석</h3><p>학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.</p>';
     grid.appendChild(a);
     updateSectionCount(section);
   }
