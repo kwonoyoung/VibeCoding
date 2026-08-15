@@ -2,200 +2,40 @@
   function addSupportButton(){
     if(document.querySelector('.support-float-btn'))return;
     const style=document.createElement('style');
-    style.textContent=`
-      .support-float-btn{position:fixed;left:22px;bottom:22px;z-index:99998;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border:1px solid #f0d98b;border-radius:999px;background:linear-gradient(135deg,#fff9d8,#ffe98b);color:#654d00!important;text-decoration:none;font-size:12px;font-weight:950;box-shadow:0 10px 28px rgba(77,62,13,.20);transition:.16s;pointer-events:auto!important}
-      .support-float-btn:hover{transform:translateY(-2px);background:linear-gradient(135deg,#fff4b8,#ffdf62)}
-      @media(max-width:700px){.support-float-btn{left:12px;bottom:12px;padding:9px 12px;font-size:11px}}
-    `;
+    style.textContent=`.support-float-btn{position:fixed;left:22px;bottom:22px;z-index:99998;display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border:1px solid #f0d98b;border-radius:999px;background:linear-gradient(135deg,#fff9d8,#ffe98b);color:#654d00!important;text-decoration:none;font-size:12px;font-weight:950;box-shadow:0 10px 28px rgba(77,62,13,.20);transition:.16s;pointer-events:auto!important}.support-float-btn:hover{transform:translateY(-2px);background:linear-gradient(135deg,#fff4b8,#ffdf62)}@media(max-width:700px){.support-float-btn{left:12px;bottom:12px;padding:9px 12px;font-size:11px}}`;
     document.head.appendChild(style);
-    const a=document.createElement('a');
-    a.className='support-float-btn';
-    a.href='support.html';
-    a.setAttribute('aria-label','구독료 후원');
-    a.innerHTML='<span aria-hidden="true">💛</span><span>구독료 후원</span>';
-    document.body.appendChild(a);
+    const a=document.createElement('a');a.className='support-float-btn';a.href='support.html';a.setAttribute('aria-label','구독료 후원');a.innerHTML='<span aria-hidden="true">💛</span><span>구독료 후원</span>';document.body.appendChild(a);
   }
-
-  function findSupportSection(){
-    const sections=[...document.querySelectorAll('.section')];
-    return sections.find(s=>s.querySelector('.section-title h2')?.textContent.trim()==='공문서·업무지원');
+  function findSection(title){return[...document.querySelectorAll('.section')].find(s=>s.querySelector('.section-title h2')?.textContent.trim()===title)}
+  function updateSectionCount(section){const grid=section?.querySelector('.grid'),count=section?.querySelector('.section-count');if(grid&&count)count.textContent=grid.querySelectorAll('a.tool').length+'개 도구'}
+  function addMenu({sectionTitle,href,cls='doc',icon,title,desc}){
+    if(document.querySelector(`a.tool[href="${href}"]`))return;
+    const section=findSection(sectionTitle),grid=section?.querySelector('.grid');if(!grid)return;
+    const a=document.createElement('a');a.className='tool '+cls;a.href=href;a.innerHTML=`<div class="tool-top"><div class="tool-icon">${icon}</div><div class="arrow">→</div></div><h3>${title}</h3><p>${desc}</p>`;grid.appendChild(a);updateSectionCount(section);
   }
-
-  function updateSectionCount(section){
-    const grid=section?.querySelector('.grid');
-    const count=section?.querySelector('.section-count');
-    if(grid&&count)count.textContent=grid.querySelectorAll('a.tool').length+'개 도구';
-  }
-
-  function addNoteMenu(){
-    if(document.querySelector('a.tool[href="note.html"]'))return;
-    const section=findSupportSection();
-    if(!section)return;
-    const grid=section.querySelector('.grid');
-    if(!grid)return;
-    const a=document.createElement('a');
-    a.className='tool doc';
-    a.href='note.html';
-    a.innerHTML='<div class="tool-top"><div class="tool-icon">📒</div><div class="arrow">→</div></div><h3>오춘기노트</h3><p>교육행정 실무 노트를 분류·검색해서 빠르게 확인합니다.</p>';
-    grid.appendChild(a);
-    updateSectionCount(section);
-  }
-
-  function addSchoolBudgetMenu(){
-    if(document.querySelector('a.tool[href="school_budget.html"]'))return;
-    const section=findSupportSection();
-    if(!section)return;
-    const grid=section.querySelector('.grid');
-    if(!grid)return;
-    const a=document.createElement('a');
-    a.className='tool doc';
-    a.href='school_budget.html';
-    a.innerHTML='<div class="tool-top"><div class="tool-icon">₩</div><div class="arrow">→</div></div><h3>학교 예산 현황 분석</h3><p>학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.</p>';
-    grid.appendChild(a);
-    updateSectionCount(section);
-  }
-
   function addToolSearch(){
     if(document.getElementById('toolSearchBtn'))return;
-    const quick=document.querySelector('.quick');
-    const state=document.getElementById('memberState');
-    if(!quick||!state)return;
-
-    const style=document.createElement('style');
-    style.textContent=`
-      .quick-actions{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
-      .tool-search-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid #c7dbe5;border-radius:11px;background:#0e5d7f;color:#fff;font-size:12px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(14,93,127,.14);transition:.16s}
-      .tool-search-btn:hover{transform:translateY(-1px);background:#0b4e6b}
-      .tool-search-modal{position:fixed;inset:0;z-index:100000;display:none;place-items:start center;padding:90px 18px 30px;background:rgba(7,31,47,.50);backdrop-filter:blur(4px)}
-      .tool-search-modal.show{display:grid}
-      .tool-search-box{width:min(680px,100%);max-height:min(720px,calc(100vh - 120px));display:flex;flex-direction:column;overflow:hidden;border:1px solid #d5e2e8;border-radius:21px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.26)}
-      .tool-search-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid #e4edf1}
-      .tool-search-head h3{margin:0;font-size:18px}.tool-search-close{border:0;border-radius:9px;padding:8px 10px;background:#edf3f6;color:#405b6a;font-weight:900;cursor:pointer}
-      .tool-search-input-wrap{padding:15px 20px;border-bottom:1px solid #edf2f4}.tool-search-input{width:100%;height:46px;padding:0 14px;border:1px solid #cbdce4;border-radius:12px;background:#fff;color:#173042;font:inherit;font-size:14px;outline:none}.tool-search-input:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.12)}
-      .tool-search-count{padding:10px 20px;color:#6d818e;font-size:11px;font-weight:850;background:#f8fbfc;border-bottom:1px solid #edf2f4}
-      .tool-search-results{overflow:auto;padding:8px}.tool-search-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 14px;border:0;border-bottom:1px solid #edf2f4;background:#fff;text-align:left;cursor:pointer}.tool-search-item:last-child{border-bottom:0}.tool-search-item:hover{background:#f4fafb}.tool-search-item strong{display:block;color:#214c64;font-size:13px}.tool-search-item span{display:block;margin-top:4px;color:#718591;font-size:11px;line-height:1.45}.tool-search-arrow{flex:none;color:#0b7e76;font-size:18px;font-weight:900}.tool-search-empty{padding:34px 18px;text-align:center;color:#718591;font-size:13px}
-      @media(max-width:700px){.quick{align-items:flex-start}.quick-actions{width:100%;margin-left:0;justify-content:space-between}.tool-search-btn{padding:8px 11px;font-size:11px}.tool-search-modal{padding:68px 12px 20px}.tool-search-box{max-height:calc(100vh - 88px)}}
-    `;
-    document.head.appendChild(style);
-
-    const actions=document.createElement('div');
-    actions.className='quick-actions';
-    state.parentNode.insertBefore(actions,state);
-    actions.appendChild(state);
-    const btn=document.createElement('button');
-    btn.id='toolSearchBtn';
-    btn.type='button';
-    btn.className='tool-search-btn';
-    btn.innerHTML='<span aria-hidden="true">🔎</span><span>업무도구검색</span>';
-    actions.appendChild(btn);
-
-    const modal=document.createElement('div');
-    modal.className='tool-search-modal';
-    modal.id='toolSearchModal';
-    modal.innerHTML=`<section class="tool-search-box" role="dialog" aria-modal="true" aria-labelledby="toolSearchTitle"><div class="tool-search-head"><h3 id="toolSearchTitle">업무도구검색</h3><button class="tool-search-close" id="toolSearchClose" type="button">닫기</button></div><div class="tool-search-input-wrap"><input class="tool-search-input" id="toolSearchInput" type="search" placeholder="업무도구 이름을 입력하세요" autocomplete="off"></div><div class="tool-search-count" id="toolSearchCount"></div><div class="tool-search-results" id="toolSearchResults"></div></section>`;
-    document.body.appendChild(modal);
-
-    const input=modal.querySelector('#toolSearchInput');
-    const resultBox=modal.querySelector('#toolSearchResults');
-    const countBox=modal.querySelector('#toolSearchCount');
-    const closeBtn=modal.querySelector('#toolSearchClose');
-
-    function getTools(){return [...document.querySelectorAll('a.tool[href]')].filter(a=>getComputedStyle(a).display!=='none')}
-    function renderSearch(){
-      const q=input.value.trim().toLowerCase();
-      const rows=getTools().filter(a=>{
-        const title=(a.querySelector('h3')?.textContent||'').trim();
-        const desc=(a.querySelector('p')?.textContent||'').trim();
-        return !q||(title+' '+desc).toLowerCase().includes(q);
-      });
-      countBox.textContent=q?`검색 결과 ${rows.length}개`:`전체 업무도구 ${rows.length}개`;
-      if(!rows.length){resultBox.innerHTML='<div class="tool-search-empty">검색 조건에 맞는 업무도구가 없습니다.</div>';return;}
-      resultBox.innerHTML=rows.map((a,i)=>`<button class="tool-search-item" type="button" data-i="${i}"><div><strong>${(a.querySelector('h3')?.textContent||'업무도구').replace(/[&<>]/g,'')}</strong><span>${(a.querySelector('p')?.textContent||'').replace(/[&<>]/g,'')}</span></div><div class="tool-search-arrow">→</div></button>`).join('');
-      resultBox.querySelectorAll('.tool-search-item').forEach(b=>b.addEventListener('click',()=>{
-        const target=rows[Number(b.dataset.i)];
-        modal.classList.remove('show');
-        if(target)target.click();
-      }));
-    }
-    function openSearch(){modal.classList.add('show');input.value='';renderSearch();setTimeout(()=>input.focus(),30)}
-    function closeSearch(){modal.classList.remove('show')}
-    btn.addEventListener('click',openSearch);
-    closeBtn.addEventListener('click',closeSearch);
-    input.addEventListener('input',renderSearch);
-    input.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch()});
-    modal.addEventListener('click',e=>{if(e.target===modal)closeSearch()});
+    const quick=document.querySelector('.quick'),state=document.getElementById('memberState');if(!quick||!state)return;
+    const style=document.createElement('style');style.textContent=`.quick-actions{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}.tool-search-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid #c7dbe5;border-radius:11px;background:#0e5d7f;color:#fff;font-size:12px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(14,93,127,.14);transition:.16s}.tool-search-btn:hover{transform:translateY(-1px);background:#0b4e6b}.tool-search-modal{position:fixed;inset:0;z-index:100000;display:none;place-items:start center;padding:90px 18px 30px;background:rgba(7,31,47,.50);backdrop-filter:blur(4px)}.tool-search-modal.show{display:grid}.tool-search-box{width:min(680px,100%);max-height:min(720px,calc(100vh - 120px));display:flex;flex-direction:column;overflow:hidden;border:1px solid #d5e2e8;border-radius:21px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.26)}.tool-search-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid #e4edf1}.tool-search-head h3{margin:0;font-size:18px}.tool-search-close{border:0;border-radius:9px;padding:8px 10px;background:#edf3f6;color:#405b6a;font-weight:900;cursor:pointer}.tool-search-input-wrap{padding:15px 20px;border-bottom:1px solid #edf2f4}.tool-search-input{width:100%;height:46px;padding:0 14px;border:1px solid #cbdce4;border-radius:12px;background:#fff;color:#173042;font:inherit;font-size:14px;outline:none}.tool-search-input:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.12)}.tool-search-count{padding:10px 20px;color:#6d818e;font-size:11px;font-weight:850;background:#f8fbfc;border-bottom:1px solid #edf2f4}.tool-search-results{overflow:auto;padding:8px}.tool-search-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 14px;border:0;border-bottom:1px solid #edf2f4;background:#fff;text-align:left;cursor:pointer}.tool-search-item:hover{background:#f4fafb}.tool-search-item strong{display:block;color:#214c64;font-size:13px}.tool-search-item span{display:block;margin-top:4px;color:#718591;font-size:11px;line-height:1.45}.tool-search-arrow{flex:none;color:#0b7e76;font-size:18px;font-weight:900}.tool-search-empty{padding:34px 18px;text-align:center;color:#718591;font-size:13px}@media(max-width:700px){.quick{align-items:flex-start}.quick-actions{width:100%;margin-left:0;justify-content:space-between}.tool-search-btn{padding:8px 11px;font-size:11px}.tool-search-modal{padding:68px 12px 20px}.tool-search-box{max-height:calc(100vh - 88px)}}`;document.head.appendChild(style);
+    const actions=document.createElement('div');actions.className='quick-actions';state.parentNode.insertBefore(actions,state);actions.appendChild(state);const btn=document.createElement('button');btn.id='toolSearchBtn';btn.type='button';btn.className='tool-search-btn';btn.innerHTML='<span aria-hidden="true">🔎</span><span>업무도구검색</span>';actions.appendChild(btn);
+    const modal=document.createElement('div');modal.className='tool-search-modal';modal.id='toolSearchModal';modal.innerHTML='<section class="tool-search-box" role="dialog" aria-modal="true" aria-labelledby="toolSearchTitle"><div class="tool-search-head"><h3 id="toolSearchTitle">업무도구검색</h3><button class="tool-search-close" id="toolSearchClose" type="button">닫기</button></div><div class="tool-search-input-wrap"><input class="tool-search-input" id="toolSearchInput" type="search" placeholder="업무도구 이름을 입력하세요" autocomplete="off"></div><div class="tool-search-count" id="toolSearchCount"></div><div class="tool-search-results" id="toolSearchResults"></div></section>';document.body.appendChild(modal);
+    const input=modal.querySelector('#toolSearchInput'),box=modal.querySelector('#toolSearchResults'),count=modal.querySelector('#toolSearchCount');
+    const safe=s=>String(s||'').replace(/[&<>]/g,'');function getTools(){return[...document.querySelectorAll('a.tool[href]')].filter(a=>getComputedStyle(a).display!=='none')}function render(){const q=input.value.trim().toLowerCase(),rows=getTools().filter(a=>!q||((a.querySelector('h3')?.textContent||'')+' '+(a.querySelector('p')?.textContent||'')).toLowerCase().includes(q));count.textContent=q?`검색 결과 ${rows.length}개`:`전체 업무도구 ${rows.length}개`;box.innerHTML=rows.length?rows.map((a,i)=>`<button class="tool-search-item" type="button" data-i="${i}"><div><strong>${safe(a.querySelector('h3')?.textContent||'업무도구')}</strong><span>${safe(a.querySelector('p')?.textContent||'')}</span></div><div class="tool-search-arrow">→</div></button>`).join(''):'<div class="tool-search-empty">검색 조건에 맞는 업무도구가 없습니다.</div>';box.querySelectorAll('.tool-search-item').forEach(b=>b.addEventListener('click',()=>{const target=rows[Number(b.dataset.i)];modal.classList.remove('show');if(target)target.click()}))}function open(){modal.classList.add('show');input.value='';render();setTimeout(()=>input.focus(),30)}function close(){modal.classList.remove('show')}btn.addEventListener('click',open);modal.querySelector('#toolSearchClose').addEventListener('click',close);input.addEventListener('input',render);input.addEventListener('keydown',e=>{if(e.key==='Escape')close()});modal.addEventListener('click',e=>{if(e.target===modal)close()});
   }
 
   addSupportButton();
-  addNoteMenu();
-  addSchoolBudgetMenu();
+  addMenu({sectionTitle:'공문서·업무지원',href:'note.html',cls:'doc',icon:'📒',title:'오춘기노트',desc:'교육행정 실무 노트를 분류·검색해서 빠르게 확인합니다.'});
+  addMenu({sectionTitle:'공문서·업무지원',href:'school_budget.html',cls:'doc',icon:'₩',title:'학교 예산 현황 분석',desc:'학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.'});
+  addMenu({sectionTitle:'복무·인사',href:'resource.html',cls:'people',icon:'👥',title:'인사발령 자료 분석',desc:'학교·기관별, 지역별, 직렬·직군·과목별 전입·전출 명단을 집계합니다.'});
   addToolSearch();
 
   const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
   const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
   if(!window.supabase)return;
-  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  const tools=[...document.querySelectorAll('a.tool[href]')];
-  if(!tools.length)return;
-
-  const style=document.createElement('style');
-  style.textContent=`
-    .permission-badge{position:absolute;right:14px;bottom:12px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:-.02em;border:1px solid transparent;z-index:3}
-    .permission-ok{background:#e8f7ef;color:#167346;border-color:#c9ead8}
-    .permission-no{background:#fff0f1;color:#b33f4b;border-color:#f2cfd3}
-    .permission-wait{background:#fff7e6;color:#9a6811;border-color:#f0dfb8}
-    .permission-login{background:#eef3f6;color:#5b7280;border-color:#dae5eb}
-    .tool.permission-denied{opacity:.58;filter:saturate(.72)}
-    .tool.permission-denied .arrow{background:#fff0f1;color:#b33f4b}
-  `;
-  document.head.appendChild(style);
-
-  function pageName(a){
-    try{
-      const u=new URL(a.href,location.href);
-      const marker='/VibeCoding/';
-      const i=u.pathname.indexOf(marker);
-      return decodeURIComponent((i>=0?u.pathname.slice(i+marker.length):u.pathname.replace(/^\/+/,''))||'');
-    }catch{return ''}
-  }
-  function setBadge(a,text,kind){
-    let b=a.querySelector('.permission-badge');
-    if(!b){b=document.createElement('span');b.className='permission-badge';a.appendChild(b)}
-    b.textContent=text;b.className='permission-badge '+kind;
-  }
-  function deny(a,msg='이 메뉴는 현재 사용 권한이 없습니다.'){
-    a.classList.add('permission-denied');
-    a.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();alert(msg)},true);
-  }
-
-  (async()=>{
-    const {data:{session}}=await sb.auth.getSession();
-    if(!session){tools.forEach(a=>setBadge(a,'로그인 후 확인','permission-login'));return;}
-    const {data:member}=await sb.from('vibecoding_members').select('role,status').eq('user_id',session.user.id).maybeSingle();
-    if(!member){tools.forEach(a=>{setBadge(a,'회원정보 없음','permission-no');deny(a,'회원 정보를 확인할 수 없습니다.')});return;}
-    if(member.status!=='approved'){
-      const label=member.status==='pending'?'승인 대기':'사용 차단';
-      const cls=member.status==='pending'?'permission-wait':'permission-no';
-      tools.forEach(a=>{setBadge(a,label,cls);deny(a,member.status==='pending'?'관리자 승인 후 이용할 수 있습니다.':'현재 차단된 회원입니다.')});return;
-    }
-
-    const {data:usage,error:usageError}=await sb.from('vibecoding_menu_usage').select('page_name,use_count').eq('user_id',session.user.id);
-    const usageMap=new Map((usage||[]).map(u=>[u.page_name,Number(u.use_count)||0]));
-    if(usageError)console.error('사용량 조회 오류:',usageError);
-
-    if(member.role==='admin'){
-      tools.forEach(a=>{const page=pageName(a),count=usageMap.get(page)||0;setBadge(a,`사용 가능 · ${count}회`,'permission-ok')});
-      return;
-    }
-    const {data:perms,error}=await sb.from('vibecoding_member_permissions').select('page_name,allowed').eq('user_id',session.user.id);
-    if(error){console.error(error);tools.forEach(a=>setBadge(a,'권한 확인 오류','permission-wait'));return;}
-    const map=new Map((perms||[]).map(p=>[p.page_name,p.allowed]));
-    tools.forEach(a=>{
-      const page=pageName(a);
-      const count=usageMap.get(page)||0;
-      const allowed=!map.has(page)||map.get(page)!==false;
-      if(allowed)setBadge(a,`사용 가능 · ${count}회`,'permission-ok');
-      else{setBadge(a,`사용 불가 · ${count}회`,'permission-no');deny(a);}
-    });
-  })().catch(console.error);
+  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),tools=[...document.querySelectorAll('a.tool[href]')];if(!tools.length)return;
+  const style=document.createElement('style');style.textContent=`.permission-badge{position:absolute;right:14px;bottom:12px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:-.02em;border:1px solid transparent;z-index:3}.permission-ok{background:#e8f7ef;color:#167346;border-color:#c9ead8}.permission-no{background:#fff0f1;color:#b33f4b;border-color:#f2cfd3}.permission-wait{background:#fff7e6;color:#9a6811;border-color:#f0dfb8}.permission-login{background:#eef3f6;color:#5b7280;border-color:#dae5eb}.tool.permission-denied{opacity:.58;filter:saturate(.72)}.tool.permission-denied .arrow{background:#fff0f1;color:#b33f4b}`;document.head.appendChild(style);
+  function pageName(a){try{const u=new URL(a.href,location.href),marker='/VibeCoding/',i=u.pathname.indexOf(marker);return decodeURIComponent((i>=0?u.pathname.slice(i+marker.length):u.pathname.replace(/^\/+/,''))||'')}catch{return''}}
+  function setBadge(a,text,kind){let b=a.querySelector('.permission-badge');if(!b){b=document.createElement('span');b.className='permission-badge';a.appendChild(b)}b.textContent=text;b.className='permission-badge '+kind}
+  function deny(a,msg='이 메뉴는 현재 사용 권한이 없습니다.'){a.classList.add('permission-denied');a.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();alert(msg)},true)}
+  (async()=>{const {data:{session}}=await sb.auth.getSession();if(!session){tools.forEach(a=>setBadge(a,'로그인 후 확인','permission-login'));return}const {data:member}=await sb.from('vibecoding_members').select('role,status').eq('user_id',session.user.id).maybeSingle();if(!member){tools.forEach(a=>{setBadge(a,'회원정보 없음','permission-no');deny(a,'회원 정보를 확인할 수 없습니다.')});return}if(member.status!=='approved'){const label=member.status==='pending'?'승인 대기':'사용 차단',cls=member.status==='pending'?'permission-wait':'permission-no';tools.forEach(a=>{setBadge(a,label,cls);deny(a,member.status==='pending'?'관리자 승인 후 이용할 수 있습니다.':'현재 차단된 회원입니다.')});return}const {data:usage,error:usageError}=await sb.from('vibecoding_menu_usage').select('page_name,use_count').eq('user_id',session.user.id),usageMap=new Map((usage||[]).map(u=>[u.page_name,Number(u.use_count)||0]));if(usageError)console.error('사용량 조회 오류:',usageError);if(member.role==='admin'){tools.forEach(a=>{const page=pageName(a),count=usageMap.get(page)||0;setBadge(a,`사용 가능 · ${count}회`,'permission-ok')});return}const {data:perms,error}=await sb.from('vibecoding_member_permissions').select('page_name,allowed').eq('user_id',session.user.id);if(error){console.error(error);tools.forEach(a=>setBadge(a,'권한 확인 오류','permission-wait'));return}const map=new Map((perms||[]).map(p=>[p.page_name,p.allowed]));tools.forEach(a=>{const page=pageName(a),count=usageMap.get(page)||0,allowed=!map.has(page)||map.get(page)!==false;if(allowed)setBadge(a,`사용 가능 · ${count}회`,'permission-ok');else{setBadge(a,`사용 불가 · ${count}회`,'permission-no');deny(a)}})})().catch(console.error);
 })();
