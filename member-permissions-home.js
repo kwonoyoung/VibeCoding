@@ -55,9 +55,81 @@
     updateSectionCount(section);
   }
 
+  function addToolSearch(){
+    if(document.getElementById('toolSearchBtn'))return;
+    const quick=document.querySelector('.quick');
+    const state=document.getElementById('memberState');
+    if(!quick||!state)return;
+
+    const style=document.createElement('style');
+    style.textContent=`
+      .quick-actions{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+      .tool-search-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid #c7dbe5;border-radius:11px;background:#0e5d7f;color:#fff;font-size:12px;font-weight:900;cursor:pointer;box-shadow:0 5px 14px rgba(14,93,127,.14);transition:.16s}
+      .tool-search-btn:hover{transform:translateY(-1px);background:#0b4e6b}
+      .tool-search-modal{position:fixed;inset:0;z-index:100000;display:none;place-items:start center;padding:90px 18px 30px;background:rgba(7,31,47,.50);backdrop-filter:blur(4px)}
+      .tool-search-modal.show{display:grid}
+      .tool-search-box{width:min(680px,100%);max-height:min(720px,calc(100vh - 120px));display:flex;flex-direction:column;overflow:hidden;border:1px solid #d5e2e8;border-radius:21px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.26)}
+      .tool-search-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid #e4edf1}
+      .tool-search-head h3{margin:0;font-size:18px}.tool-search-close{border:0;border-radius:9px;padding:8px 10px;background:#edf3f6;color:#405b6a;font-weight:900;cursor:pointer}
+      .tool-search-input-wrap{padding:15px 20px;border-bottom:1px solid #edf2f4}.tool-search-input{width:100%;height:46px;padding:0 14px;border:1px solid #cbdce4;border-radius:12px;background:#fff;color:#173042;font:inherit;font-size:14px;outline:none}.tool-search-input:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.12)}
+      .tool-search-count{padding:10px 20px;color:#6d818e;font-size:11px;font-weight:850;background:#f8fbfc;border-bottom:1px solid #edf2f4}
+      .tool-search-results{overflow:auto;padding:8px}.tool-search-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 14px;border:0;border-bottom:1px solid #edf2f4;background:#fff;text-align:left;cursor:pointer}.tool-search-item:last-child{border-bottom:0}.tool-search-item:hover{background:#f4fafb}.tool-search-item strong{display:block;color:#214c64;font-size:13px}.tool-search-item span{display:block;margin-top:4px;color:#718591;font-size:11px;line-height:1.45}.tool-search-arrow{flex:none;color:#0b7e76;font-size:18px;font-weight:900}.tool-search-empty{padding:34px 18px;text-align:center;color:#718591;font-size:13px}
+      @media(max-width:700px){.quick{align-items:flex-start}.quick-actions{width:100%;margin-left:0;justify-content:space-between}.tool-search-btn{padding:8px 11px;font-size:11px}.tool-search-modal{padding:68px 12px 20px}.tool-search-box{max-height:calc(100vh - 88px)}}
+    `;
+    document.head.appendChild(style);
+
+    const actions=document.createElement('div');
+    actions.className='quick-actions';
+    state.parentNode.insertBefore(actions,state);
+    actions.appendChild(state);
+    const btn=document.createElement('button');
+    btn.id='toolSearchBtn';
+    btn.type='button';
+    btn.className='tool-search-btn';
+    btn.innerHTML='<span aria-hidden="true">🔎</span><span>업무도구검색</span>';
+    actions.appendChild(btn);
+
+    const modal=document.createElement('div');
+    modal.className='tool-search-modal';
+    modal.id='toolSearchModal';
+    modal.innerHTML=`<section class="tool-search-box" role="dialog" aria-modal="true" aria-labelledby="toolSearchTitle"><div class="tool-search-head"><h3 id="toolSearchTitle">업무도구검색</h3><button class="tool-search-close" id="toolSearchClose" type="button">닫기</button></div><div class="tool-search-input-wrap"><input class="tool-search-input" id="toolSearchInput" type="search" placeholder="업무도구 이름을 입력하세요" autocomplete="off"></div><div class="tool-search-count" id="toolSearchCount"></div><div class="tool-search-results" id="toolSearchResults"></div></section>`;
+    document.body.appendChild(modal);
+
+    const input=modal.querySelector('#toolSearchInput');
+    const resultBox=modal.querySelector('#toolSearchResults');
+    const countBox=modal.querySelector('#toolSearchCount');
+    const closeBtn=modal.querySelector('#toolSearchClose');
+
+    function getTools(){return [...document.querySelectorAll('a.tool[href]')].filter(a=>getComputedStyle(a).display!=='none')}
+    function renderSearch(){
+      const q=input.value.trim().toLowerCase();
+      const rows=getTools().filter(a=>{
+        const title=(a.querySelector('h3')?.textContent||'').trim();
+        const desc=(a.querySelector('p')?.textContent||'').trim();
+        return !q||(title+' '+desc).toLowerCase().includes(q);
+      });
+      countBox.textContent=q?`검색 결과 ${rows.length}개`:`전체 업무도구 ${rows.length}개`;
+      if(!rows.length){resultBox.innerHTML='<div class="tool-search-empty">검색 조건에 맞는 업무도구가 없습니다.</div>';return;}
+      resultBox.innerHTML=rows.map((a,i)=>`<button class="tool-search-item" type="button" data-i="${i}"><div><strong>${(a.querySelector('h3')?.textContent||'업무도구').replace(/[&<>]/g,'')}</strong><span>${(a.querySelector('p')?.textContent||'').replace(/[&<>]/g,'')}</span></div><div class="tool-search-arrow">→</div></button>`).join('');
+      resultBox.querySelectorAll('.tool-search-item').forEach(b=>b.addEventListener('click',()=>{
+        const target=rows[Number(b.dataset.i)];
+        modal.classList.remove('show');
+        if(target)target.click();
+      }));
+    }
+    function openSearch(){modal.classList.add('show');input.value='';renderSearch();setTimeout(()=>input.focus(),30)}
+    function closeSearch(){modal.classList.remove('show')}
+    btn.addEventListener('click',openSearch);
+    closeBtn.addEventListener('click',closeSearch);
+    input.addEventListener('input',renderSearch);
+    input.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch()});
+    modal.addEventListener('click',e=>{if(e.target===modal)closeSearch()});
+  }
+
   addSupportButton();
   addNoteMenu();
   addSchoolBudgetMenu();
+  addToolSearch();
 
   const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
   const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
