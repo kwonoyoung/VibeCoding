@@ -33,6 +33,7 @@
     const doc=new DOMParser().parseFromString(html,'text/html');
     menus=[...doc.querySelectorAll('a.tool[href]')].map(a=>({page:new URL(a.getAttribute('href'),location.href).pathname.split('/VibeCoding/').pop(),name:(a.querySelector('h3')?.textContent||a.textContent||'').trim()})).filter(x=>x.page&&x.page.endsWith('.html'));
     if(!menus.some(m=>m.page==='note.html'))menus.push({page:'note.html',name:'오춘기노트'});
+    if(!menus.some(m=>m.page==='school_budget.html'))menus.push({page:'school_budget.html',name:'학교회계 예산 업무 도구'});
     const seen=new Set();menus=menus.filter(m=>!seen.has(m.page)&&seen.add(m.page));
   }
   async function loadMembers(){
