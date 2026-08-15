@@ -1,0 +1,57 @@
+name: Remove Ochungi Note 20260816
+
+on:
+  push:
+    paths:
+      - '.github/workflows/remove-ochungi-note-20260816.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove Ochungi Note menu and page
+        shell: python
+        run: |
+          from pathlib import Path
+
+          js = Path('member-permissions-home.js')
+          text = js.read_text(encoding='utf-8')
+          target = "  addMenu({sectionTitle:'공문서·업무지원',href:'note.html',cls:'doc',icon:'📒',title:'오춘기노트',desc:'교육행정 실무 노트를 분류·검색해서 빠르게 확인합니다.'});\n"
+          if target not in text:
+              raise SystemExit('Ochungi Note menu line not found')
+          text = text.replace(target, '', 1)
+          js.write_text(text, encoding='utf-8')
+
+          index = Path('index.html')
+          html = index.read_text(encoding='utf-8')
+          html = html.replace('member-permissions-home.js?v=20260812', 'member-permissions-home.js?v=20260816-note-removed')
+          index.write_text(html, encoding='utf-8')
+
+          note = Path('note.html')
+          if not note.exists():
+              raise SystemExit('note.html not found')
+          note.unlink()
+
+      - name: Verify removal
+        shell: bash
+        run: |
+          ! grep -Fq "href:'note.html'" member-permissions-home.js
+          ! grep -Fq "title:'오춘기노트'" member-permissions-home.js
+          test ! -e note.html
+          grep -Fq 'member-permissions-home.js?v=20260816-note-removed' index.html
+
+      - name: Commit changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add member-permissions-home.js index.html
+          git add -u note.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Remove Ochungi Note menu and page"
+          git push
