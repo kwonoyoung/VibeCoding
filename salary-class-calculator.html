@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0b5578">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>기간제교원 호봉획정 계산기 | VibeCoding</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --navy:#0b3c5d;--navy2:#0e5d7f;--teal:#0c9488;--ink:#173042;--muted:#6a7e8b;
+  --line:#d8e4ea;--bg:#f3f7f9;--card:#fff;--soft:#eef5f8;--warn:#9a5a13;--danger:#a83e3e;
+  --shadow:0 14px 36px rgba(20,54,75,.09)
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#eaf5f7 0,#f7f9fa 340px,#f2f5f7 100%);letter-spacing:-.02em}button,input,select{font:inherit}.auth-pending{visibility:hidden}
+.hero{background:linear-gradient(130deg,#082f4d,#0d5879 56%,#0b8b82);color:#fff}.hero-inner{width:min(1180px,calc(100% - 30px));margin:auto;padding:30px 0 26px}.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:13px;font-weight:900}.brand small{display:block;margin-top:4px;color:#b9e5e2;font-size:10px;letter-spacing:.08em}.home-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border:1px solid rgba(255,255,255,.38);border-radius:999px;background:rgba(255,255,255,.13);color:#fff;text-decoration:none;font-size:12px;font-weight:900}.hero h1{margin:20px 0 8px;font-size:clamp(27px,4vw,39px);line-height:1.25}.hero p{margin:0;color:#d8eef2;font-size:13px;line-height:1.75}.wrap{width:min(1180px,calc(100% - 30px));margin:auto;padding:24px 0 55px}.notice{padding:13px 15px;border:1px solid #cfe1e8;border-radius:15px;background:rgba(255,255,255,.9);font-size:12px;line-height:1.7;color:#536c7a;box-shadow:0 6px 20px rgba(20,54,75,.04)}.notice strong{color:#0b5578}.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(310px,.65fr);gap:18px;margin-top:18px}.card{border:1px solid var(--line);border-radius:19px;background:#fff;box-shadow:var(--shadow);overflow:hidden}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px;border-bottom:1px solid #e5edf1;background:#fbfdfe}.card-head h2{margin:0;font-size:17px}.card-head p{margin:4px 0 0;color:var(--muted);font-size:11px}.card-body{padding:18px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;margin:0 0 6px;font-size:12px;font-weight:850;color:#385364}.field input,.field select{width:100%;height:42px;padding:0 11px;border:1px solid #cbdce4;border-radius:11px;background:#fff;color:#183646;outline:none}.field input:focus,.field select:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.1)}.hint{margin-top:5px;color:#7d909b;font-size:10.5px;line-height:1.5}.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:13px}.check{display:flex;align-items:flex-start;gap:8px;padding:11px;border:1px solid #dce7ec;border-radius:12px;background:#f8fbfc;font-size:11.5px;line-height:1.45}.check input{margin-top:2px}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:23px 0 10px}.section-title h3{margin:0;font-size:15px}.small-btn{padding:8px 11px;border:0;border-radius:10px;background:#e7f3f5;color:#0a6764;font-size:11px;font-weight:900;cursor:pointer}.career-wrap{overflow-x:auto;border:1px solid #dce7ec;border-radius:14px}.career{width:100%;min-width:920px;border-collapse:collapse}.career th{padding:9px 7px;background:#f0f6f8;color:#496370;font-size:10.5px;text-align:left;border-bottom:1px solid #dbe6eb;white-space:nowrap}.career td{padding:7px;border-bottom:1px solid #edf2f4;vertical-align:top}.career tr:last-child td{border-bottom:0}.career input,.career select{width:100%;min-height:35px;padding:5px 7px;border:1px solid #d0dfe6;border-radius:8px;background:#fff;font-size:11px}.career .result-cell{padding-top:12px;font-size:11px;font-weight:800;white-space:nowrap}.del{border:0;border-radius:8px;background:#fbecec;color:#a33f3f;padding:7px 9px;font-weight:900;cursor:pointer}.helper{margin-top:15px;padding:14px;border:1px solid #dbe8ed;border-radius:14px;background:#f8fbfc}.helper h4{margin:0 0 9px;font-size:13px}.helper-grid{display:grid;grid-template-columns:1.1fr .8fr .7fr auto;gap:8px;align-items:end}.helper .field input,.helper .field select{height:38px}.btnline{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.btn{border:0;border-radius:11px;padding:11px 15px;font-size:12px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,#0b5578,#0c9488);color:#fff}.secondary{background:#edf3f6;color:#345366}.danger{background:#faeeee;color:#984242}.results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{padding:14px;border:1px solid #dce7ec;border-radius:14px;background:#fbfdfe}.metric span{display:block;color:#728691;font-size:10.5px;font-weight:800}.metric strong{display:block;margin-top:4px;color:#123e56;font-size:19px}.metric.featured{grid-column:1/-1;background:linear-gradient(135deg,#0b3c5d,#0c817a);border:0;color:#fff}.metric.featured span,.metric.featured strong{color:#fff}.metric.featured strong{font-size:30px}.equation{margin-top:13px;padding:13px;border-radius:13px;background:#eef6f8;color:#3c5a69;font-size:11px;line-height:1.7}.warning-box{display:none;margin-top:12px;padding:12px 13px;border:1px solid #efcfa9;border-radius:12px;background:#fff8ef;color:#8a551b;font-size:11px;line-height:1.6}.warning-box.show{display:block}.basis{margin-top:17px;border-top:1px solid #e4ecef;padding-top:15px}.basis h3{margin:0 0 9px;font-size:14px}.basis ul{margin:0;padding-left:18px;color:#5c717e;font-size:11px;line-height:1.75}.formula{margin-top:13px;padding:13px;border-radius:13px;background:#f4f1ff;color:#5d4c91;font-size:11.5px;font-weight:800;line-height:1.65}.footer{margin-top:30px;padding-top:18px;border-top:1px solid #dbe5e9;color:#73858f;font-size:10.5px;line-height:1.7;text-align:center}@media(max-width:900px){.layout{grid-template-columns:1fr}.form-grid,.checks{grid-template-columns:1fr}.helper-grid{grid-template-columns:1fr 1fr}.results{grid-template-columns:1fr 1fr}}@media(max-width:560px){.hero-inner,.wrap{width:min(100% - 20px,1180px)}.helper-grid{grid-template-columns:1fr}.results{grid-template-columns:1fr}.metric.featured{grid-column:auto}.hero-top{align-items:flex-start}.hero h1{font-size:26px}}
+@media print{.hero,.notice,.btnline,.small-btn,.helper,.footer{display:none!important}.wrap{width:100%;padding:0}.layout{display:block}.card{box-shadow:none;margin-bottom:15px}.card:first-child{page-break-after:auto}.career-wrap{overflow:visible}.career{min-width:0;font-size:9px}.home-btn{display:none}}
+</style>
+</head>
+<body class="auth-pending">
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="brand">오춘기 권오영 업무지원 서비스<small>VIBE CODING · PAYROLL TOOL</small></div>
+      <a id="vibecoding-home-btn" data-vibecoding-home="persistent" class="home-btn" href="index.html">⌂ 홈으로</a>
+    </div>
+    <h1>기간제교원 호봉획정 계산기</h1>
+    <p>경력기간·경력환산율·학령가감·가산연수·기산호봉을 한 화면에서 검산합니다.</p>
+  </div>
+</header>
+<main class="wrap">
+  <div class="notice"><strong>업무 검산용 도구입니다.</strong> 최종 호봉획정은 경력증명서·전력조회·자격증·학력자료 및 최신 법령·예규를 확인하여 호봉획정권자가 결정해야 합니다. 경력 중복이나 환산율 상향 인정 등 심의가 필요한 사항은 자동으로 확정하지 않습니다.</div>
+  <div class="layout">
+    <section class="card">
+      <div class="card-head"><div><h2>1. 기본정보</h2><p>기산호봉, 학령가감과 가산연수를 입력합니다.</p></div></div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="field"><label for="qualification">임용 자격 / 기산호봉</label><select id="qualification">
+            <option value="9">정교사(1급) · 9호봉</option><option value="8" selected>정교사(2급) · 8호봉</option><option value="5">준교사 · 5호봉</option>
+            <option value="9">전문상담교사(1급) · 9호봉</option><option value="8">전문상담교사(2급) · 8호봉</option>
+            <option value="9">특수학교 정교사(1급) · 9호봉</option><option value="8">특수학교 정교사(2급) · 8호봉</option><option value="5">특수학교 준교사 · 5호봉</option>
+            <option value="9">사서교사(1급) · 9호봉</option><option value="8">사서교사(2급) · 8호봉</option><option value="5">실기교사 · 5호봉</option>
+            <option value="9">보건교사(1급) · 9호봉</option><option value="8">보건교사(2급) · 8호봉</option><option value="9">영양교사(1급) · 9호봉</option><option value="8">영양교사(2급) · 8호봉</option>
+          </select><div class="hint">2개 이상 자격증 보유 시 실제 임용되는 과목의 자격을 기준으로 확인합니다.</div></div>
+          <div class="field"><label for="education">최종 인정 학력 / 학령가감</label><select id="education">
+            <option value="1">사범대졸(4년) · +1년</option><option value="0" selected>대졸(4년) · 0년</option><option value="1">교육대졸(4년) · +1년</option>
+            <option value="-1">사범대졸(2년) · -1년</option><option value="-1">교육대졸(2년) · -1년</option><option value="-1">전문대졸(3년) · -1년</option><option value="-2">전문대졸(2년) · -2년</option>
+            <option value="-3">사범학교졸 · -3년</option><option value="-4">고졸 · -4년</option><option value="-5">고2년 수료 · -5년</option><option value="-6">고1년 수료 · -6년</option><option value="-7">중졸 · -7년</option><option value="-8">중2년 수료 · -8년</option><option value="-9">중1년 수료 · -9년</option><option value="-10">초졸 · -10년</option><option value="custom">직접 입력</option>
+          </select><div class="hint">사범대·교육대 4년제의 +1은 일반적인 사범계 가산 1년을 포함한 도우미식 값입니다.</div></div>
+          <div class="field" id="customEduWrap" style="display:none"><label for="customEdu">직접 입력 학령가감(년)</label><input id="customEdu" type="number" value="0" step="1"></div>
+          <div class="field"><label for="calcDate">호봉획정 기준일</label><input id="calcDate" type="date"></div>
+        </div>
+        <div class="checks">
+          <label class="check"><input id="specialAdd" type="checkbox"><span><strong>특수학교(학급)·특수교육지원센터 가산 +1년</strong><br>특수학교 교원자격을 보유하고 해당 업무를 담당하는 경우에 확인합니다.</span></label>
+          <label class="check"><input id="retireeCap" type="checkbox"><span><strong>기간제교원 14호봉 제한 대상</strong><br>정년·명예퇴직·연금 관련 제한 대상인 경우 결과를 최대 14호봉으로 표시합니다.</span></label>
+        </div>
+
+        <div class="section-title"><h3>2. 인정 경력 입력</h3><button class="small-btn" id="addRow" type="button">＋ 경력 추가</button></div>
+        <div class="career-wrap"><table class="career"><thead><tr><th style="width:20%">경력 내용</th><th style="width:13%">시작일</th><th style="width:13%">종료/퇴직일</th><th style="width:16%">종료일 처리</th><th style="width:9%">환산율%</th><th style="width:12%">원 경력</th><th style="width:12%">환산 경력</th><th></th></tr></thead><tbody id="careerBody"></tbody></table></div>
+        <div class="hint" style="margin-top:8px">임용일은 산입합니다. 일반 퇴직일은 제외하며, 기간제교원처럼 근무기간이 정해진 계약의 만료일은 산입할 수 있습니다. 경력 중복은 자동 제거하지 않고 경고합니다.</div>
+
+        <div class="helper">
+          <h4>시간강사 등 주당 근무시간 환산율 도우미</h4>
+          <div class="helper-grid">
+            <div class="field"><label for="hourStart">경력 시작일</label><input id="hourStart" type="date"></div>
+            <div class="field"><label for="weeklyHours">주당 실근무시간</label><input id="weeklyHours" type="number" min="0" max="60" step="0.1" placeholder="예: 12"></div>
+            <div class="field"><label for="schoolMismatch">학교급 불일치</label><select id="schoolMismatch"><option value="no">아니오</option><option value="yes">예(×80%)</option></select></div>
+            <button class="small-btn" id="calcHourRate" type="button">환산율 계산</button>
+          </div>
+          <div id="hourRateResult" class="hint" style="margin-top:9px">경력 시작일과 주당 시간을 입력하면 당시 평균 주당 근무시간(44/43/42/40시간)을 기준으로 계산합니다.</div>
+        </div>
+
+        <div class="btnline"><button class="btn primary" id="calculate" type="button">호봉 계산</button><button class="btn secondary" id="copy" type="button">결과 복사</button><button class="btn secondary" onclick="window.print()" type="button">인쇄</button><button class="btn danger" id="reset" type="button">초기화</button></div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="card-head"><div><h2>계산 결과</h2><p>입력 자료에 따른 예상 호봉을 검산합니다.</p></div></div>
+      <div class="card-body">
+        <div class="results">
+          <div class="metric featured"><span>예상 호봉</span><strong id="finalStep">8호봉</strong></div>
+          <div class="metric"><span>기산호봉</span><strong id="baseStep">8호봉</strong></div>
+          <div class="metric"><span>환산 경력 합계</span><strong id="careerTotal">0년 0월 0일</strong></div>
+          <div class="metric"><span>학령·사범계 조정</span><strong id="eduAdjust">0년</strong></div>
+          <div class="metric"><span>특수 가산</span><strong id="specialAdjust">0년</strong></div>
+          <div class="metric"><span>호봉획정 경력연수</span><strong id="classYears">0년</strong></div>
+          <div class="metric"><span>잔여 경력</span><strong id="remainder">0월 0일</strong></div>
+          <div class="metric" id="capMetric" style="display:none"><span>14호봉 제한</span><strong>적용</strong></div>
+          <div class="metric" id="reportMetric" style="display:none"><span>임용결과 서식 보고용 경력</span><strong>5년</strong></div>
+        </div>
+        <div class="equation" id="equation">기산호봉 8 + 환산경력 0년 + 학령·가산 0년 = 8호봉</div>
+        <div class="warning-box" id="overlapWarning"></div>
+        <div class="formula">기본 구조: 환산 경력 연수 + (학령-16) + 가산연수 + 기산호봉</div>
+        <div class="basis">
+          <h3>계산에 반영한 기준</h3>
+          <ul>
+            <li>교육부 예규 제97호(2025.4.23.)의 교육공무원 초임호봉 획정 구조</li>
+            <li>경력기간은 역(曆)에 따라 연·월·일까지 계산</li>
+            <li>임용일 산입, 일반 퇴직일 제외, 계약기간 만료일 산입 가능</li>
+            <li>환산율은 연·월·일 단위에 적용하고 소수점 이하 절사</li>
+            <li>환산 후 12월=1년, 30일=1월로 정리</li>
+            <li>시간강사 환산의 평균 주당 시간: 2005.2.28. 이전 44시간, 2005.3.1.~2006.2.28. 43시간, 2006.3.1.~2012.2.29. 42시간, 2012.3.1. 이후 40시간</li>
+            <li>경력과 경력이 중복되는 경우 원칙적으로 유리한 경력 하나를 인정하므로 별도 검토 필요</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <div class="footer">본 계산기는 학교 행정업무 검산을 위한 비공식 보조도구입니다. 실제 호봉획정은 최신 공무원보수규정, 공무원 보수 등의 업무지침, 교육부 예규 및 교육청 지침과 개별 증빙자료를 확인하시기 바랍니다.<br>Web design by Kwon O Young.</div>
+</main>
+<script>
+const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+(async()=>{
+  try{
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session){location.replace('login.html?return='+encodeURIComponent(location.href));return;}
+    const {data:m}=await sb.from('vibecoding_members').select('status').eq('user_id',session.user.id).single();
+    if(!m||m.status!=='approved'){
+      if(m&&m.status==='pending') alert('관리자 승인 후 이용할 수 있습니다.');
+      else if(m&&m.status==='blocked') alert('이용이 제한된 계정입니다.');
+      location.replace('index.html');return;
+    }
+    document.body.classList.remove('auth-pending');
+  }catch(e){console.error(e);document.body.classList.remove('auth-pending');}
+})();
+
+const qs=s=>document.querySelector(s), body=qs('#careerBody');
+const pad=n=>String(n).padStart(2,'0');
+const parseDate=s=>{if(!s)return null;const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12,0,0)};
+const fmtDuration=o=>`${o.y}년 ${o.m}월 ${o.d}일`;
+const daysInMonth=(y,m)=>new Date(y,m,0).getDate();
+
+function calendarDuration(startStr,endStr,includeEnd=false){
+  const s=parseDate(startStr), e0=parseDate(endStr); if(!s||!e0||e0<s)return {y:0,m:0,d:0,valid:false};
+  const e=new Date(e0); if(includeEnd)e.setDate(e.getDate()+1);
+  if(e<=s)return {y:0,m:0,d:0,valid:true};
+  const sy=s.getFullYear(), sm=s.getMonth()+1, sd=s.getDate();
+  const ey=e.getFullYear(), em=e.getMonth()+1, ed=e.getDate();
+  let y=ey-sy;
+  if(em<sm || (em===sm && ed<sd)) y--;
+  let anchorY=sy+y, anchorM=sm;
+  let anchorD=Math.min(sd,daysInMonth(anchorY,anchorM));
+  let anchor=new Date(anchorY,anchorM-1,anchorD,12);
+  if(anchor>s){y--;anchorY=sy+y;anchorD=Math.min(sd,daysInMonth(anchorY,anchorM));anchor=new Date(anchorY,anchorM-1,anchorD,12)}
+  let m=(ey-anchor.getFullYear())*12+(em-(anchor.getMonth()+1));
+  let monthAnchorY=anchor.getFullYear()+Math.floor((anchor.getMonth()+m)/12);
+  let monthAnchorM=((anchor.getMonth()+m)%12)+1;
+  let monthAnchorD=Math.min(anchor.getDate(),daysInMonth(monthAnchorY,monthAnchorM));
+  let monthAnchor=new Date(monthAnchorY,monthAnchorM-1,monthAnchorD,12);
+  if(monthAnchor>e){m--;monthAnchorY=anchor.getFullYear()+Math.floor((anchor.getMonth()+m)/12);monthAnchorM=((anchor.getMonth()+m)%12)+1;monthAnchorD=Math.min(anchor.getDate(),daysInMonth(monthAnchorY,monthAnchorM));monthAnchor=new Date(monthAnchorY,monthAnchorM-1,monthAnchorD,12)}
+  const d=Math.round((e-monthAnchor)/86400000);
+  return {y,m,d,valid:true};
+}
+
+// XLSM 도우미의 역법 계산과 동일한 엑셀식 성격을 보완: 말일/윤년 경계
+function helperDuration(startStr,endStr,includeEnd=false){
+  if(!startStr||!endStr)return {y:0,m:0,d:0,valid:false};
+  let s=parseDate(startStr), rawEnd=parseDate(endStr);if(!s||!rawEnd||rawEnd<s)return {y:0,m:0,d:0,valid:false};
+  let e=new Date(rawEnd); if(includeEnd)e.setDate(e.getDate()+1);
+  const sy=s.getFullYear(),sm=s.getMonth()+1,sd=s.getDate(),ey=e.getFullYear(),em=e.getMonth()+1,ed=e.getDate();
+  let years=ey-sy-((em<sm||(em===sm&&ed<sd))?1:0);
+  let months;
+  if(ed>=sd) months=(em-sm+12)%12;
+  else months=(em-sm-1+12)%12;
+  let testY=sy+years,testM=sm+months;
+  while(testM>12){testY++;testM-=12}
+  let anchorDay=Math.min(sd,daysInMonth(testY,testM));
+  let anchor=new Date(testY,testM-1,anchorDay,12);
+  if(anchor>e){months--;if(months<0){months=11;years--}testY=sy+years;testM=sm+months;while(testM>12){testY++;testM-=12}anchorDay=Math.min(sd,daysInMonth(testY,testM));anchor=new Date(testY,testM-1,anchorDay,12)}
+  let days=Math.round((e-anchor)/86400000);
+  // 기산일 말일 보정: 1/31~2/28, 3/31~4/30 등은 역에 의한 1개월
+  const sLast=sd===daysInMonth(sy,sm), endBase=includeEnd?new Date(e.getTime()-86400000):rawEnd;
+  const eLast=endBase.getDate()===daysInMonth(endBase.getFullYear(),endBase.getMonth()+1);
+  if(sLast&&eLast&&days>0){
+    const totalMonths=(endBase.getFullYear()-sy)*12+(endBase.getMonth()+1-sm)+(includeEnd?0:0);
+    if(totalMonths>=0 && (endBase.getDate()<=sd || eLast)){
+      let exactM=totalMonths+(includeEnd?0:0); years=Math.floor(exactM/12);months=exactM%12;days=includeEnd?1:0;
+      if(includeEnd && days>=30){months++;days-=30}
+    }
+  }
+  // 검증된 전통 역법 알고리즘으로 일부 말일 케이스 재확인
+  const alt=calendarDuration(startStr,endStr,includeEnd);
+  if(alt.valid){
+    const special=(sd>=28 && endBase.getDate()===daysInMonth(endBase.getFullYear(),endBase.getMonth()+1));
+    if(special)return alt;
+  }
+  return {y:Math.max(0,years),m:Math.max(0,months),d:Math.max(0,days),valid:true};
+}
+
+function durationToDays360(o){return (o.y*12+o.m)*30+o.d}
+function days360ToDuration(n){n=Math.max(0,Math.floor(n));const y=Math.floor(n/360);n%=360;const m=Math.floor(n/30),d=n%30;return {y,m,d}}
+function applyRate(o,rate){const r=Math.min(100,Math.max(0,Number(rate)||0))/100;return days360ToDuration(Math.floor(durationToDays360(o)*r))}
+
+function addCareerRow(data={}){
+ const tr=document.createElement('tr');
+ tr.innerHTML=`<td><input class="note" placeholder="예: 국공립 기간제교원" value="${data.note||''}"></td><td><input class="start" type="date" value="${data.start||''}"></td><td><input class="end" type="date" value="${data.end||''}"></td><td><select class="rule"><option value="exclude" ${data.rule==='exclude'?'selected':''}>퇴직일 제외</option><option value="include" ${data.rule!=='exclude'?'selected':''}>계약만료일 산입</option></select></td><td><input class="rate" type="number" min="0" max="100" step="1" value="${data.rate??100}"></td><td class="raw result-cell">-</td><td class="converted result-cell">-</td><td><button class="del" type="button">삭제</button></td>`;
+ tr.querySelector('.del').onclick=()=>{tr.remove();calculateAll()};
+ tr.querySelectorAll('input,select').forEach(el=>el.addEventListener('change',calculateAll));
+ body.appendChild(tr);
+}
+
+function getEduAdjust(){const v=qs('#education').value;return v==='custom'?(Number(qs('#customEdu').value)||0):Number(v)}
+function checkOverlaps(rows){const ranges=[];rows.forEach((r,i)=>{const s=parseDate(r.querySelector('.start').value),e=parseDate(r.querySelector('.end').value);if(s&&e)ranges.push({i,s,e,n:r.querySelector('.note').value||`경력 ${i+1}`})});const pairs=[];for(let i=0;i<ranges.length;i++)for(let j=i+1;j<ranges.length;j++){if(ranges[i].s<=ranges[j].e&&ranges[j].s<=ranges[i].e)pairs.push(`${ranges[i].n} ↔ ${ranges[j].n}`)}return pairs}
+
+function calculateAll(){
+ const rows=[...body.querySelectorAll('tr')];let total=0;
+ rows.forEach(tr=>{
+   const include=tr.querySelector('.rule').value==='include';
+   const raw=helperDuration(tr.querySelector('.start').value,tr.querySelector('.end').value,include);
+   const rate=Math.min(100,Math.max(0,Number(tr.querySelector('.rate').value)||0));
+   if(!raw.valid){tr.querySelector('.raw').textContent='-';tr.querySelector('.converted').textContent='-';return}
+   const conv=applyRate(raw,rate);tr.querySelector('.raw').textContent=fmtDuration(raw);tr.querySelector('.converted').textContent=fmtDuration(conv);total+=durationToDays360(conv);
+ });
+ const career=days360ToDuration(total);const base=Number(qs('#qualification').value)||0;const edu=getEduAdjust();const special=qs('#specialAdd').checked?1:0;
+ let totalYears=career.y+edu+special;let step=base+totalYears;let capped=false;if(qs('#retireeCap').checked&&step>14){step=14;capped=true}
+ qs('#finalStep').textContent=`${step}호봉`;qs('#baseStep').textContent=`${base}호봉`;qs('#careerTotal').textContent=fmtDuration(career);qs('#eduAdjust').textContent=`${edu>=0?'+':''}${edu}년`;qs('#specialAdjust').textContent=`${special?'+1':'0'}년`;qs('#classYears').textContent=`${totalYears}년`;qs('#remainder').textContent=`${career.m}월 ${career.d}일`;qs('#capMetric').style.display=qs('#retireeCap').checked?'block':'none';qs('#reportMetric').style.display=qs('#retireeCap').checked?'block':'none';
+ qs('#equation').textContent=`기산호봉 ${base} + 환산경력 ${career.y}년 + 학령·사범계 ${edu>=0?'+':''}${edu}년 + 특수 ${special?'+1':'0'}년 = ${base+totalYears}호봉${capped?' → 14호봉 제한 적용':''}`;
+ const pairs=checkOverlaps(rows),w=qs('#overlapWarning');if(pairs.length){w.classList.add('show');w.innerHTML=`<strong>중복 경력 확인 필요</strong><br>${pairs.join('<br>')}<br>중복되는 경력은 원칙적으로 유리한 경력 하나만 산입하므로 증빙과 기준을 확인하세요.`}else{w.classList.remove('show');w.textContent=''}
+}
+
+function avgWeeklyHours(dateStr){if(!dateStr)return null;const d=parseDate(dateStr);if(d<parseDate('2005-03-01'))return 44;if(d<parseDate('2006-03-01'))return 43;if(d<parseDate('2012-03-01'))return 42;return 40}
+qs('#calcHourRate').onclick=()=>{const h=Number(qs('#weeklyHours').value),avg=avgWeeklyHours(qs('#hourStart').value);if(!avg||!h){qs('#hourRateResult').textContent='경력 시작일과 주당 실근무시간을 모두 입력하세요.';return}let rate=h/avg*100;if(qs('#schoolMismatch').value==='yes')rate*=.8;rate=Math.max(30,Math.min(100,rate));const rounded=Math.floor(rate*100)/100;qs('#hourRateResult').innerHTML=`당시 평균 주당 근무시간 <strong>${avg}시간</strong> 기준 → 권장 검산 환산율 <strong>${rounded}%</strong> (최저 30%, 최대 100%)`;};
+qs('#addRow').onclick=()=>addCareerRow();qs('#calculate').onclick=calculateAll;qs('#education').onchange=()=>{qs('#customEduWrap').style.display=qs('#education').value==='custom'?'block':'none';calculateAll()};qs('#customEdu').onchange=calculateAll;qs('#qualification').onchange=calculateAll;qs('#specialAdd').onchange=calculateAll;qs('#retireeCap').onchange=calculateAll;
+qs('#reset').onclick=()=>{if(!confirm('입력한 내용을 모두 초기화할까요?'))return;body.innerHTML='';qs('#qualification').value='8';qs('#education').value='0';qs('#customEdu').value='0';qs('#customEduWrap').style.display='none';qs('#specialAdd').checked=false;qs('#retireeCap').checked=false;qs('#weeklyHours').value='';qs('#hourStart').value='';qs('#schoolMismatch').value='no';qs('#hourRateResult').textContent='경력 시작일과 주당 시간을 입력하면 당시 평균 주당 근무시간(44/43/42/40시간)을 기준으로 계산합니다.';addCareerRow({note:'기간제교원',rate:100,rule:'include'});calculateAll()};
+qs('#copy').onclick=async()=>{const text=`기간제교원 호봉획정 검산 결과\n예상 호봉: ${qs('#finalStep').textContent}\n기산호봉: ${qs('#baseStep').textContent}\n환산 경력: ${qs('#careerTotal').textContent}\n학령·사범계 조정: ${qs('#eduAdjust').textContent}\n특수 가산: ${qs('#specialAdjust').textContent}\n호봉획정 경력연수: ${qs('#classYears').textContent}\n잔여 경력: ${qs('#remainder').textContent}${qs('#retireeCap').checked?'\n14호봉 제한 대상: 예':''}\n※ 업무 검산용 보조 결과`;try{await navigator.clipboard.writeText(text);alert('계산 결과를 복사했습니다.')}catch(e){prompt('아래 내용을 복사하세요.',text)}};
+
+qs('#calcDate').value=new Date().toISOString().slice(0,10);
+addCareerRow({note:'기간제교원',rate:100,rule:'include'});
+calculateAll();
+</script>
+<script src="./latest-home-nav.js?v=20260807-2341" data-vibecoding-latest-home="1"></script>
+</body>
+</html>
