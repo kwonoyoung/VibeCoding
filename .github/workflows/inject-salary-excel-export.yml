@@ -1,0 +1,58 @@
+name: Inject Salary Excel Export
+
+on:
+  push:
+    paths:
+      - '.github/workflows/inject-salary-excel-export.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add Excel export helper to salary calculator
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          path = Path('salary-class-calculator.html')
+          text = path.read_text(encoding='utf-8')
+          tag = '<script src="./salary-class-excel-export.js?v=20260816-1630" data-salary-excel-export="1"></script>'
+
+          text = re.sub(
+              r'\s*<script\b[^>]*data-salary-excel-export=["\']1["\'][^>]*></script>\s*',
+              '\n',
+              text,
+              flags=re.I,
+          )
+
+          latest = re.search(r'<script\b[^>]*data-vibecoding-latest-home=["\']1["\'][^>]*></script>', text, flags=re.I)
+          if latest:
+              text = text[:latest.start()] + tag + '\n' + text[latest.start():]
+          elif re.search(r'</body\s*>', text, flags=re.I):
+              text = re.sub(r'</body\s*>', tag + '\n</body>', text, count=1, flags=re.I)
+          else:
+              text += '\n' + tag + '\n'
+
+          path.write_text(text, encoding='utf-8', newline='')
+          print('Injected Excel export helper into salary-class-calculator.html')
+
+      - name: Commit update
+        run: |
+          if git diff --quiet; then
+            echo "No changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add salary-class-calculator.html
+          git commit -m "Enable salary class Excel download"
+          git push
