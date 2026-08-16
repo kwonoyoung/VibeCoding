@@ -1,0 +1,57 @@
+name: Add Salary Class Calculator Menu
+
+on:
+  push:
+    paths:
+      - '.github/workflows/add-salary-class-menu.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  add-menu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add calculator card to payroll menu
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+
+          if 'href="salary-class-calculator.html"' not in text:
+              marker = '<a class="tool leave" href="parental-leave-calculator.html">'
+              card = '<a class="tool pay" href="salary-class-calculator.html"><div class="tool-top"><div class="tool-icon">級</div><div class="arrow">→</div></div><h3>기간제교원 호봉획정 계산기</h3><p>경력환산율·학령·가산연수·기산호봉을 반영한 호봉 검산</p></a>'
+              pos = text.find(marker)
+              if pos < 0:
+                  raise SystemExit('Payroll menu insertion marker not found')
+              text = text[:pos] + card + text[pos:]
+
+          # Keep the visible tool count accurate.
+          section_start = text.find('<h2>급여·수당</h2>')
+          if section_start >= 0:
+              count_pos = text.rfind('<div class="section-count">9개 도구</div>', 0, section_start + 400)
+              if count_pos >= 0:
+                  old = '<div class="section-count">9개 도구</div>'
+                  new = '<div class="section-count">10개 도구</div>'
+                  text = text[:count_pos] + new + text[count_pos + len(old):]
+
+          path.write_text(text, encoding='utf-8', newline='')
+
+      - name: Commit and push
+        run: |
+          if git diff --quiet; then
+            echo "No changes required."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add salary class calculator to home menu"
+          git push
