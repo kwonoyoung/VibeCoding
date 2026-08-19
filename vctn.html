@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0b5578">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>연차개수 계산기 | VibeCoding</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#0b3c5d;--navy2:#0e5d7f;--teal:#0c9488;--ink:#173042;--muted:#687d8b;--line:#d8e4ea;--bg:#f3f7f9;--card:#fff;--soft:#eef5f8;--green:#18794e;--warn:#955d17;--danger:#a83e3e;--shadow:0 14px 36px rgba(20,54,75,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#eaf5f7 0,#f7f9fa 340px,#f2f5f7 100%);letter-spacing:-.02em}button,input{font:inherit}.auth-pending{visibility:hidden}
+.hero{background:linear-gradient(130deg,#082f4d,#0d5879 56%,#0b8b82);color:#fff}.hero-inner{width:min(1080px,calc(100% - 30px));margin:auto;padding:30px 0 27px}.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:13px;font-weight:900}.brand small{display:block;margin-top:4px;color:#b9e5e2;font-size:10px;letter-spacing:.08em}.home-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border:1px solid rgba(255,255,255,.38);border-radius:999px;background:rgba(255,255,255,.13);color:#fff;text-decoration:none;font-size:12px;font-weight:900}.hero h1{margin:20px 0 8px;font-size:clamp(28px,4vw,40px);line-height:1.25}.hero p{margin:0;color:#d8eef2;font-size:13px;line-height:1.75}
+.wrap{width:min(1080px,calc(100% - 30px));margin:auto;padding:24px 0 56px}.notice{padding:13px 15px;border:1px solid #cfe1e8;border-radius:15px;background:rgba(255,255,255,.92);font-size:12px;line-height:1.75;color:#536c7a;box-shadow:0 6px 20px rgba(20,54,75,.04)}.notice strong{color:#0b5578}.layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px;margin-top:18px}.card{border:1px solid var(--line);border-radius:19px;background:#fff;box-shadow:var(--shadow);overflow:hidden}.card-head{padding:16px 18px;border-bottom:1px solid #e5edf1;background:#fbfdfe}.card-head h2{margin:0;font-size:17px}.card-head p{margin:4px 0 0;color:var(--muted);font-size:11px;line-height:1.6}.card-body{padding:18px}.field{margin-bottom:15px}.field label{display:block;margin:0 0 7px;font-size:12px;font-weight:850;color:#385364}.field input{width:100%;height:44px;padding:0 12px;border:1px solid #cbdce4;border-radius:11px;background:#fff;color:#183646;outline:none}.field input:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.1)}.hint{margin-top:6px;color:#7d909b;font-size:10.5px;line-height:1.55}.btnline{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.btn{border:0;border-radius:11px;padding:11px 16px;font-size:12px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,#0b5578,#0c9488);color:#fff}.secondary{background:#edf3f6;color:#345366}.ghost{background:#f7fafb;color:#58707d;border:1px solid #d8e4ea}.error{display:none;margin-top:12px;padding:11px 12px;border:1px solid #f0caca;border-radius:11px;background:#fff2f2;color:#9c3e3e;font-size:11px;line-height:1.6}.error.show{display:block}
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metric{padding:14px;border:1px solid #dce7ec;border-radius:14px;background:#fbfdfe}.metric span{display:block;color:#728691;font-size:10.5px;font-weight:800}.metric strong{display:block;margin-top:5px;color:#123e56;font-size:20px}.metric.featured{grid-column:1/-1;background:linear-gradient(135deg,#0b3c5d,#0c817a);border:0;color:#fff}.metric.featured span,.metric.featured strong{color:#fff}.metric.featured strong{font-size:34px}.detail{margin-top:15px;border:1px solid #dce7ec;border-radius:14px;overflow:hidden}.detail table{width:100%;border-collapse:collapse}.detail th{padding:10px 9px;background:#eef5f8;color:#48616f;font-size:10.5px;text-align:center;border-bottom:1px solid #dce7ec}.detail td{padding:10px 9px;font-size:11.5px;text-align:center;border-bottom:1px solid #edf2f4}.detail tr:last-child td{border-bottom:0}.detail td:first-child{text-align:left;font-weight:850;color:#274b5e}.empty{padding:28px 16px;text-align:center;color:#7a8e99;font-size:12px;line-height:1.7}.basis{margin-top:16px;padding:14px;border:1px solid #dbe8ed;border-radius:14px;background:#f8fbfc}.basis h3{margin:0 0 9px;font-size:13px}.basis ul{margin:0;padding-left:18px;color:#5c717e;font-size:11px;line-height:1.8}.official{display:inline-flex;margin-top:10px;color:#0b6f73;font-size:11px;font-weight:850;text-decoration:none}.footer{margin-top:30px;padding-top:18px;border-top:1px solid #dbe5e9;color:#73858f;font-size:10.5px;line-height:1.75;text-align:center}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}}@media(max-width:560px){.hero-inner,.wrap{width:min(100% - 20px,1080px)}.summary{grid-template-columns:1fr}.metric.featured{grid-column:auto}.hero-top{align-items:flex-start}.hero h1{font-size:26px}.detail{overflow-x:auto}.detail table{min-width:520px}}@media print{.hero,.notice,.btnline,.footer{display:none!important}.wrap{width:100%;padding:0}.layout{display:block}.card{box-shadow:none;margin-bottom:15px}.home-btn{display:none}}
+</style>
+</head>
+<body class="auth-pending">
+<header class="hero"><div class="hero-inner"><div class="hero-top"><div class="brand">오춘기 권오영 업무지원 서비스<small>VIBE CODING · LEAVE TOOL</small></div><a id="vibecoding-home-btn" data-vibecoding-home="persistent" class="home-btn" href="index.html">⌂ 홈으로</a></div><h1>연차개수 계산기</h1><p>입사일과 퇴직일을 입력하면 입사일 기준으로 발생한 연차 유급휴가 일수를 계산합니다.</p></div></header>
+<main class="wrap">
+<div class="notice"><strong>고용노동부 노동포털의 연차개수 계산기 입력 방식을 참고한 업무용 보조도구입니다.</strong> 퇴직일은 마지막 근무일의 다음 날을 입력합니다. 재직자는 퇴직일을 비워 두면 오늘을 기준으로 계산합니다.</div>
+<div class="layout">
+<section class="card"><div class="card-head"><h2>기본 정보</h2><p>입사일은 필수이며 퇴직일은 재직 중인 경우 생략할 수 있습니다.</p></div><div class="card-body">
+<div class="field"><label for="hireDate">입사일</label><input id="hireDate" type="date"><div class="hint">예: 2023.01.02 입사 → 2023-01-02 선택</div></div>
+<div class="field"><label for="retireDate">퇴직일</label><input id="retireDate" type="date"><div class="hint">마지막 근무일의 다음 날을 입력합니다. 예: 2020.12.31.까지 근무했다면 2021-01-01 입력</div></div>
+<div class="btnline"><button class="btn primary" id="calculate" type="button">계산</button><button class="btn secondary" id="reset" type="button">초기화</button><button class="btn ghost" id="print" type="button">인쇄</button></div><div id="error" class="error"></div>
+<div class="basis"><h3>계산 기준</h3><ul><li>1년 미만 근로자는 1개월 개근 시 1일, 최대 11일을 계산합니다.</li><li>1년간 80% 이상 출근한 경우 1년 경과 시 15일을 계산합니다.</li><li>3년 이상 계속 근로한 경우 최초 1년을 초과한 매 2년마다 1일을 가산하며, 연간 최대 25일까지 계산합니다.</li><li>이 계산기는 날짜만으로 산정하므로 실제 개근·출근율, 휴직·결근, 사업장 적용 여부 등은 별도로 확인해야 합니다.</li></ul><a class="official" href="https://labor.moel.go.kr/cmmt/calAnnlVctn.do" target="_blank" rel="noopener">고용노동부 노동포털 원문 확인 →</a></div>
+</div></section>
+<section class="card"><div class="card-head"><h2>연차개수 산정 내역</h2><p>계산 기준일까지 발생한 연차를 근속연차별로 표시합니다.</p></div><div class="card-body">
+<div class="summary"><div class="metric featured"><span>연차 총합</span><strong id="total">-</strong></div><div class="metric"><span>계산 기준일</span><strong id="asOf">-</strong></div><div class="metric"><span>근속기간</span><strong id="service">-</strong></div></div>
+<div id="detail" class="detail"><div class="empty">입사일을 입력한 뒤 <strong>계산</strong>을 눌러주세요.</div></div>
+</div></section>
+</div>
+<div class="footer">본 계산기는 근로기준법 제60조의 일반적인 입사일 기준 산정방식을 바탕으로 한 비공식 보조도구입니다. 실제 연차 발생 여부는 출근율, 개근 여부, 사업장 규모, 단시간근로 여부, 휴직 등 개별 사정과 최신 법령·행정해석을 함께 확인하시기 바랍니다.<br>Web design by Kwon O Young.</div>
+</main>
+<script>
+const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+(async()=>{try{const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);const {data:{session}}=await sb.auth.getSession();if(!session){location.replace('login.html?return='+encodeURIComponent(location.href));return}const {data:m}=await sb.from('vibecoding_members').select('status').eq('user_id',session.user.id).single();if(!m||m.status!=='approved'){if(m&&m.status==='pending')alert('관리자 승인 후 이용할 수 있습니다.');else if(m&&m.status==='blocked')alert('이용이 제한된 계정입니다.');location.replace('index.html');return}document.body.classList.remove('auth-pending')}catch(e){console.error(e);document.body.classList.remove('auth-pending')}})();
+const $=s=>document.querySelector(s);
+function parseDate(v){if(!v)return null;const [y,m,d]=v.split('-').map(Number);const x=new Date(y,m-1,d,12);return Number.isNaN(x.getTime())?null:x}
+function fmt(d){return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`}
+function daysInMonth(y,m){return new Date(y,m,0).getDate()}
+function addMonthsClamped(d,n){const raw=d.getMonth()+n,y=d.getFullYear()+Math.floor(raw/12),m=((raw%12)+12)%12;return new Date(y,m,Math.min(d.getDate(),daysInMonth(y,m+1)),12)}
+function addYearsClamped(d,n){const y=d.getFullYear()+n,m=d.getMonth()+1;return new Date(y,m-1,Math.min(d.getDate(),daysInMonth(y,m)),12)}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function serviceText(start,end){let y=end.getFullYear()-start.getFullYear(),m=end.getMonth()-start.getMonth(),d=end.getDate()-start.getDate();if(d<0){m--;const pm=new Date(end.getFullYear(),end.getMonth(),0).getDate();d+=pm}if(m<0){y--;m+=12}return `${Math.max(0,y)}년 ${Math.max(0,m)}개월 ${Math.max(0,d)}일`}
+function fail(msg){$('#error').textContent=msg;$('#error').classList.add('show')}
+function clearError(){$('#error').textContent='';$('#error').classList.remove('show')}
+function calculate(){clearError();const start=parseDate($('#hireDate').value),retire=parseDate($('#retireDate').value);if(!start){fail('입사일을 입력해 주세요.');return}if(retire&&retire<=start){fail('퇴직일은 입사일보다 뒤여야 합니다. 퇴직일은 마지막 근무일의 다음 날입니다.');return}const today=new Date();today.setHours(12,0,0,0);if(start>today){fail('입사일은 오늘보다 미래일 수 없습니다.');return}const cutoff=retire?addDays(retire,-1):today;if(cutoff<start){fail('계산 기준일이 입사일보다 빠릅니다.');return}
+ const rows=[];let total=0,monthly=0;for(let i=1;i<=11;i++){const grant=addMonthsClamped(start,i);if(grant<=cutoff)monthly++;else break}if(monthly>0){rows.push({year:'1년차',period:`${fmt(start)} ~ ${fmt(addDays(addYearsClamped(start,1),-1))}`,grant:'1개월 개근 시 1일',days:monthly});total+=monthly}
+ for(let n=1;n<100;n++){const grant=addYearsClamped(start,n);if(grant>cutoff)break;const days=Math.min(25,15+Math.floor((n-1)/2));rows.push({year:`${n+1}년차`,period:`${fmt(grant)} 발생`,grant:n>=3?'15일 + 장기근속 가산':'15일',days});total+=days}
+ $('#total').textContent=`${total}일`;$('#asOf').textContent=fmt(cutoff);$('#service').textContent=serviceText(start,cutoff);
+ if(!rows.length){$('#detail').innerHTML='<div class="empty">아직 1개월이 지나지 않아 날짜 기준으로 발생한 연차가 없습니다.</div>';return}
+ $('#detail').innerHTML=`<table><thead><tr><th>근속 구분</th><th>발생 기준</th><th>산정 방식</th><th>발생 일수</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.year}</td><td>${r.period}</td><td>${r.grant}</td><td><strong>${r.days}일</strong></td></tr>`).join('')}</tbody></table>`
+}
+$('#calculate').addEventListener('click',calculate);$('#reset').addEventListener('click',()=>{$('#hireDate').value='';$('#retireDate').value='';$('#total').textContent='-';$('#asOf').textContent='-';$('#service').textContent='-';$('#detail').innerHTML='<div class="empty">입사일을 입력한 뒤 <strong>계산</strong>을 눌러주세요.</div>';clearError();$('#hireDate').focus()});$('#print').addEventListener('click',()=>window.print());[$('#hireDate'),$('#retireDate')].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')calculate()}));
+</script>
+<script src="./latest-home-nav.js?v=20260807-2341" data-vibecoding-latest-home="1"></script>
+</body>
+</html>
