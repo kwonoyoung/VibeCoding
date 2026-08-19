@@ -22,7 +22,6 @@
     const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
     const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
     const ADMIN_EMAIL='kwonoyoung77@gmail.com';
-    const PERSON_SESSION_KEY='person-directory-supabase-session';
     const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
     const marker='/VibeCoding/';
     const path=decodeURIComponent(location.pathname);
@@ -30,89 +29,37 @@
     const page=(pos>=0?path.slice(pos+marker.length):path.replace(/^\/+/,''));
     const returnUrl=encodeURIComponent(location.href);
 
-    function buildPersonPasswordPatch(){
+    function buildRolePatch(isAdmin){
       return `
-<style id="person-admin-password-style">
-#personAdminPwModal{position:fixed;inset:0;z-index:2147483647;display:none;place-items:center;padding:20px;background:rgba(8,31,45,.58);backdrop-filter:blur(5px)}
-#personAdminPwModal.show{display:grid}#personAdminPwBox{width:min(420px,100%);padding:25px;border-radius:20px;background:#fff;box-shadow:0 24px 70px rgba(0,0,0,.28);color:#173042}
-#personAdminPwBox h3{margin:0 0 9px;font-size:21px}#personAdminPwBox p{margin:0 0 16px;color:#637a88;font-size:13px;line-height:1.65}
-#personAdminPwBox .email{margin-bottom:10px;padding:11px 12px;border:1px solid #d3e0e6;border-radius:10px;background:#f6f9fa;font-weight:800;font-size:13px}
-#personAdminPwBox input{width:100%;padding:12px 13px;border:1px solid #c8d8e0;border-radius:10px;font-size:14px;outline:none}#personAdminPwBox input:focus{border-color:#0c8d84;box-shadow:0 0 0 3px rgba(12,141,132,.12)}
-#personAdminPwBox .actions{display:flex;gap:8px;margin-top:13px}#personAdminPwBox button{flex:1;padding:11px 12px;border:0;border-radius:10px;font-weight:850;cursor:pointer}#personAdminPwLogin{background:#0b6176;color:#fff}#personAdminPwCancel{background:#edf3f5;color:#365361}
-#personAdminPwMsg{min-height:18px;margin-top:10px;font-size:12px;color:#b43d46}
-</style>
-<div id="personAdminPwModal" aria-hidden="true"><div id="personAdminPwBox"><h3>관리자 로그인</h3><p>등록·갱신·삭제 기능은 관리자만 이용할 수 있습니다.</p><div class="email">${ADMIN_EMAIL}</div><input id="personAdminPwInput" type="password" autocomplete="current-password" placeholder="관리자 비밀번호"><div class="actions"><button id="personAdminPwCancel" type="button">취소</button><button id="personAdminPwLogin" type="button">로그인</button></div><div id="personAdminPwMsg"></div></div></div>
-<script>
-(()=>{
- const U='${SUPABASE_URL}', K='${SUPABASE_KEY}', E='${ADMIN_EMAIL}', SK='${PERSON_SESSION_KEY}';
- function wire(){
-   const old=document.getElementById('btnSendLoginLink'); if(!old)return;
-   const btn=old.cloneNode(true); btn.textContent='관리자 로그인'; btn.disabled=false; old.replaceWith(btn);
-   const modal=document.getElementById('personAdminPwModal'), input=document.getElementById('personAdminPwInput'), msg=document.getElementById('personAdminPwMsg'), login=document.getElementById('personAdminPwLogin'), cancel=document.getElementById('personAdminPwCancel');
-   const close=()=>{modal.classList.remove('show');modal.setAttribute('aria-hidden','true');input.value='';msg.textContent='';};
-   btn.addEventListener('click',()=>{modal.classList.add('show');modal.setAttribute('aria-hidden','false');setTimeout(()=>input.focus(),50);});
-   cancel.addEventListener('click',close); modal.addEventListener('click',e=>{if(e.target===modal)close();});
-   async function doLogin(){
-     const password=input.value; if(!password){msg.textContent='관리자 비밀번호를 입력해 주세요.';return;}
-     login.disabled=true;msg.style.color='#607984';msg.textContent='로그인 확인 중입니다...';
-     try{
-       const r=await fetch(U+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:K,'Content-Type':'application/json'},body:JSON.stringify({email:E,password})});
-       const d=await r.json().catch(()=>({}));
-       if(!r.ok)throw new Error(d.error_description||d.msg||d.message||'이메일 또는 비밀번호를 확인해 주세요.');
-       const ur=await fetch(U+'/auth/v1/user',{headers:{apikey:K,Authorization:'Bearer '+d.access_token}}); const user=await ur.json();
-       if(!ur.ok||String(user.email||'').toLowerCase()!==E){throw new Error('관리자 계정이 아닙니다.');}
-       localStorage.setItem(SK,JSON.stringify(d));
-       msg.style.color='#187455';msg.textContent='관리자 로그인 성공. 화면을 다시 불러옵니다.';
-       setTimeout(()=>location.reload(),350);
-     }catch(e){msg.style.color='#b43d46';msg.textContent=e.message||'로그인에 실패했습니다.';login.disabled=false;}
-   }
-   login.addEventListener('click',doLogin); input.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(wire,0));else setTimeout(wire,0);
-})();
-<\/script>`;
-    }
-
-    function buildPersonCrudPatch(){
-      return `
-<style id="person-crud-style">
+<style id="person-role-style">
 #personCrudPanel{max-width:1100px;margin:18px auto 26px;padding:20px;border:1px solid #d5e3e9;border-radius:18px;background:#fff;box-shadow:0 12px 34px rgba(7,60,96,.08);color:#173042}
 #personCrudPanel *{box-sizing:border-box}#personCrudPanel h2{margin:0 0 6px;font-size:20px}#personCrudPanel .crud-help{margin:0 0 16px;color:#637a88;font-size:13px;line-height:1.6}
-#personCrudPanel .crud-form{display:grid;grid-template-columns:1.4fr 1fr 1.1fr auto;gap:8px;align-items:end;margin-bottom:16px}
-#personCrudPanel label{display:block;font-size:12px;font-weight:800;color:#476271}#personCrudPanel input{width:100%;margin-top:5px;padding:11px 12px;border:1px solid #c8d8e0;border-radius:10px;font-size:14px;outline:none;background:#fff;color:#173042}
-#personCrudPanel input:focus{border-color:#0c8d84;box-shadow:0 0 0 3px rgba(12,141,132,.12)}
-#personCrudPanel button{border:0;border-radius:10px;padding:11px 13px;font-weight:850;cursor:pointer;white-space:nowrap}#personCrudAdd{background:#087f76;color:#fff}.crud-edit{background:#e8f2f5;color:#16475c}.crud-save{background:#0b6176;color:#fff}.crud-cancel{background:#edf2f4;color:#425d69}.crud-delete{background:#fff0f0;color:#b3313c;border:1px solid #f0c6ca!important}
-#personCrudPanel .crud-table-wrap{overflow:auto;border:1px solid #dbe7ec;border-radius:12px}#personCrudPanel table{width:100%;border-collapse:collapse;min-width:690px}#personCrudPanel th,#personCrudPanel td{padding:10px 11px;border-bottom:1px solid #e5edf0;text-align:left;font-size:13px}#personCrudPanel th{background:#f4f8fa;color:#496270}#personCrudPanel td.actions{display:flex;gap:6px;min-width:150px}#personCrudPanel tr:last-child td{border-bottom:0}
-#personCrudMsg{margin-top:10px;min-height:18px;font-size:12px;color:#607984}.crud-empty{text-align:center!important;color:#78909b;padding:22px!important}
+#personCrudPanel .crud-form{display:grid;grid-template-columns:1.4fr 1fr 1.1fr auto;gap:8px;align-items:end;margin-bottom:16px}#personCrudPanel label{display:block;font-size:12px;font-weight:800;color:#476271}#personCrudPanel input{width:100%;margin-top:5px;padding:11px 12px;border:1px solid #c8d8e0;border-radius:10px;font-size:14px;outline:none;background:#fff;color:#173042}#personCrudPanel input:focus{border-color:#0c8d84;box-shadow:0 0 0 3px rgba(12,141,132,.12)}
+#personCrudPanel button{border:0;border-radius:10px;padding:11px 13px;font-weight:850;cursor:pointer;white-space:nowrap}#personCrudAdd{background:#087f76;color:#fff}.crud-edit{background:#e8f2f5;color:#16475c}.crud-save{background:#0b6176;color:#fff}.crud-cancel{background:#edf2f4;color:#425d69}.crud-delete{background:#fff0f0;color:#b3313c;border:1px solid #f0c6ca!important}#personCrudPanel .crud-table-wrap{overflow:auto;border:1px solid #dbe7ec;border-radius:12px}#personCrudPanel table{width:100%;border-collapse:collapse;min-width:690px}#personCrudPanel th,#personCrudPanel td{padding:10px 11px;border-bottom:1px solid #e5edf0;text-align:left;font-size:13px}#personCrudPanel th{background:#f4f8fa;color:#496270}#personCrudPanel td.actions{display:flex;gap:6px;min-width:150px}#personCrudPanel tr:last-child td{border-bottom:0}#personCrudMsg{margin-top:10px;min-height:18px;font-size:12px;color:#607984}.crud-empty{text-align:center!important;color:#78909b;padding:22px!important}
 @media(max-width:760px){#personCrudPanel{margin:14px 10px 24px;padding:15px}#personCrudPanel .crud-form{grid-template-columns:1fr}#personCrudAdd{width:100%}}
 </style>
-<section id="personCrudPanel" aria-label="담당자 명단 관리">
-  <h2>담당자 명단 직접 관리</h2>
-  <p class="crud-help">기관명·담당자명·연락처를 직접 등록하거나 기존 자료를 수정·삭제할 수 있습니다. 변경 내용은 이 브라우저의 기존 담당자 명단 저장소에 저장됩니다.</p>
-  <div class="crud-form">
-    <label>기관명<input id="personCrudInstitution" type="text" placeholder="기관명"></label>
-    <label>담당자명<input id="personCrudPerson" type="text" placeholder="담당자명"></label>
-    <label>연락처<input id="personCrudContact" type="text" placeholder="연락처"></label>
-    <button id="personCrudAdd" type="button">등록</button>
-  </div>
-  <div class="crud-table-wrap"><table><thead><tr><th>기관명</th><th>담당자명</th><th>연락처</th><th>관리</th></tr></thead><tbody id="personCrudBody"><tr><td colspan="4" class="crud-empty">저장된 명단을 불러오는 중입니다.</td></tr></tbody></table></div>
-  <div id="personCrudMsg" aria-live="polite"></div>
-</section>
+${isAdmin?`<section id="personCrudPanel" aria-label="담당자 명단 관리"><h2>담당자 명단 직접 관리</h2><p class="crud-help">등록·수정·삭제한 내용은 바로 아래 출력 결과에도 즉시 반영됩니다.</p><div class="crud-form"><label>기관명<input id="personCrudInstitution" type="text" placeholder="기관명"></label><label>담당자명<input id="personCrudPerson" type="text" placeholder="담당자명"></label><label>연락처<input id="personCrudContact" type="text" placeholder="연락처"></label><button id="personCrudAdd" type="button">등록</button></div><div class="crud-table-wrap"><table><thead><tr><th>기관명</th><th>담당자명</th><th>연락처</th><th>관리</th></tr></thead><tbody id="personCrudBody"><tr><td colspan="4" class="crud-empty">저장된 명단을 불러오는 중입니다.</td></tr></tbody></table></div><div id="personCrudMsg" aria-live="polite"></div></section>`:''}
 <script>
 (()=>{
+ const IS_ADMIN=${isAdmin?'true':'false'};
  const DB='person-directory-cache', STORE='directory', KEY='latest';
  const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
  let rows=[];
- const openDb=()=>new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error('저장소를 열 수 없습니다.'));});
+ const openDb=()=>new Promise((resolve,reject)=>{if(!('indexedDB' in window)){reject(new Error('IndexedDB 미지원'));return;}const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE)};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error||new Error('저장소 오류'));});
  async function load(){const db=await openDb();try{return await new Promise((resolve,reject)=>{const r=db.transaction(STORE,'readonly').objectStore(STORE).get(KEY);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error);});}finally{db.close();}}
- async function persist(){const db=await openDb();try{await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({rows,fileName:'직접 편집 명단',savedAt:new Date().toISOString(),version:2},KEY);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}finally{db.close();}}
- function msg(t,ok=true){const el=document.getElementById('personCrudMsg');el.style.color=ok?'#187455':'#b43d46';el.textContent=t;}
- function render(){const body=document.getElementById('personCrudBody');if(!rows.length){body.innerHTML='<tr><td colspan="4" class="crud-empty">등록된 담당자 정보가 없습니다.</td></tr>';return;}body.innerHTML=rows.map((r,i)=>'<tr data-i="'+i+'"><td class="v-inst">'+esc(r.institution)+'</td><td class="v-person">'+esc(r.person)+'</td><td class="v-contact">'+esc(r.contact)+'</td><td class="actions"><button type="button" class="crud-edit">수정</button><button type="button" class="crud-delete">삭제</button></td></tr>').join('');}
- async function saveAndReload(text){await persist();msg(text);setTimeout(()=>location.reload(),350);}
- async function init(){try{const saved=await load();rows=Array.isArray(saved?.rows)?saved.rows.map(r=>({institution:String(r.institution??''),person:String(r.person??''),contact:String(r.contact??''),ssnMasked:String(r.ssnMasked??'')})):[];render();}catch(e){console.error(e);msg('저장된 명단을 불러오지 못했습니다.',false);}}
- document.getElementById('personCrudAdd').addEventListener('click',async()=>{const institution=document.getElementById('personCrudInstitution').value.trim(),person=document.getElementById('personCrudPerson').value.trim(),contact=document.getElementById('personCrudContact').value.trim();if(!institution||!person||!contact){msg('기관명, 담당자명, 연락처를 모두 입력해 주세요.',false);return;}rows.push({institution,person,contact,ssnMasked:''});try{await saveAndReload('등록하여 저장했습니다.');}catch(e){console.error(e);msg('등록 저장에 실패했습니다.',false);}});
- document.getElementById('personCrudBody').addEventListener('click',async e=>{const tr=e.target.closest('tr[data-i]');if(!tr)return;const i=Number(tr.dataset.i);if(e.target.classList.contains('crud-delete')){if(!confirm('이 담당자 정보를 삭제하시겠습니까?'))return;rows.splice(i,1);try{await saveAndReload('삭제하여 저장했습니다.');}catch(err){console.error(err);msg('삭제 저장에 실패했습니다.',false);}return;}if(e.target.classList.contains('crud-edit')){const r=rows[i];tr.innerHTML='<td><input class="e-inst" value="'+esc(r.institution)+'"></td><td><input class="e-person" value="'+esc(r.person)+'"></td><td><input class="e-contact" value="'+esc(r.contact)+'"></td><td class="actions"><button type="button" class="crud-save">저장</button><button type="button" class="crud-cancel">취소</button></td>';return;}if(e.target.classList.contains('crud-cancel')){render();return;}if(e.target.classList.contains('crud-save')){const institution=tr.querySelector('.e-inst').value.trim(),person=tr.querySelector('.e-person').value.trim(),contact=tr.querySelector('.e-contact').value.trim();if(!institution||!person||!contact){msg('기관명, 담당자명, 연락처를 모두 입력해 주세요.',false);return;}rows[i]={...rows[i],institution,person,contact};try{await saveAndReload('수정하여 저장했습니다.');}catch(err){console.error(err);msg('수정 저장에 실패했습니다.',false);}}});
- init();
+ async function persist(){const db=await openDb();try{await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put({rows,fileName:'담당자 직접관리 명단',savedAt:new Date().toISOString(),version:3},KEY);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});}finally{db.close();}}
+ function clean(v){return String(v??'').trim();}
+ function outputElements(){return {body:document.getElementById('resultBody'),count:document.getElementById('resultCount'),search:document.getElementById('searchInput')};}
+ function renderOutput(){const {body,count,search}=outputElements();if(!body)return;const term=clean(search?.value).toLowerCase();const filtered=term?rows.filter(r=>clean(r.institution).toLowerCase().includes(term)):rows.slice();if(count)count.textContent='결과 '+filtered.length+'건';body.innerHTML=filtered.length?filtered.map(r=>'<tr><td>'+esc(r.institution)+'</td><td>'+esc(r.person)+'</td><td>'+esc(r.contact)+'</td></tr>').join(''):'<tr class="empty-row"><td colspan="3">검색 결과가 없습니다.</td></tr>';}
+ function wireOutputSearch(){const old=document.getElementById('searchInput');if(!old)return;const input=old.cloneNode(true);input.disabled=false;old.replaceWith(input);input.addEventListener('input',renderOutput);const btn=document.getElementById('btnOutput');if(btn){btn.disabled=false;const clone=btn.cloneNode(true);btn.replaceWith(clone);clone.addEventListener('click',renderOutput);}}
+ function applyMemberView(){if(IS_ADMIN)return;document.querySelectorAll('section.card').forEach(sec=>{if(!sec.querySelector('#resultTable'))sec.style.display='none';});document.querySelectorAll('#personCrudPanel,#btnSendLoginLink,#personAdminPwModal').forEach(el=>el.remove());const output=document.getElementById('resultTable')?.closest('section.card');if(output){output.style.display='block';}const status=document.getElementById('statusText');if(status)status.closest('.status-bar')?.remove();}
+ function crudMsg(t,ok=true){const el=document.getElementById('personCrudMsg');if(!el)return;el.style.color=ok?'#187455':'#b43d46';el.textContent=t;}
+ function renderCrud(){if(!IS_ADMIN)return;const body=document.getElementById('personCrudBody');if(!body)return;if(!rows.length){body.innerHTML='<tr><td colspan="4" class="crud-empty">등록된 담당자 정보가 없습니다.</td></tr>';return;}body.innerHTML=rows.map((r,i)=>'<tr data-i="'+i+'"><td>'+esc(r.institution)+'</td><td>'+esc(r.person)+'</td><td>'+esc(r.contact)+'</td><td class="actions"><button type="button" class="crud-edit">수정</button><button type="button" class="crud-delete">삭제</button></td></tr>').join('');}
+ async function saveAll(message){await persist();renderCrud();renderOutput();crudMsg(message,true);}
+ function wireCrud(){if(!IS_ADMIN)return;document.getElementById('personCrudAdd')?.addEventListener('click',async()=>{const institution=clean(document.getElementById('personCrudInstitution').value),person=clean(document.getElementById('personCrudPerson').value),contact=clean(document.getElementById('personCrudContact').value);if(!institution||!person||!contact){crudMsg('기관명, 담당자명, 연락처를 모두 입력해 주세요.',false);return;}rows.push({institution,person,contact,ssnMasked:''});await saveAll('등록했습니다. 출력 결과에도 반영되었습니다.');document.getElementById('personCrudInstitution').value='';document.getElementById('personCrudPerson').value='';document.getElementById('personCrudContact').value='';});
+ document.getElementById('personCrudBody')?.addEventListener('click',async e=>{const tr=e.target.closest('tr[data-i]');if(!tr)return;const i=Number(tr.dataset.i);if(e.target.classList.contains('crud-delete')){if(!confirm('이 담당자 정보를 삭제하시겠습니까?'))return;rows.splice(i,1);await saveAll('삭제했습니다. 출력 결과에도 반영되었습니다.');return;}if(e.target.classList.contains('crud-edit')){const r=rows[i];tr.innerHTML='<td><input class="e-inst" value="'+esc(r.institution)+'"></td><td><input class="e-person" value="'+esc(r.person)+'"></td><td><input class="e-contact" value="'+esc(r.contact)+'"></td><td class="actions"><button type="button" class="crud-save">저장</button><button type="button" class="crud-cancel">취소</button></td>';return;}if(e.target.classList.contains('crud-cancel')){renderCrud();return;}if(e.target.classList.contains('crud-save')){const institution=clean(tr.querySelector('.e-inst')?.value),person=clean(tr.querySelector('.e-person')?.value),contact=clean(tr.querySelector('.e-contact')?.value);if(!institution||!person||!contact){crudMsg('기관명, 담당자명, 연락처를 모두 입력해 주세요.',false);return;}rows[i]={...rows[i],institution,person,contact};await saveAll('수정했습니다. 출력 결과에도 반영되었습니다.');}});}
+ async function init(){try{const saved=await load();rows=Array.isArray(saved?.rows)?saved.rows.map(r=>({institution:clean(r.institution),person:clean(r.person),contact:clean(r.contact),ssnMasked:clean(r.ssnMasked)})):[];}catch(e){console.error(e);rows=[];}wireOutputSearch();applyMemberView();renderOutput();renderCrud();wireCrud();}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0));else setTimeout(init,0);
 })();
 <\/script>`;
     }
@@ -124,15 +71,10 @@
       const res=await fetch(endpoint,{method:'GET',headers:{'Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},cache:'no-store'});
       if(res.status===401){await sb.auth.signOut();location.replace('login.html?return='+returnUrl);return;}
       if(res.status===403){alert('관리자 승인을 받은 회원만 이용할 수 있습니다.');location.replace('index.html');return;}
-      if(!res.ok){throw new Error(await res.text());}
+      if(!res.ok)throw new Error(await res.text());
       let html=await res.text();
-      const currentEmail=String(session.user?.email||'').toLowerCase();
-      if(currentEmail===ADMIN_EMAIL){
-        localStorage.setItem(PERSON_SESSION_KEY,JSON.stringify(session));
-        const crudPatch=buildPersonCrudPatch();
-        html=html.replace(/<\/body>/i,crudPatch+'</body>');
-      }
-      const patch=buildPersonPasswordPatch();
+      const isAdmin=String(session.user?.email||'').toLowerCase()===ADMIN_EMAIL;
+      const patch=buildRolePatch(isAdmin);
       html=html.replace(/<\/body>/i,patch+'</body>');
       document.open();document.write(html);document.close();
     }catch(err){
