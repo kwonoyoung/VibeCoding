@@ -109,7 +109,7 @@
     const panel=document.createElement('section');
     panel.id='personCrudPanel';
     panel.innerHTML=`<h2>담당자 명단 직접 관리</h2><p class="crud-help">등록·수정·삭제한 내용은 저장 후 새로고침해도 유지되며 출력 결과에 즉시 반영됩니다.</p><div class="crud-form"><label>기관명<input id="personCrudInstitution" type="text" placeholder="기관명"></label><label>담당자명<input id="personCrudPerson" type="text" placeholder="담당자명"></label><label>연락처<input id="personCrudContact" type="text" placeholder="연락처"></label><button id="personCrudAdd" type="button">등록</button></div><div class="crud-table-wrap"><table><thead><tr><th>기관명</th><th>담당자명</th><th>연락처</th><th>관리</th></tr></thead><tbody id="personCrudBody"></tbody></table></div><div id="personCrudMsg"></div>`;
-    output.parentNode.insertBefore(panel,output);
+    output.insertAdjacentElement('afterend',panel);
 
     document.getElementById('personCrudAdd').addEventListener('click',async()=>{
       const institution=clean(document.getElementById('personCrudInstitution').value);
