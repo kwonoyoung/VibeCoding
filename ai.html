@@ -95,7 +95,7 @@
       }
     }))).observe(document.body, {childList:true, subtree:true});
 
-    const REVIEWED_AT = "2026-08-14";
+    const REVIEWED_AT = "2026-08-23";
     const groups = {
       ai: {
         no: "01", title: "글로벌 주요 AI 기업 및 에이전트 현황",
@@ -105,7 +105,7 @@
           ["OpenAI","ChatGPT · Codex · Sora · DALL·E","미국","대화형 AI|코딩 에이전트|문서·데이터|이미지·영상","https://openai.com/"],
           ["OpenAI","ChatGPT Work · Workspace Agents","미국","장기 실행 업무 에이전트|앱·파일 연결|공유 업무 자동화|승인 기반 작업","https://openai.com/index/chatgpt-for-your-most-ambitious-work/"],
           ["OpenAI","OpenAI Presence","미국","기업용 음성·채팅 에이전트|고객지원|사내 시스템 연동|정책·가드레일·상담원 이관","https://openai.com/index/introducing-openai-presence/"],
-          ["Google","Gemini · Veo · Imagen · NotebookLM","미국","멀티모달 AI|문서·검색|이미지·영상|업무 자동화","https://gemini.google.com/"],
+          ["Google","Gemini · Gemini 3.7 Flash · Veo · Imagen · NotebookLM","미국","멀티모달 AI|문서·검색|코딩·에이전트|이미지·영상|업무 자동화","https://gemini.google.com/"],
           ["Anthropic","Claude · Claude Code","미국","문서 분석|고급 코딩|도구 사용|에이전트","https://www.anthropic.com/"],
           ["Microsoft","Microsoft Copilot · Copilot Studio","미국","Microsoft 365|기업 에이전트|코딩|업무 자동화","https://copilot.microsoft.com/"],
           ["Meta","Meta AI · Muse Spark 1.2 · Muse Code · Muse Glimmer · Llama","미국","대화형·멀티에이전트 AI|코딩 에이전트|로컬 실행 오픈웨이트 모델|개발자 API","https://ai.meta.com/"],
@@ -134,7 +134,7 @@
           ["ServiceNow","ServiceNow AI Agents · AI Agent Studio","미국","기업 워크플로|IT·고객지원|에이전트 구축·관리","https://www.servicenow.com/products/ai-agents.html"],
           ["UiPath","Agent Builder · Maestro · Autopilot","미국","에이전틱 자동화|RPA|업무 오케스트레이션","https://www.uipath.com/platform/agentic-automation"],
           ["Glean","Glean Assistant · Glean Agents","미국","기업 검색|지식 연결|업무 에이전트|거버넌스","https://www.glean.com/ai-agents"],
-          ["Anysphere","Cursor","미국","AI 코딩 에이전트|코드 편집|리팩터링|디버깅","https://cursor.com/"],
+          ["Cursor / SpaceX (구 Anysphere)","Cursor · Origin","미국","AI 코딩 에이전트|코드 편집·리팩터링·디버깅|코드 호스팅·저장소·PR|GitHub 동기화","https://cursor.com/"],
           ["Cognition","Devin","미국","자율형 소프트웨어 개발 에이전트|코딩","https://devin.ai/"],
           ["LangChain","LangChain · LangGraph · LangSmith","미국","에이전트 프레임워크|오케스트레이션|평가·관측","https://www.langchain.com/"],
           ["CrewAI","CrewAI","미국","멀티에이전트 오케스트레이션|업무 자동화","https://www.crewai.com/"],
@@ -149,7 +149,7 @@
           ["Google","Google Flow (구글 플로우)","미국","AI 영화·영상 제작|Veo·Imagen·Gemini 연동|텍스트·이미지→영상|장면·캐릭터 일관성|카메라 제어·네이티브 오디오","https://labs.google/fx/tools/flow"],
           ["TapNow","TapNow (탭나우)","미국","에이전틱 크리에이티브 캔버스|텍스트·이미지·오디오·영상 모델 통합|AI 광고·영화 제작|스크립트·스토리보드 워크플로|팀 협업·공유","https://www.tapnow.ai/"]
         ],
-        note: "Meta는 2026년 8월 10일 개인용 GPU에서 에이전틱 작업을 실행하는 오픈웨이트 모델 Muse Glimmer를 공개했습니다. <a href='https://developer.meta.com/ai/models/muse-glimmer/' target='_blank' rel='noopener noreferrer'>Meta 공식 문서</a> · <a href='https://www.reuters.com/world/china/meta-launches-new-ai-model-zuckerberg-champions-open-weight-push-2026-08-10/' target='_blank' rel='noopener noreferrer'>Reuters</a><br>MAU는 최신 공개치 기준이며 집계 범위(독립 앱·통합 서비스·모바일 앱)가 서로 달라 완전히 동일한 모집단 비교는 아닙니다. 공개 수치가 없는 서비스는 순위에서 제외했습니다. 근거: <a href='https://about.fb.com/news/2025/10/improving-your-recommendations-apps-ai-meta/' target='_blank' rel='noopener noreferrer'>Meta</a> · <a href='https://www.reuters.com/technology/chatgpt-app-hits-1-billion-monthly-active-users-record-time-data-shows-2026-06-02/' target='_blank' rel='noopener noreferrer'>ChatGPT·Claude</a> · <a href='https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx' target='_blank' rel='noopener noreferrer'>Gemini</a> · <a href='https://www.ft.com/content/e9c28d31-a962-4684-8b58-c9e6bc68401f' target='_blank' rel='noopener noreferrer'>Perplexity</a>. Grok 수치는 2026년 3월 SpaceX 공시를 인용한 최신 공개 보도 기준입니다."
+        note: "Cursor는 2026년 8월 14일 SpaceX 인수를 공식 발표했고, 8월 17일 코드 호스팅 플랫폼 Origin을 초기 베타로 출시했습니다. <a href='https://cursor.com/blog/joining-spacex' target='_blank' rel='noopener noreferrer'>Cursor·SpaceX 공식 발표</a> · <a href='https://cursor.com/changelog/origin-code-hosting' target='_blank' rel='noopener noreferrer'>Cursor Origin 공식 변경내역</a><br>Meta는 2026년 8월 10일 개인용 GPU에서 에이전틱 작업을 실행하는 오픈웨이트 모델 Muse Glimmer를 공개했습니다. <a href='https://developer.meta.com/ai/models/muse-glimmer/' target='_blank' rel='noopener noreferrer'>Meta 공식 문서</a> · <a href='https://www.reuters.com/world/china/meta-launches-new-ai-model-zuckerberg-champions-open-weight-push-2026-08-10/' target='_blank' rel='noopener noreferrer'>Reuters</a><br>MAU는 최신 공개치 기준이며 집계 범위(독립 앱·통합 서비스·모바일 앱)가 서로 달라 완전히 동일한 모집단 비교는 아닙니다. 공개 수치가 없는 서비스는 순위에서 제외했습니다. 근거: <a href='https://about.fb.com/news/2025/10/improving-your-recommendations-apps-ai-meta/' target='_blank' rel='noopener noreferrer'>Meta</a> · <a href='https://www.reuters.com/technology/chatgpt-app-hits-1-billion-monthly-active-users-record-time-data-shows-2026-06-02/' target='_blank' rel='noopener noreferrer'>ChatGPT·Claude</a> · <a href='https://blog.google/innovation-and-ai/products/gemini-app/one-billion-monthly-users/' target='_blank' rel='noopener noreferrer'>Gemini</a> · <a href='https://www.ft.com/content/e9c28d31-a962-4684-8b58-c9e6bc68401f' target='_blank' rel='noopener noreferrer'>Perplexity</a>. Grok 수치는 2026년 3월 SpaceX 공시를 인용한 최신 공개 보도 기준입니다."
       },
       cloud: {
         no: "02", title: "글로벌 주요 클라우드 서비스 기업 현황",
@@ -237,7 +237,7 @@
     const mauData = {
       "Meta AI · Muse Spark 1.2 · Muse Code · Muse Glimmer · Llama": {value:1000000001, label:"10억+명", asOf:"2025-10", source:"Meta 공식 발표"},
       "ChatGPT · Codex · Sora · DALL·E": {value:1000000000, label:"10억명", asOf:"2026-06", source:"Sensor Tower·Reuters"},
-      "Gemini · Veo · Imagen · NotebookLM": {value:950000000, label:"9억 5,000만명", asOf:"2026-07", source:"Alphabet 실적 발표"},
+      "Gemini · Gemini 3.7 Flash · Veo · Imagen · NotebookLM": {value:1000000000, label:"10억+명", asOf:"2026-08", source:"Google 공식 발표"},
       "Grok · SuperGrok · Grok Imagine · Grok Voice": {value:117000000, label:"1억 1,700만명", asOf:"2026-03", source:"SpaceX 공시"},
       "Perplexity": {value:100000000, label:"1억+명", asOf:"2026-03", source:"회사 발표·FT"},
       "Claude · Claude Code": {value:56000000, label:"5,600만명", asOf:"2026-Q2", source:"Sensor Tower·Reuters"}
