@@ -1,0 +1,105 @@
+name: Bootstrap current AI directory update
+
+on:
+  push:
+    paths:
+      - '.github/workflows/bootstrap-ai-directory-update.yml'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Apply verified 2026-08-23 directory updates
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import datetime
+          from zoneinfo import ZoneInfo
+          import re
+
+          path = Path('ai.html')
+          text = path.read_text(encoding='utf-8')
+          today = datetime.now(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')
+
+          text, n = re.subn(
+              r'const\s+REVIEWED_AT\s*=\s*"\d{4}-\d{2}-\d{2}";',
+              f'const REVIEWED_AT = "{today}";',
+              text,
+              count=1,
+          )
+          if n != 1:
+              raise SystemExit('REVIEWED_AT replacement failed')
+
+          replacements = {
+              '["Google","Gemini · Veo · Imagen · NotebookLM","미국","멀티모달 AI|문서·검색|이미지·영상|업무 자동화","https://gemini.google.com/"]':
+              '["Google","Gemini · Gemini 3.7 Flash · Veo · Imagen · NotebookLM","미국","멀티모달 AI|문서·검색|코딩·에이전트|이미지·영상|업무 자동화","https://gemini.google.com/"]',
+
+              '["Anysphere","Cursor","미국","AI 코딩 에이전트|코드 편집|리팩터링|디버깅","https://cursor.com/"]':
+              '["Cursor / SpaceX (구 Anysphere)","Cursor · Origin","미국","AI 코딩 에이전트|코드 편집·리팩터링·디버깅|코드 호스팅·저장소·PR|GitHub 동기화","https://cursor.com/"]',
+
+              '"Gemini · Veo · Imagen · NotebookLM": {value:950000000, label:"9억 5,000만명", asOf:"2026-07", source:"Alphabet 실적 발표"}':
+              '"Gemini · Gemini 3.7 Flash · Veo · Imagen · NotebookLM": {value:1000000000, label:"10억+명", asOf:"2026-08", source:"Google 공식 발표"}',
+
+              'https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx':
+              'https://blog.google/innovation-and-ai/products/gemini-app/one-billion-monthly-users/'
+          }
+
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f'Expected text not found: {old[:80]}')
+              text = text.replace(old, new, 1)
+
+          cursor_note = (
+              "Cursor는 2026년 8월 14일 SpaceX 인수를 공식 발표했고, 8월 17일 코드 호스팅 플랫폼 Origin을 초기 베타로 출시했습니다. "
+              "<a href='https://cursor.com/blog/joining-spacex' target='_blank' rel='noopener noreferrer'>Cursor·SpaceX 공식 발표</a> · "
+              "<a href='https://cursor.com/changelog/origin-code-hosting' target='_blank' rel='noopener noreferrer'>Cursor Origin 공식 변경내역</a><br>"
+          )
+          marker = '        note: "Meta는 2026년 8월 10일'
+          if marker not in text:
+              raise SystemExit('AI note marker not found')
+          text = text.replace(marker, '        note: "' + cursor_note + 'Meta는 2026년 8월 10일', 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Remove one-time bootstrap workflow
+        run: rm -f .github/workflows/bootstrap-ai-directory-update.yml
+
+      - name: Commit verified update
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ai.html .github/workflows/bootstrap-ai-directory-update.yml
+          git commit -m "Update AI directory for 2026-08-23"
+          git push
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload current site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
