@@ -33,3 +33,5 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "Review AI directory for 2026-08-24"
           git push
+
+# trigger: 2026-08-24
