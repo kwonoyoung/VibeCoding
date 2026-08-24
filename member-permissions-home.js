@@ -26,6 +26,7 @@
   addSupportButton();
   addMenu({sectionTitle:'급여·수당',href:'family1.html',cls:'pay',icon:'家',title:'공무원 가족수당 연혁 계산기',desc:'연도별 가족수당 단가와 가족별 개월수를 반영해 금액을 계산합니다.'});
   addMenu({sectionTitle:'급여·수당',href:'family2.html',cls:'pay',icon:'月',title:'가족수당 자녀 지급 만료월 계산기',desc:'자녀의 생년월일과 기준일을 기준으로 만나이·해당여부·지급만료월을 계산합니다.'});
+  addMenu({sectionTitle:'급여·수당',href:'age.html',cls:'pay',icon:'年',title:'만나이 계산기',desc:'생년월일과 만나이 기준일을 입력해 기준일 현재의 만나이를 계산합니다.'});
   addMenu({sectionTitle:'공문서·업무지원',href:'school_budget.html',cls:'doc',icon:'₩',title:'학교 예산 현황 분석',desc:'학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.'});
   addMenu({sectionTitle:'복무·인사',href:'resource.html',cls:'people',icon:'👥',title:'인사발령 자료 분석',desc:'학교·기관별, 지역별, 직렬·직군·과목별 전입·전출 명단을 집계합니다.'});
   addMenu({sectionTitle:'복무·인사',href:'vctn.html',cls:'people',icon:'休',title:'연차개수 계산기',desc:'입사일·퇴직일을 기준으로 연차 유급휴가 발생 일수를 계산합니다.'});
