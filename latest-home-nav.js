@@ -39,27 +39,30 @@
   }, true);
 })();
 
-// resource.html PDF parser hotfix (2026-08-25)
-// PDF.js can return one text item spanning two adjacent table cells. Split each
-// run into character-level positions and choose the table-grid profile from the
-// actual header position. This supports both the 2025 and 2026 personnel forms.
+// resource.html PDF parser hotfix (2026-08-25, dynamic table-grid detection)
+// The personnel PDFs use several slightly different table widths. Instead of
+// choosing a fixed 2025/2026 template, derive the 6 personnel columns from the
+// actual header positions on every page. This prevents characters from leaking
+// across grade/title/department boundaries.
 (() => {
   if (!/\/resource\.html$/i.test(window.location.pathname)) return;
   if (typeof pdfjsLib === 'undefined' || typeof parsePDF !== 'function' ||
       typeof compact !== 'function' || typeof sectionInfo !== 'function' ||
       typeof repair !== 'function' || typeof enrich !== 'function' ||
-      typeof detectYear !== 'function' || typeof resolveDates !== 'function') return;
+      typeof detectYear !== 'function' || typeof resolveDates !== 'function' ||
+      typeof normalizeDate !== 'function') return;
 
-  const RATIOS_2025 = {
+  const FALLBACK_2025 = {
     s: 0.0782, n: 0.1393, ag: 0.2356, at: 0.3247,
     a: 0.5126, cg: 0.6089, ct: 0.6980, c: 0.8820, d: 0.9580
   };
-  // 2026 공개용 인사발령 서식의 실제 세로선 위치를 기준으로 보정.
-  // 특히 직급/직위 경계가 기존 값보다 오른쪽에 있어 '주사·주사보·서기보'의
-  // 마지막 글자가 직위 칸으로 넘어가던 문제를 방지한다.
-  const RATIOS_2026 = {
-    s: 0.072278, n: 0.139415, ag: 0.248522, at: 0.336274,
-    a: 0.520783, cg: 0.629856, ct: 0.717608, c: 0.902117, d: 0.961593
+  const FALLBACK_2026_JAN = {
+    s: 0.07239, n: 0.13548, ag: 0.23012, at: 0.32264,
+    a: 0.51645, cg: 0.61109, ct: 0.70360, c: 0.89741, d: 0.96454
+  };
+  const FALLBACK_2026_SEP = {
+    s: 0.07228, n: 0.13942, ag: 0.24852, at: 0.33627,
+    a: 0.52078, cg: 0.62986, ct: 0.71761, c: 0.90212, d: 0.96159
   };
 
   const joinCell = items => compact(items.slice().sort((a, b) =>
@@ -102,14 +105,85 @@
     return r;
   }
 
-  function pageRatios(base, width) {
-    // 2026 서식은 현임 '부서' 열이 2025 서식보다 넓다. '비고' 헤더의
-    // 실제 시작 위치로 서식을 구분해 현임 부서의 마지막 글자가 비고로
-    // 잘려 나가는 문제를 방지한다.
-    const remark = base
-      .filter(x => compact(x.text) === '비고')
-      .sort((a, b) => a.y - b.y)[0];
-    return remark && remark.x / width > 0.912 ? RATIOS_2026 : RATIOS_2025;
+  const centerX = item => Number(item.x) + Math.abs(Number(item.width || 0)) / 2;
+
+  function fallbackBounds(base, width) {
+    const firstGrade = base
+      .filter(x => compact(x.text) === '직급')
+      .sort((a, b) => a.y - b.y || a.x - b.x)[0];
+    const ratio = firstGrade ? firstGrade.x / width : 0;
+    const profile = ratio > 0.178
+      ? FALLBACK_2026_SEP
+      : ratio > 0 && ratio < 0.172
+        ? FALLBACK_2026_JAN
+        : FALLBACK_2025;
+    return Object.fromEntries(Object.entries(profile).map(([k, v]) => [k, width * v]));
+  }
+
+  function pageBounds(base, width) {
+    const grades = base.filter(x => compact(x.text) === '직급').sort((a, b) => a.y - b.y || a.x - b.x);
+    const titles = base.filter(x => compact(x.text) === '직위').sort((a, b) => a.y - b.y || a.x - b.x);
+    const depts = base.filter(x => compact(x.text) === '부서').sort((a, b) => a.y - b.y || a.x - b.x);
+    let row = null;
+
+    for (const seed of grades) {
+      const gs = grades.filter(x => Math.abs(x.y - seed.y) <= 3.2).sort((a, b) => a.x - b.x);
+      const ts = titles.filter(x => Math.abs(x.y - seed.y) <= 3.2).sort((a, b) => a.x - b.x);
+      const ds = depts.filter(x => Math.abs(x.y - seed.y) <= 3.2).sort((a, b) => a.x - b.x);
+      if (gs.length >= 2 && ts.length >= 2 && ds.length >= 2) {
+        row = { y: seed.y, gs: gs.slice(0, 2), ts: ts.slice(0, 2), ds: ds.slice(0, 2) };
+        break;
+      }
+    }
+    if (!row) return fallbackBounds(base, width);
+
+    const [g1, g2] = row.gs.map(centerX);
+    const [t1, t2] = row.ts.map(centerX);
+    const [d1, d2] = row.ds.map(centerX);
+    const A = t1 - g1;
+    const B = d1 - t1;
+    const C = g2 - d1;
+    const gradeW = A - B + C;
+    const titleW = A + B - C;
+    const deptW = -A + B + C;
+
+    if (!(gradeW > 45 && gradeW < 75 && titleW > 40 && titleW < 70 &&
+          deptW > 90 && deptW < 135)) {
+      return fallbackBounds(base, width);
+    }
+
+    const n = g1 - gradeW / 2; // 성명 | 임용직급
+    const ag = n + gradeW;     // 임용직급 | 임용직위
+    const at = ag + titleW;    // 임용직위 | 임용부서
+    const a = at + deptW;      // 임용부서 | 현임직급
+    const cg = a + gradeW;     // 현임직급 | 현임직위
+    const ct = cg + titleW;    // 현임직위 | 현임부서
+    const c = ct + deptW;      // 현임부서 | 비고
+
+    const nearby = (label) => base
+      .filter(x => compact(x.text) === label && Math.abs(x.y - row.y) <= 24)
+      .sort((x, y) => Math.abs(x.y - row.y) - Math.abs(y.y - row.y) || x.x - y.x)[0];
+    const nameHead = nearby('성명');
+    const remarkHead = nearby('비고');
+    const s = nameHead ? 2 * centerX(nameHead) - n : n - width * 0.062;
+    const d = remarkHead ? 2 * centerX(remarkHead) - c : width * 0.965;
+
+    const b = { s, n, ag, at, a, cg, ct, c, d };
+    const seq = [b.s, b.n, b.ag, b.at, b.a, b.cg, b.ct, b.c, b.d];
+    if (seq.some(x => !Number.isFinite(x)) || seq.some((x, i) => i && x <= seq[i - 1]) ||
+        b.s < width * 0.055 || b.d > width * 0.99) {
+      return fallbackBounds(base, width);
+    }
+    return b;
+  }
+
+  function sectionInfoPlus(s) {
+    const direct = sectionInfo(s);
+    if (direct) return direct;
+    const x = compact(s).replace(/^❏/, '');
+    if (/^(파견복귀|전입|전출)/.test(x)) return { type: '인사발령', date: '' };
+    if (/^(정년퇴직|명예퇴직|의원면직)/.test(x)) return { type: '퇴직', date: '' };
+    return null;
   }
 
   parsePDF = async function(file) {
@@ -130,10 +204,7 @@
       const chars = explodeItems(tc.items, vp);
       all += ' ' + base.map(x => x.text).join(' ');
 
-      const W = vp.width;
-      const ratios = pageRatios(base, W);
-      const b = Object.fromEntries(Object.entries(ratios).map(([k, v]) => [k, W * v]));
-
+      const b = pageBounds(base, vp.width);
       const lines = [];
       for (const x of base.slice().sort((a, z) => a.y - z.y || a.x - z.x)) {
         let g = lines.find(q => Math.abs(q.y - x.y) <= 2.8);
@@ -147,7 +218,7 @@
       const heads = [];
       for (const g of lines) {
         const s = compact(g.it.sort((a, z) => a.x - z.x).map(x => x.text).join(''));
-        const si = sectionInfo(s);
+        const si = sectionInfoPlus(s);
         if (si) heads.push({ y: g.y, ...si });
       }
 
@@ -194,6 +265,7 @@
           else if (q >= b.c && q < b.d) C.remark.push(x);
         }
 
+        const remark = joinCell(C.remark);
         let r = guardRow({
           type: section,
           serial: compact(e.item.text),
@@ -204,9 +276,9 @@
           oldGrade: joinCell(C.cg),
           oldTitle: joinCell(C.ct),
           oldDept: joinCell(C.cd),
-          appointmentDate: sectionDate,
+          appointmentDate: normalizeDate(remark) || sectionDate,
           rawAppointment: joinCell(C.app),
-          remark: joinCell(C.remark),
+          remark,
           page: p
         });
 
