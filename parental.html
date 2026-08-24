@@ -73,9 +73,73 @@ function calculateData(){const spells=collectSpells(),opt=getOptions(),qual18=op
  const groups=new Map();rows.forEach((r,i)=>{let g=groups.get(r.key)||{sum:0,last:i,rule:r.rule};g.sum+=r.monthlyContribution;g.last=i;groups.set(r.key,g)});for(const g of groups.values())rows[g.last].monthlyPayout=g.rule==='2025'?floor10(g.sum):g.sum;return{rows,opt,maxMonths,gross:rows.reduce((s,r)=>s+r.gross,0),deferred:rows.reduce((s,r)=>s+r.deferred,0),actual:[...groups.values()].reduce((s,g)=>s+(g.rule==='2025'?floor10(g.sum):g.sum),0)}}
 function render(data){$('#grossTotal').textContent=won(data.gross);$('#deferredTotal').textContent=won(data.deferred);$('#actualTotal').textContent=won(data.actual);const body=$('#resultBody');if(!data.rows.length){body.innerHTML='<tr><td class="empty" colspan="13">계산할 지급기간이 없습니다.</td></tr>';return}body.innerHTML=data.rows.map(r=>{const badge=r.rule==='2022'?'<span class="badge r2022">2022년</span>':r.rule==='2024'?'<span class="badge r2024">2024년</span>':'<span class="badge r2025">2025년 이후</span>';const cls=!r.payable?'no-pay':r.monthlyPayout!=null?'pay-row':'';const note=!r.payable?'당시 12개월 한도':'';return `<tr class="${cls}"><td>${r.idx}개월</td><td>${badge}</td><td>${fmtDate(r.start)} ~ ${fmtDate(r.end)}</td><td class="money">${r.payable?won(r.cap):'-'}</td><td class="money">${r.payable?won(r.base):'-'}</td><td>${r.days}일</td><td>${r.den}일</td><td class="money">${won(r.gross)}</td><td class="money">${won(r.deferred)}</td><td class="money">${won(r.immediate)}</td><td>${r.monthlyPayout!=null?`${yr(r.end)}년 ${mo(r.end)}월`:''}</td><td class="money">${r.monthlyPayout!=null?won(r.monthlyPayout):''}</td><td>${note}</td></tr>`}).join('')+`<tr class="total-row"><td colspan="7">합계</td><td class="money">${won(data.gross)}</td><td class="money">${won(data.deferred)}</td><td></td><td></td><td class="money">${won(data.actual)}</td><td></td></tr>`}
 function run(){setMsg('error','');setMsg('info','');try{const d=calculateData();render(d);const used=[...new Set(d.rows.map(r=>r.rule))].map(r=>r==='2022'?'2022년':r==='2024'?'2024년':'2025년 이후').join(' → ');setMsg('info',`적용 개정: ${used||'-'} · 최대 지급 개월수: ${d.maxMonths}개월`)}catch(e){setMsg('error',e.message||'입력값을 확인해 주세요.')}}
-function downloadExcel(){setMsg('error','');if(typeof XLSX==='undefined'){setMsg('error','엑셀 파일 생성 모듈을 불러오지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');return}try{const d=calculateData();render(d);const opt=d.opt,spells=[];for(let i=1;i<=3;i++){const start=$('#start'+i).value,end=$('#end'+i).value,salary=Number($('#salary'+i).value||0);if(start||end||salary)spells.push([`${i}차 휴직`,start,end,salary||0])}const inputRows=[['2022년 2024년 2025년 통합 공무원 육아휴직수당 계산 결과'],[],['휴직 구분','휴직 시작일','휴직 종료일','월봉급액(원)'],...spells,[],['특수조건','선택값'],['2022~2024 특수조건',$('#legacyType').value],['자녀 순서',$('#childOrder').value],['2025년 이후 부부동시 육아휴직',$('#simultaneous').value],['부부 모두 3개월 이상 육아휴직',$('#both3Months').value],['한부모가족',$('#singleParent').value],['장애아부모',$('#disabledChild').value],['최대 지급 개월수',d.maxMonths+'개월'],[],['합계 구분','금액(원)'],['산정 수당액 합계',d.gross],['복직합산금 합계',d.deferred],['실지급액 합계',d.actual]];const detailRows=[['개월차','적용 개정','휴직 회차','휴직 시작일','휴직 종료일','상한액(원)','월 기준액(원)','일수','월일수','산정 수당액(원)','복직합산금(원)','즉시지급액(원)','지급월','당월 실지급액(원)','비고']];d.rows.forEach(r=>detailRows.push([r.idx+'개월',r.rule==='2025'?'2025년 이후':r.rule+'년',r.spell+'차',fmtDate(r.start),fmtDate(r.end),r.payable?r.cap:0,r.payable?r.base:0,r.days,r.den,r.gross,r.deferred,r.immediate,r.monthlyPayout!=null?`${yr(r.end)}년 ${mo(r.end)}월`:'',r.monthlyPayout!=null?r.monthlyPayout:'',!r.payable?'당시 12개월 한도':'']));detailRows.push([],['합계','','','','','','','','',d.gross,d.deferred,'','',d.actual,'']);const wb=XLSX.utils.book_new(),wsInput=XLSX.utils.aoa_to_sheet(inputRows),wsDetail=XLSX.utils.aoa_to_sheet(detailRows);wsInput['!cols']=[{wch:30},{wch:22},{wch:18},{wch:18}];wsDetail['!cols']=[{wch:10},{wch:14},{wch:10},{wch:14},{wch:14},{wch:16},{wch:16},{wch:9},{wch:9},{wch:18},{wch:18},{wch:18},{wch:14},{wch:18},{wch:20}];const moneyCols=['D'];for(let r=4;r<=6;r++){const c=wsInput['D'+r];if(c)c.z='#,##0'}for(let r=18;r<=20;r++){const c=wsInput['B'+r];if(c)c.z='#,##0'}for(let r=2;r<=detailRows.length;r++){['F','G','J','K','L','N'].forEach(col=>{const c=wsDetail[col+r];if(c&&typeof c.v==='number')c.z='#,##0'})}XLSX.utils.book_append_sheet(wb,wsInput,'입력조건');XLSX.utils.book_append_sheet(wb,wsDetail,'월별계산결과');const today=new Date(),stamp=`${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;XLSX.writeFile(wb,`육아휴직수당_통합계산결과_${stamp}.xlsx`)}catch(e){setMsg('error',e.message||'엑셀 파일을 생성할 수 없습니다. 입력값을 확인해 주세요.')}}
+function downloadExcel(){
+ setMsg('error','');
+ if(typeof XLSX==='undefined'){setMsg('error','엑셀 파일 생성 모듈을 불러오지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');return}
+ try{
+  const d=calculateData();render(d);
+  const resultRows=[['개월차','적용 개정','휴직기간','상한액','월 기준액','일수','월일수','산정 수당액','복직합산금','즉시지급액','지급월','당월 실지급액']];
+  d.rows.forEach(r=>resultRows.push([
+   r.idx+'개월',
+   r.rule==='2025'?'2025년 이후':r.rule+'년',
+   `${fmtDate(r.start)} ~ ${fmtDate(r.end)}`,
+   r.payable?r.cap:0,
+   r.payable?r.base:0,
+   r.days,
+   r.den,
+   r.gross,
+   r.deferred,
+   r.immediate,
+   r.monthlyPayout!=null?`${yr(r.end)}년 ${mo(r.end)}월`:'',
+   r.monthlyPayout!=null?r.monthlyPayout:''
+  ]));
+  const totalRowNumber=resultRows.length+1;
+  resultRows.push(['합계','','','','','','',d.gross,d.deferred,'','',d.actual]);
+  const wsResult=XLSX.utils.aoa_to_sheet(resultRows);
+  wsResult['!cols']=[{wch:10},{wch:14},{wch:29},{wch:16},{wch:16},{wch:9},{wch:9},{wch:18},{wch:18},{wch:18},{wch:14},{wch:18}];
+  wsResult['!rows']=resultRows.map((_,i)=>({hpt:i===0||i===resultRows.length-1?25:23}));
+  wsResult['!merges']=[{s:{r:totalRowNumber-1,c:0},e:{r:totalRowNumber-1,c:6}}];
+  for(let r=2;r<=resultRows.length;r++){
+   ['D','E','H','I','J','L'].forEach(col=>{const c=wsResult[col+r];if(c&&typeof c.v==='number')c.z='#,##0"원"'});
+   ['F','G'].forEach(col=>{const c=wsResult[col+r];if(c&&typeof c.v==='number')c.z='0"일"'});
+  }
+  wsResult['!autofilter']={ref:`A1:L${Math.max(1,totalRowNumber-1)}`};
+
+  const spells=[];
+  for(let i=1;i<=3;i++){
+   const start=$('#start'+i).value,end=$('#end'+i).value,salary=Number($('#salary'+i).value||0);
+   if(start||end||salary)spells.push([`${i}차 휴직`,start,end,salary||0]);
+  }
+  const inputRows=[
+   ['2022년 2024년 2025년 통합 공무원 육아휴직수당 계산 입력조건'],[],
+   ['휴직 구분','휴직 시작일','휴직 종료일','월봉급액(원)'],...spells,[],
+   ['특수조건','선택값'],
+   ['2022~2024 특수조건',$('#legacyType').value],
+   ['자녀 순서',$('#childOrder').value],
+   ['2025년 이후 부부동시 육아휴직',$('#simultaneous').value],
+   ['부부 모두 3개월 이상 육아휴직',$('#both3Months').value],
+   ['한부모가족',$('#singleParent').value],
+   ['장애아부모',$('#disabledChild').value],
+   ['최대 지급 개월수',d.maxMonths+'개월'],[],
+   ['합계 구분','금액(원)'],
+   ['산정 수당액 합계',d.gross],
+   ['복직합산금 합계',d.deferred],
+   ['실지급액 합계',d.actual]
+  ];
+  const wsInput=XLSX.utils.aoa_to_sheet(inputRows);
+  wsInput['!cols']=[{wch:32},{wch:22},{wch:18},{wch:18}];
+  for(let r=4;r<=3+spells.length;r++){const c=wsInput['D'+r];if(c&&typeof c.v==='number')c.z='#,##0"원"'}
+  for(let r=inputRows.length-2;r<=inputRows.length;r++){const c=wsInput['B'+r];if(c&&typeof c.v==='number')c.z='#,##0"원"'}
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,wsResult,'계산결과');
+  XLSX.utils.book_append_sheet(wb,wsInput,'입력조건');
+  const today=new Date(),stamp=`${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
+  XLSX.writeFile(wb,`육아휴직수당_계산결과_${stamp}.xlsx`)
+ }catch(e){setMsg('error',e.message||'엑셀 파일을 생성할 수 없습니다. 입력값을 확인해 주세요.')}
+}
 function reset(){[['start1','2024-09-01'],['end1','2025-08-31'],['salary1','3000000'],['start2',''],['end2',''],['salary2',''],['start3',''],['end3',''],['salary3','']].forEach(x=>$('#'+x[0]).value=x[1]);$('#legacyType').value='일반';$('#childOrder').value='첫째';$('#simultaneous').value='아니오';$('#both3Months').value='아니오';$('#singleParent').value='아니오';$('#disabledChild').value='아니오';run()}
 function clearAll(){for(let i=1;i<=3;i++){['start','end','salary'].forEach(k=>$('#'+k+i).value='')}$('#legacyType').value='일반';$('#childOrder').value='첫째';$('#simultaneous').value='아니오';$('#both3Months').value='아니오';$('#singleParent').value='아니오';$('#disabledChild').value='아니오';$('#grossTotal').textContent=$('#deferredTotal').textContent=$('#actualTotal').textContent='0원';$('#resultBody').innerHTML='<tr><td class="empty" colspan="13">입력값을 확인한 뒤 계산 실행 버튼을 눌러 주세요.</td></tr>';setMsg('error','');setMsg('info','')}
 $('#legacyType').addEventListener('change',()=>{if($('#legacyType').value==='한부모가족')$('#singleParent').value='예';run()});$('#singleParent').addEventListener('change',()=>{if($('#singleParent').value==='예')$('#legacyType').value='한부모가족';else if($('#legacyType').value==='한부모가족')$('#legacyType').value='일반';run()});document.querySelectorAll('input,select').forEach(el=>{if(el.id!=='legacyType'&&el.id!=='singleParent'){el.addEventListener('change',run)}});$('#calculate').addEventListener('click',run);$('#excelDownload').addEventListener('click',downloadExcel);$('#reset').addEventListener('click',reset);$('#clear').addEventListener('click',clearAll);$('#print').addEventListener('click',()=>window.print());run();
-</script><script src="latest-home-nav.js?v=20260824-parental-integrated-excel"></script>
+</script><script src="latest-home-nav.js?v=20260824-parental-result-excel"></script>
 </body></html>
