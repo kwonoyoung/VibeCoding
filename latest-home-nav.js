@@ -40,11 +40,9 @@
 })();
 
 // resource.html PDF parser hotfix (2026-08-25)
-// PDF.js can return one text item spanning two adjacent table cells.  The old
-// parser classified the whole item only by its starting X coordinate, which
-// caused the current-position grade/title/department columns to bleed into one
-// another.  On resource.html only, split each text item into character-level
-// positions and use the actual table grid boundaries before rebuilding cells.
+// PDF.js can return one text item spanning two adjacent table cells. Split each
+// run into character-level positions and choose the table-grid profile from the
+// actual header position. This supports both the 2025 and 2026 personnel forms.
 (() => {
   if (!/\/resource\.html$/i.test(window.location.pathname)) return;
   if (typeof pdfjsLib === 'undefined' || typeof parsePDF !== 'function' ||
@@ -52,16 +50,13 @@
       typeof repair !== 'function' || typeof enrich !== 'function' ||
       typeof detectYear !== 'function' || typeof resolveDates !== 'function') return;
 
-  const RATIOS = {
-    s: 0.0782,   // 번호 | 성명
-    n: 0.1393,   // 성명 | 임용 직급
-    ag: 0.2356,  // 임용 직급 | 직위
-    at: 0.3247,  // 임용 직위 | 부서
-    a: 0.5126,   // 임용 부서 | 현임 직급
-    cg: 0.6089,  // 현임 직급 | 직위
-    ct: 0.6980,  // 현임 직위 | 부서
-    c: 0.8820,   // 현임 부서 | 비고
-    d: 0.9580    // 비고 우측 경계
+  const RATIOS_2025 = {
+    s: 0.0782, n: 0.1393, ag: 0.2356, at: 0.3247,
+    a: 0.5126, cg: 0.6089, ct: 0.6980, c: 0.8820, d: 0.9580
+  };
+  const RATIOS_2026 = {
+    s: 0.0719, n: 0.1350, ag: 0.2301, at: 0.3226,
+    a: 0.5159, cg: 0.6111, ct: 0.7036, c: 0.8969, d: 0.9640
   };
 
   const joinCell = items => compact(items.slice().sort((a, b) =>
@@ -93,8 +88,6 @@
   }
 
   function guardRow(r) {
-    // A merged PDF text run can still land within a fraction of a point of a
-    // grid line. Repair the common name/grade split deterministically.
     let name = compact(r.name);
     let grade = compact(r.newGrade);
     if (name.endsWith('지') && grade.startsWith('방')) {
@@ -104,6 +97,16 @@
     r.name = name;
     r.newGrade = grade;
     return r;
+  }
+
+  function pageRatios(base, width) {
+    // 2026 서식은 현임 '부서' 열이 2025 서식보다 넓다. '비고' 헤더의
+    // 실제 시작 위치로 서식을 구분해 현임 부서의 마지막 글자가 비고로
+    // 잘려 나가는 문제를 방지한다.
+    const remark = base
+      .filter(x => compact(x.text) === '비고')
+      .sort((a, b) => a.y - b.y)[0];
+    return remark && remark.x / width > 0.912 ? RATIOS_2026 : RATIOS_2025;
   }
 
   parsePDF = async function(file) {
@@ -125,7 +128,8 @@
       all += ' ' + base.map(x => x.text).join(' ');
 
       const W = vp.width;
-      const b = Object.fromEntries(Object.entries(RATIOS).map(([k, v]) => [k, W * v]));
+      const ratios = pageRatios(base, W);
+      const b = Object.fromEntries(Object.entries(ratios).map(([k, v]) => [k, W * v]));
 
       const lines = [];
       for (const x of base.slice().sort((a, z) => a.y - z.y || a.x - z.x)) {
