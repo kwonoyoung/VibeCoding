@@ -9,26 +9,212 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--navy:#0b3c5d;--teal:#0c9488;--green:#70ad47;--ink:#173042;--muted:#687d8b;--line:#d7e3e9;--soft:#f7fafb;--yellow:#fff4c9;--peach:#fae2d2;--blue:#0b4cb5;--shadow:0 14px 36px rgba(20,54,75,.09)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#eaf5f7 0,#f7f9fa 340px,#f2f5f7 100%);letter-spacing:-.02em}button,input,select{font:inherit}.auth-pending{visibility:hidden}.hero{background:linear-gradient(130deg,#082f4d,#0d5879 56%,#0b8b82);color:#fff}.hero-inner{width:min(1120px,calc(100% - 30px));margin:auto;padding:30px 0 27px}.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:13px;font-weight:900}.brand small{display:block;margin-top:4px;color:#b9e5e2;font-size:10px;letter-spacing:.08em}.home-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border:1px solid rgba(255,255,255,.38);border-radius:999px;background:rgba(255,255,255,.13);color:#fff;text-decoration:none;font-size:12px;font-weight:900}.hero h1{margin:20px 0 0;font-size:clamp(28px,4vw,40px);line-height:1.25}.wrap{width:min(1120px,calc(100% - 30px));margin:auto;padding:24px 0 56px}.card{border:1px solid var(--line);border-radius:19px;background:#fff;box-shadow:var(--shadow);overflow:hidden}.card-head{padding:17px 18px;border-bottom:1px solid #e5edf1;background:#fbfdfe}.card-head h2{margin:0;font-size:18px}.card-head p{margin:7px 0 0;color:var(--muted);font-size:14px;line-height:1.7;font-weight:700}.card-body{padding:18px}.top-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:14px;margin-bottom:15px}.input-note,.base-date{min-height:72px;border:1px solid #2f4b32;border-radius:12px;overflow:hidden}.input-note{display:grid;place-items:center;background:#4f8237;color:#fff;font-size:22px;font-weight:950}.base-date{display:grid;grid-template-columns:1fr 1fr}.base-label{display:grid;place-items:center;background:var(--peach);font-size:17px;font-weight:900}.base-value{display:grid;place-items:center;background:#fff;padding:10px}.base-value input{width:100%;height:42px;border:1px solid #c7d7df;border-radius:9px;padding:0 10px;text-align:center;color:var(--ink);font-weight:850;background:#fff}.table-wrap{overflow:auto;border:1px solid #233;border-radius:12px}.calc-table{width:100%;min-width:790px;border-collapse:collapse}.calc-table th,.calc-table td{height:72px;padding:10px;border-right:1px solid #233;border-bottom:1px solid #233;text-align:center}.calc-table tr:last-child td{border-bottom:0}.calc-table th:last-child,.calc-table td:last-child{border-right:0}.calc-table th{background:#dcebd4;color:#172c22;font-size:15px;font-weight:900}.calc-table th.age{background:#dce9f4}.calc-table th.expire{background:var(--peach)}.calc-table td.output{background:var(--yellow);color:var(--blue);font-size:17px;font-weight:900}.calc-table input,.calc-table select{width:100%;height:42px;border:1px solid #c7d7df;border-radius:8px;background:#fff;padding:0 9px;text-align:center;color:#173042}.calc-table input:focus,.calc-table select:focus,.base-value input:focus{outline:0;border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.1)}.message{display:none;margin-top:12px;padding:11px 13px;border-radius:11px;border:1px solid #f0caca;background:#fff2f2;color:#9c3e3e;font-size:12px;line-height:1.65}.message.show{display:block}.btnline{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:11px;padding:11px 16px;font-size:12px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,#0b5578,#0c9488);color:#fff}.secondary{background:#edf3f6;color:#345366}.ghost{background:#f7fafb;color:#58707d;border:1px solid #d8e4ea}.help{margin-top:17px;padding:14px 16px;border:1px solid #dbe8ed;border-radius:14px;background:#f7fbfc;color:#506b79;font-size:13px;line-height:1.75}.help b{color:#0b5578}.footer{margin-top:30px;padding-top:18px;border-top:1px solid #dbe5e9;color:#73858f;font-size:10.5px;line-height:1.75;text-align:center}@media(max-width:760px){.top-grid{grid-template-columns:1fr}.input-note{min-height:58px;font-size:19px}.hero-inner,.wrap{width:min(100% - 20px,1120px)}.card-body{padding:12px}.card-head p{font-size:13px}}@media print{.hero,.btnline,.help,.footer{display:none!important}.wrap{width:100%;padding:0}.card{box-shadow:none;border:0}.table-wrap{overflow:visible}.calc-table{min-width:0}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#eaf5f7 0,#f7f9fa 340px,#f2f5f7 100%);letter-spacing:-.02em}
+button,input,select{font:inherit}.auth-pending{visibility:hidden}
+.hero{background:linear-gradient(130deg,#082f4d,#0d5879 56%,#0b8b82);color:#fff}
+.hero-inner{width:min(1120px,calc(100% - 30px));margin:auto;padding:30px 0 27px}
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:13px;font-weight:900}.brand small{display:block;margin-top:4px;color:#b9e5e2;font-size:10px;letter-spacing:.08em}
+.home-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border:1px solid rgba(255,255,255,.38);border-radius:999px;background:rgba(255,255,255,.13);color:#fff;text-decoration:none;font-size:12px;font-weight:900}
+.hero h1{margin:20px 0 0;font-size:clamp(28px,4vw,40px);line-height:1.25}
+.wrap{width:min(1120px,calc(100% - 30px));margin:auto;padding:24px 0 56px}
+.card{border:1px solid var(--line);border-radius:19px;background:#fff;box-shadow:var(--shadow);overflow:hidden}
+.card-head{padding:17px 18px;border-bottom:1px solid #e5edf1;background:#fbfdfe}
+.card-head h2{margin:0;font-size:18px}.card-head p{margin:7px 0 0;color:var(--muted);font-size:14px;line-height:1.7;font-weight:700}
+.card-body{padding:18px}
+.top-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:14px;margin-bottom:15px}
+.input-note,.base-date{min-height:72px;border:1px solid #2f4b32;border-radius:12px;overflow:hidden}
+.input-note{display:grid;place-items:center;background:#4f8237;color:#fff;font-size:22px;font-weight:950}
+.base-date{display:grid;grid-template-columns:1fr 1fr}
+.base-label{display:grid;place-items:center;background:var(--peach);font-size:17px;font-weight:900}
+.base-value{display:grid;place-items:center;background:#fff;padding:10px}
+.base-value input{width:100%;height:42px;border:1px solid #c7d7df;border-radius:9px;padding:0 10px;text-align:center;color:var(--ink);font-weight:850;background:#fff}
+.table-wrap{overflow:auto;border:1px solid #233;border-radius:12px}
+.calc-table{width:100%;min-width:790px;border-collapse:collapse}
+.calc-table th,.calc-table td{height:72px;padding:10px;border-right:1px solid #233;border-bottom:1px solid #233;text-align:center}
+.calc-table tr:last-child td{border-bottom:0}.calc-table th:last-child,.calc-table td:last-child{border-right:0}
+.calc-table th{background:#dcebd4;color:#172c22;font-size:15px;font-weight:900}
+.calc-table th.age{background:#dce9f4}.calc-table th.expire{background:var(--peach)}
+.calc-table td.output{background:var(--yellow);color:var(--blue);font-size:17px;font-weight:900}
+.calc-table input,.calc-table select{width:100%;height:42px;border:1px solid #c7d7df;border-radius:8px;background:#fff;padding:0 9px;text-align:center;color:#173042}
+.calc-table input:focus,.calc-table select:focus,.base-value input:focus{outline:0;border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.1)}
+.message{display:none;margin-top:12px;padding:11px 13px;border-radius:11px;border:1px solid #f0caca;background:#fff2f2;color:#9c3e3e;font-size:12px;line-height:1.65}.message.show{display:block}
+.btnline{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.btn{border:0;border-radius:11px;padding:11px 16px;font-size:12px;font-weight:900;cursor:pointer}
+.primary{background:linear-gradient(135deg,#0b5578,#0c9488);color:#fff}.secondary{background:#edf3f6;color:#345366}.ghost{background:#f7fafb;color:#58707d;border:1px solid #d8e4ea}
+.help{margin-top:17px;padding:14px 16px;border:1px solid #dbe8ed;border-radius:14px;background:#f7fbfc;color:#506b79;font-size:13px;line-height:1.75}
+.help b{color:#0b5578}
+.footer{margin-top:30px;padding-top:18px;border-top:1px solid #dbe5e9;color:#73858f;font-size:10.5px;line-height:1.75;text-align:center}
+@media(max-width:760px){.top-grid{grid-template-columns:1fr}.input-note{min-height:58px;font-size:19px}.hero-inner,.wrap{width:min(100% - 20px,1120px)}.card-body{padding:12px}.card-head p{font-size:13px}}
+@media print{.hero,.btnline,.help,.footer{display:none!important}.wrap{width:100%;padding:0}.card{box-shadow:none;border:0}.table-wrap{overflow:visible}.calc-table{min-width:0}}
 </style>
 </head>
 <body class="auth-pending">
-<header class="hero"><div class="hero-inner"><div class="hero-top"><div class="brand">오춘기 권오영 업무지원 서비스<small>VIBE CODING · PAY TOOL</small></div><a id="vibecoding-home-btn" data-vibecoding-home="persistent" class="home-btn" href="index.html">⌂ 홈으로</a></div><h1>가족수당 자녀 지급 만료월 계산기</h1></div></header>
-<main class="wrap"><section class="card"><div class="card-head"><h2>자녀별 가족수당 지급 만료월 확인</h2><p>성명·구분·생년월일과 만나이 기준일을 입력하면 만나이, 지급 해당여부, 지급 만료월을 계산합니다.</p></div><div class="card-body"><div class="top-grid"><div class="input-note">흰셀만 입력</div><div class="base-date"><div class="base-label">만나이 기준일</div><div class="base-value"><input id="baseDate" type="date" value="2026-06-01" aria-label="만나이 기준일"></div></div></div><div class="table-wrap"><table class="calc-table" aria-label="가족수당 자녀 지급 만료월 계산표"><thead><tr><th>성명</th><th>구분</th><th>생년월일</th><th class="age">만나이</th><th>해당여부</th><th class="expire">지급만료월</th></tr></thead><tbody id="rows"></tbody></table></div><div id="error" class="message"></div><div class="btnline"><button class="btn primary" id="calculate" type="button">계산</button><button class="btn secondary" id="reset" type="button">원본 예시값으로 초기화</button><button class="btn ghost" id="clear" type="button">전체 지우기</button><button class="btn ghost" id="print" type="button">인쇄</button></div><div class="help"><b>계산 기준:</b> 지급연령은 구분 1~5 모두 만 19세입니다. 해당여부는 만나이가 19세 미만이면 Y, 19세 이상이면 N으로 표시하며, 지급만료월은 생년월일에서 19년 후의 연·월로 표시합니다.</div></div></section><div class="footer">실제 지급 대상 여부와 적용 기준은 해당 시기의 관계 규정 및 인사·급여 자료를 함께 확인하시기 바랍니다.<br>2026. Program by Kwon O Young.</div></main>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="brand">오춘기 권오영 업무지원 서비스<small>VIBE CODING · PAY TOOL</small></div>
+      <a id="vibecoding-home-btn" data-vibecoding-home="persistent" class="home-btn" href="index.html">⌂ 홈으로</a>
+    </div>
+    <h1>가족수당 자녀 지급 만료월 계산기</h1>
+  </div>
+</header>
+
+<main class="wrap">
+<section class="card">
+  <div class="card-head">
+    <h2>자녀별 가족수당 지급 만료월 확인</h2>
+    <p>성명·구분·생년월일과 만나이 기준일을 입력하면 만나이, 지급 해당여부, 지급 만료월을 계산합니다.</p>
+  </div>
+  <div class="card-body">
+    <div class="top-grid">
+      <div class="input-note">흰셀만 입력</div>
+      <div class="base-date">
+        <div class="base-label">만나이 기준일</div>
+        <div class="base-value"><input id="baseDate" type="date" value="2026-06-01" aria-label="만나이 기준일"></div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="calc-table" aria-label="가족수당 자녀 지급 만료월 계산표">
+        <thead>
+          <tr>
+            <th>성명</th>
+            <th>구분</th>
+            <th>생년월일</th>
+            <th class="age">만나이</th>
+            <th>해당여부</th>
+            <th class="expire">지급만료월</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div id="error" class="message"></div>
+    <div class="btnline">
+      <button class="btn primary" id="calculate" type="button">계산</button>
+      <button class="btn secondary" id="reset" type="button">원본 예시값으로 초기화</button>
+      <button class="btn ghost" id="clear" type="button">전체 지우기</button>
+      <button class="btn ghost" id="print" type="button">인쇄</button>
+    </div>
+    
+  </div>
+</section>
+<div class="footer">실제 지급 대상 여부와 적용 기준은 해당 시기의 관계 규정 및 인사·급여 자료를 함께 확인하시기 바랍니다.<br>2026. Program by Kwon O Young.</div>
+</main>
+
 <script>
-const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';(async()=>{try{const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);const {data:{session}}=await sb.auth.getSession();if(!session){location.replace('login.html?return='+encodeURIComponent(location.href));return}const {data:m}=await sb.from('vibecoding_members').select('status').eq('user_id',session.user.id).single();if(!m||m.status!=='approved'){if(m&&m.status==='pending')alert('관리자 승인 후 이용할 수 있습니다.');else if(m&&m.status==='blocked')alert('이용이 제한된 계정입니다.');location.replace('index.html');return}document.body.classList.remove('auth-pending')}catch(e){console.error(e);document.body.classList.remove('auth-pending')}})();
-const PAYMENT_AGE={1:19,2:19,3:19,4:19,5:19};const EXAMPLE=[{name:'권오영',kind:1,birth:'2010-08-01'},{name:'권오영',kind:2,birth:'2010-04-25'},{name:'권오영',kind:3,birth:'2007-05-31'},{name:'권오영',kind:4,birth:'2013-04-20'},{name:'권오영',kind:5,birth:'2001-05-15'}];const $=s=>document.querySelector(s);
-function parseDate(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v||''))return null;const [y,m,d]=v.split('-').map(Number),dt=new Date(y,m-1,d);return dt.getFullYear()===y&&dt.getMonth()===m-1&&dt.getDate()===d?dt:null}
-function fullAge(birth,base){let age=base.getFullYear()-birth.getFullYear();if(base.getMonth()<birth.getMonth()||(base.getMonth()===birth.getMonth()&&base.getDate()<birth.getDate()))age--;return age}
-function addMonthsExcel(date,months){const y=date.getFullYear(),m=date.getMonth()+months,d=date.getDate();const target=new Date(y,m,1);const last=new Date(target.getFullYear(),target.getMonth()+1,0).getDate();return new Date(target.getFullYear(),target.getMonth(),Math.min(d,last))}
+const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
+const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
+(async()=>{
+  try{
+    const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session){location.replace('login.html?return='+encodeURIComponent(location.href));return}
+    const {data:m}=await sb.from('vibecoding_members').select('status').eq('user_id',session.user.id).single();
+    if(!m||m.status!=='approved'){
+      if(m&&m.status==='pending')alert('관리자 승인 후 이용할 수 있습니다.');
+      else if(m&&m.status==='blocked')alert('이용이 제한된 계정입니다.');
+      location.replace('index.html');return
+    }
+    document.body.classList.remove('auth-pending');
+  }catch(e){console.error(e);document.body.classList.remove('auth-pending')}
+})();
+
+const PAYMENT_AGE={1:19,2:19,3:19,4:19,5:19};
+const EXAMPLE=[
+  {name:'권오영',kind:1,birth:'2010-08-01'},
+  {name:'권오영',kind:2,birth:'2010-04-25'},
+  {name:'권오영',kind:3,birth:'2007-05-31'},
+  {name:'권오영',kind:4,birth:'2013-04-20'},
+  {name:'권오영',kind:5,birth:'2001-05-15'}
+];
+const $=s=>document.querySelector(s);
+function parseDate(v){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(v||''))return null;
+  const [y,m,d]=v.split('-').map(Number),dt=new Date(y,m-1,d);
+  return dt.getFullYear()===y&&dt.getMonth()===m-1&&dt.getDate()===d?dt:null;
+}
+function fullAge(birth,base){
+  let age=base.getFullYear()-birth.getFullYear();
+  if(base.getMonth()<birth.getMonth()||(base.getMonth()===birth.getMonth()&&base.getDate()<birth.getDate()))age--;
+  return age;
+}
+function addMonthsExcel(date,months){
+  const y=date.getFullYear(),m=date.getMonth()+months,d=date.getDate();
+  const target=new Date(y,m,1);
+  const last=new Date(target.getFullYear(),target.getMonth()+1,0).getDate();
+  return new Date(target.getFullYear(),target.getMonth(),Math.min(d,last));
+}
 function formatYM(date){return `${date.getFullYear()}년 ${date.getMonth()+1}월`}
-function rowTemplate(i){return `<tr data-row="${i}"><td><input class="name" type="text" aria-label="${i+1}번째 성명"></td><td><select class="kind" aria-label="${i+1}번째 구분">${[1,2,3,4,5].map(n=>`<option value="${n}">${n}</option>`).join('')}</select></td><td><input class="birth" type="date" aria-label="${i+1}번째 생년월일"></td><td class="output age"></td><td class="output eligible"></td><td class="output expiry"></td></tr>`}
-function buildRows(){$('#rows').innerHTML=Array.from({length:5},(_,i)=>rowTemplate(i)).join('')}
+function rowTemplate(i){
+  return `<tr data-row="${i}">
+    <td><input class="name" type="text" aria-label="${i+1}번째 성명"></td>
+    <td><select class="kind" aria-label="${i+1}번째 구분">${[1,2,3,4,5].map(n=>`<option value="${n}">${n}</option>`).join('')}</select></td>
+    <td><input class="birth" type="date" aria-label="${i+1}번째 생년월일"></td>
+    <td class="output age"></td>
+    <td class="output eligible"></td>
+    <td class="output expiry"></td>
+  </tr>`;
+}
+function buildRows(){ $('#rows').innerHTML=Array.from({length:5},(_,i)=>rowTemplate(i)).join('') }
 function setError(text){const el=$('#error');el.textContent=text;el.classList.toggle('show',!!text)}
-function calculate(){setError('');const base=parseDate($('#baseDate').value);if(!base){setError('만나이 기준일을 올바르게 입력해 주세요.');return false}let invalid=false;document.querySelectorAll('#rows tr').forEach(tr=>{const name=tr.querySelector('.name').value.trim(),kind=Number(tr.querySelector('.kind').value),birth=parseDate(tr.querySelector('.birth').value),ageCell=tr.querySelector('.age'),eligibleCell=tr.querySelector('.eligible'),expiryCell=tr.querySelector('.expiry');if(!name){ageCell.textContent='';eligibleCell.textContent='';expiryCell.textContent='';return}if(!birth||base<birth){ageCell.textContent='';eligibleCell.textContent='';expiryCell.textContent='';invalid=true;return}const limit=PAYMENT_AGE[kind]??19,age=fullAge(birth,base);ageCell.textContent=String(age);eligibleCell.textContent=age<limit?'Y':'N';expiryCell.textContent=formatYM(addMonthsExcel(birth,limit*12))});if(invalid)setError('성명이 입력된 행의 생년월일을 확인해 주세요. 생년월일은 기준일보다 늦을 수 없습니다.');return !invalid}
-function bindRowEvents(){document.querySelectorAll('#rows input,#rows select').forEach(el=>{el.addEventListener('input',calculate);el.addEventListener('change',calculate)})}
-function loadExample(){buildRows();$('#baseDate').value='2026-06-01';document.querySelectorAll('#rows tr').forEach((tr,i)=>{tr.querySelector('.name').value=EXAMPLE[i].name;tr.querySelector('.kind').value=String(EXAMPLE[i].kind);tr.querySelector('.birth').value=EXAMPLE[i].birth});bindRowEvents();calculate()}
-function clearAll(){buildRows();$('#baseDate').value='2026-06-01';bindRowEvents();setError('')}
-$('#baseDate').addEventListener('input',calculate);$('#baseDate').addEventListener('change',calculate);$('#calculate').addEventListener('click',calculate);$('#reset').addEventListener('click',loadExample);$('#clear').addEventListener('click',clearAll);$('#print').addEventListener('click',()=>window.print());loadExample();
-</script><script src="latest-home-nav.js?v=20260824-family2"></script>
-</body></html>
+function calculate(){
+  setError('');
+  const base=parseDate($('#baseDate').value);
+  if(!base){setError('만나이 기준일을 올바르게 입력해 주세요.');return false}
+  let invalid=false;
+  document.querySelectorAll('#rows tr').forEach((tr,idx)=>{
+    const name=tr.querySelector('.name').value.trim();
+    const kind=Number(tr.querySelector('.kind').value);
+    const birth=parseDate(tr.querySelector('.birth').value);
+    const ageCell=tr.querySelector('.age'),eligibleCell=tr.querySelector('.eligible'),expiryCell=tr.querySelector('.expiry');
+    if(!name){ageCell.textContent='';eligibleCell.textContent='';expiryCell.textContent='';return}
+    if(!birth){ageCell.textContent='';eligibleCell.textContent='';expiryCell.textContent='';invalid=true;return}
+    if(base<birth){ageCell.textContent='';eligibleCell.textContent='';expiryCell.textContent='';invalid=true;return}
+    const limit=PAYMENT_AGE[kind]??19;
+    const age=fullAge(birth,base);
+    ageCell.textContent=String(age);
+    eligibleCell.textContent=age<limit?'Y':'N';
+    expiryCell.textContent=formatYM(addMonthsExcel(birth,limit*12));
+  });
+  if(invalid)setError('성명이 입력된 행의 생년월일을 확인해 주세요. 생년월일은 기준일보다 늦을 수 없습니다.');
+  return !invalid;
+}
+function loadExample(){
+  buildRows();
+  $('#baseDate').value='2026-06-01';
+  document.querySelectorAll('#rows tr').forEach((tr,i)=>{
+    tr.querySelector('.name').value=EXAMPLE[i].name;
+    tr.querySelector('.kind').value=String(EXAMPLE[i].kind);
+    tr.querySelector('.birth').value=EXAMPLE[i].birth;
+  });
+  bindRowEvents();
+  calculate();
+}
+function clearAll(){
+  buildRows();
+  $('#baseDate').value='2026-06-01';
+  bindRowEvents();
+  setError('');
+}
+function bindRowEvents(){
+  document.querySelectorAll('#rows input,#rows select').forEach(el=>{
+    el.addEventListener('input',calculate);
+    el.addEventListener('change',calculate);
+  });
+}
+$('#baseDate').addEventListener('input',calculate);
+$('#baseDate').addEventListener('change',calculate);
+$('#calculate').addEventListener('click',calculate);
+$('#reset').addEventListener('click',loadExample);
+$('#clear').addEventListener('click',clearAll);
+$('#print').addEventListener('click',()=>window.print());
+loadExample();
+</script>
+<script src="latest-home-nav.js?v=20260824-family2"></script>
+</body>
+</html>
