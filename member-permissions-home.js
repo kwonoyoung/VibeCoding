@@ -17,6 +17,15 @@
     const parental=document.querySelector('a.tool[href="parental-leave-calculator.html"] h3');
     if(parental)parental.textContent='2025년 이후 공무원 육아휴직수당 계산기';
   }
+  function reorderParentalMenus(){
+    const section=findSection('급여·수당'),grid=section?.querySelector('.grid');if(!grid)return;
+    const marker=grid.querySelector('a.tool[href="family1.html"]');
+    ['parental2022.html','parental2024.html','parental-leave-calculator.html','parental.html'].forEach(href=>{
+      const a=grid.querySelector(`a.tool[href="${href}"]`);if(!a)return;
+      if(marker)grid.insertBefore(a,marker);else grid.appendChild(a);
+    });
+    updateSectionCount(section);
+  }
   function addToolSearch(){
     if(document.getElementById('toolSearchBtn'))return;
     const quick=document.querySelector('.quick'),state=document.getElementById('memberState');if(!quick||!state)return;
@@ -35,6 +44,7 @@
   addMenu({sectionTitle:'급여·수당',href:'parental.html',cls:'leave',icon:'育',title:'2022년 2024년 2025년 통합 공무원 육아휴직수당 계산기',desc:'휴직 지급연월에 따라 2022·2024·2025년 이후 개정 기준을 자동 적용합니다.'});
   addMenu({sectionTitle:'급여·수당',href:'parental2022.html',cls:'leave',icon:'22',title:'2022년 공무원 육아휴직수당 월중 계산기',desc:'2022년 기준의 역월·월중 일할계산과 복직합산금을 계산합니다.'});
   addMenu({sectionTitle:'급여·수당',href:'parental2024.html',cls:'leave',icon:'24',title:'2024년 공무원 육아휴직수당 월중 계산기',desc:'2024년 기준의 역월·월중 일할계산과 복직합산금을 계산합니다.'});
+  reorderParentalMenus();
   addMenu({sectionTitle:'공문서·업무지원',href:'school_budget.html',cls:'doc',icon:'₩',title:'학교 예산 현황 분석',desc:'학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.'});
   addMenu({sectionTitle:'복무·인사',href:'resource.html',cls:'people',icon:'👥',title:'인사발령 자료 분석',desc:'학교·기관별, 지역별, 직렬·직군·과목별 전입·전출 명단을 집계합니다.'});
   addMenu({sectionTitle:'복무·인사',href:'vctn.html',cls:'people',icon:'休',title:'연차개수 계산기',desc:'입사일·퇴직일을 기준으로 연차 유급휴가 발생 일수를 계산합니다.'});
