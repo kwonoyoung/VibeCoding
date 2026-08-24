@@ -4,319 +4,96 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta name="theme-color" content="#0b5578">
-<meta name="description" content="2008년 이후 공무원 보수, 물가, 최저임금, 채용 경쟁률, 공무원 정원, 교원 정원을 표로 확인하는 공직 데이터 대시보드">
+<meta name="description" content="2008년 이후 공무원 보수, 물가, 최저임금, 공무원 정원과 유초중고특수학교 교원 정원을 표와 그래프로 확인하는 공직 데이터 대시보드">
 <title>2008년 이후 공무원 관련 동향</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{
-  --navy:#0b3c5d;--navy2:#0e5d7f;--teal:#0c9488;--ink:#173042;--muted:#6e818c;
-  --line:#dce7ec;--bg:#f2f6f8;--card:#fff;--soft:#f7fafb;--head:#123f5d;
-  --green:#0c7a63;--greenbg:#eaf7f3;--red:#b6474d;--redbg:#fff0f1;--amber:#986715;--amberbg:#fff7e7;
-  --shadow:0 14px 38px rgba(18,55,75,.08)
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#edf6f8 0,#f7f9fa 360px,#f2f5f7 100%);letter-spacing:-.02em}
-a{color:inherit}
-.topbar{position:sticky;top:0;z-index:50;background:rgba(8,47,77,.96);border-bottom:1px solid rgba(255,255,255,.15);backdrop-filter:blur(14px)}
-.topbar-inner{width:min(1280px,calc(100% - 28px));height:64px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.home{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid rgba(255,255,255,.26);border-radius:11px;background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-size:12px;font-weight:900}
-.home:hover{background:rgba(255,255,255,.17)}
-.brand{font-size:12px;font-weight:900;color:#d9edf3}
-.updated{font-size:10px;color:#b8d1db;white-space:nowrap}
-.hero{background:linear-gradient(128deg,#082f4d,#0d5879 58%,#0b8b82);color:#fff}
-.hero-inner{width:min(1280px,calc(100% - 28px));margin:auto;padding:46px 0 40px}
-.eyebrow{display:inline-flex;padding:6px 10px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);color:#c7f3ee;font-size:10px;font-weight:900;letter-spacing:.06em}
-.hero h1{margin:15px 0 11px;font-size:clamp(31px,5vw,52px);line-height:1.12;letter-spacing:-.045em}
-.hero p{max-width:900px;margin:0;color:#d5e8ef;font-size:13px;line-height:1.8}
-.wrap{width:min(1280px,calc(100% - 28px));margin:auto;padding:22px 0 64px}
-.alert{display:flex;gap:11px;align-items:flex-start;padding:14px 16px;border:1px solid #ead7a9;border-radius:14px;background:var(--amberbg);color:#665329;font-size:11px;line-height:1.65}
-.alert b{color:#543f10}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
-.kpi{padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 9px 27px rgba(18,55,75,.055)}
-.kpi span{display:block;color:#718691;font-size:10px;font-weight:850}
-.kpi b{display:block;margin-top:6px;font-size:23px;letter-spacing:-.04em}
-.kpi small{display:block;margin-top:5px;color:#8297a2;font-size:9.5px;line-height:1.5}
-.navchips{display:flex;gap:7px;overflow:auto;padding:2px 0 15px;scrollbar-width:none}
-.navchips::-webkit-scrollbar{display:none}
-.navchips a{flex:none;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#426171;text-decoration:none;font-size:10.5px;font-weight:900}
-.navchips a:hover{border-color:#9ecfc8;background:#eef9f6;color:#08796e}
-.quick-find{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 15px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}
-.quick-find label{font-size:10.5px;font-weight:900;color:#496776}
-.quick-find input{width:110px;height:35px;padding:0 10px;border:1px solid #cddde4;border-radius:9px;font:inherit;font-size:11px;color:var(--ink);outline:none}
-.quick-find input:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.10)}
-.quick-find button{height:35px;padding:0 12px;border:0;border-radius:9px;background:#0e5d7f;color:#fff;font:inherit;font-size:10.5px;font-weight:900;cursor:pointer}
-.quick-find .hint{margin-left:auto;color:#81949e;font-size:9.5px}
-.section{margin-top:23px;scroll-margin-top:82px}
-.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:0 2px 10px}
-.section-head h2{margin:0;font-size:20px}
-.section-head p{margin:5px 0 0;color:var(--muted);font-size:10.5px;line-height:1.55}
-.section-tag{flex:none;padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#718895;font-size:9.5px;font-weight:850}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-.card{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow)}
-.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 17px 11px}
-.card-head h3{margin:0;font-size:14px}
-.card-head p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
-.table-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.table-actions button{height:31px;padding:0 9px;border:1px solid #cfdfe5;border-radius:8px;background:#f7fafb;color:#476574;font:inherit;font-size:9.5px;font-weight:900;cursor:pointer}
-.table-actions button:hover{background:#edf6f8}
-.table-wrap{overflow:auto;border-top:1px solid var(--line);max-height:540px}
-table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.8px}
-th,td{padding:10px 12px;border-right:1px solid #edf2f4;border-bottom:1px solid #edf2f4;text-align:right;white-space:nowrap}
-thead th{position:sticky;top:0;z-index:4;background:var(--head);color:#fff;text-align:center;font-weight:900}
-thead th:first-child{left:0;z-index:6}
-tbody th{position:sticky;left:0;z-index:3;background:#f5f9fa;text-align:center;color:#365c70;font-weight:950}
-tbody tr:nth-child(even) td{background:#fbfcfd}
-tbody tr:hover td,tbody tr:hover th{background:#eef8f6}
-td.left{text-align:left}
-td.good{color:var(--green);background:var(--greenbg)!important;font-weight:900}
-td.bad{color:var(--red);background:var(--redbg)!important;font-weight:900}
-td.pending{color:var(--amber);background:var(--amberbg)!important;font-weight:900}
-.row-hit td,.row-hit th{outline:2px solid rgba(12,148,136,.35);outline-offset:-2px;background:#eaf8f5!important}
-.table-note{padding:11px 14px;border-top:1px solid var(--line);background:#f8fbfc;color:#647c89;font-size:10px;line-height:1.7}
-.table-note b{color:#365c6e}
-.snapshot{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 16px 16px}
-.snap{padding:13px;border:1px solid var(--line);border-radius:12px;background:#f8fbfc}
-.snap span{display:block;color:#758a95;font-size:9.5px}
-.snap b{display:block;margin-top:5px;font-size:18px}
-.snap small{display:block;margin-top:4px;color:#8598a2;font-size:9px;line-height:1.45}
-.source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.source{padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff;text-decoration:none;box-shadow:0 7px 20px rgba(18,55,75,.035)}
-.source:hover{border-color:#a9d2cd;background:#f3fbf9}
-.source b{display:block;font-size:11px;color:#2c566b}
-.source span{display:block;margin-top:4px;color:#78909c;font-size:9.5px;line-height:1.5}
-.notice{margin-top:11px;padding:14px 15px;border:1px solid #ead7a9;border-radius:13px;background:var(--amberbg);color:#665329;font-size:10px;line-height:1.75}
-.notice b{color:#523f14}
-.footer{border-top:1px solid var(--line);padding:22px 14px 34px;text-align:center;color:#82949e;font-size:9.5px}
-@media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.source-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:620px){
-  .topbar-inner,.hero-inner,.wrap{width:min(100% - 18px,1280px)}
-  .brand{display:none}.updated{font-size:8.5px}.hero-inner{padding:34px 0 30px}.hero h1{font-size:31px}
-  .kpis{gap:7px}.kpi{padding:13px}.kpi b{font-size:19px}
-  .section-head{align-items:flex-start;flex-direction:column;gap:7px}.quick-find .hint{width:100%;margin-left:0}
-  .snapshot{grid-template-columns:1fr}.source-grid{grid-template-columns:1fr}
-  th,td{padding:9px 10px;font-size:10px}
-}
-@media print{
-  .topbar,.navchips,.quick-find,.table-actions,.source-grid,.footer{display:none!important}
-  body{background:#fff}.hero{background:#fff;color:#000}.hero p{color:#444}.hero-inner{padding:14px 0}
-  .wrap{width:100%;padding:0}.kpis{display:none}.card{box-shadow:none;break-inside:avoid}
-  .table-wrap{max-height:none;overflow:visible}thead th,tbody th{position:static}
-}
+:root{--navy:#0b3c5d;--navy2:#0e5d7f;--teal:#0c9488;--ink:#173042;--muted:#6e818c;--line:#dce7ec;--bg:#f2f6f8;--card:#fff;--soft:#f7fafb;--head:#123f5d;--green:#0c7a63;--greenbg:#eaf7f3;--red:#b6474d;--redbg:#fff0f1;--amber:#986715;--amberbg:#fff7e7;--shadow:0 14px 38px rgba(18,55,75,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:linear-gradient(180deg,#edf6f8 0,#f7f9fa 360px,#f2f5f7 100%);letter-spacing:-.02em}a{color:inherit}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(8,47,77,.96);border-bottom:1px solid rgba(255,255,255,.15);backdrop-filter:blur(14px)}.topbar-inner{width:min(1280px,calc(100% - 28px));height:64px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:14px}.home{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid rgba(255,255,255,.26);border-radius:11px;background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-size:12px;font-weight:900}.home:hover{background:rgba(255,255,255,.17)}.brand{font-size:12px;font-weight:900;color:#d9edf3}.updated{font-size:10px;color:#b8d1db;white-space:nowrap}
+.hero{background:linear-gradient(128deg,#082f4d,#0d5879 58%,#0b8b82);color:#fff}.hero-inner{width:min(1280px,calc(100% - 28px));margin:auto;padding:46px 0 40px}.eyebrow{display:inline-flex;padding:6px 10px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);color:#c7f3ee;font-size:10px;font-weight:900;letter-spacing:.06em}.hero h1{margin:15px 0 11px;font-size:clamp(31px,5vw,52px);line-height:1.12;letter-spacing:-.045em}.hero p{max-width:900px;margin:0;color:#d5e8ef;font-size:13px;line-height:1.8}
+.wrap{width:min(1280px,calc(100% - 28px));margin:auto;padding:22px 0 64px}.alert{display:flex;gap:11px;align-items:flex-start;padding:14px 16px;border:1px solid #ead7a9;border-radius:14px;background:var(--amberbg);color:#665329;font-size:11px;line-height:1.65}.alert b{color:#543f10}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.kpi{padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 9px 27px rgba(18,55,75,.055)}.kpi span{display:block;color:#718691;font-size:10px;font-weight:850}.kpi b{display:block;margin-top:6px;font-size:23px;letter-spacing:-.04em}.kpi small{display:block;margin-top:5px;color:#8297a2;font-size:9.5px;line-height:1.5}
+.navchips{display:flex;gap:7px;overflow:auto;padding:2px 0 15px;scrollbar-width:none}.navchips::-webkit-scrollbar{display:none}.navchips a{flex:none;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#426171;text-decoration:none;font-size:10.5px;font-weight:900}.navchips a:hover{border-color:#9ecfc8;background:#eef9f6;color:#08796e}
+.quick-find{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 15px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}.quick-find label{font-size:10.5px;font-weight:900;color:#496776}.quick-find input{width:110px;height:35px;padding:0 10px;border:1px solid #cddde4;border-radius:9px;font:inherit;font-size:11px;color:var(--ink);outline:none}.quick-find input:focus{border-color:#0c9488;box-shadow:0 0 0 3px rgba(12,148,136,.10)}.quick-find button{height:35px;padding:0 12px;border:0;border-radius:9px;background:#0e5d7f;color:#fff;font:inherit;font-size:10.5px;font-weight:900;cursor:pointer}.quick-find .hint{margin-left:auto;color:#81949e;font-size:9.5px}
+.section{margin-top:23px;scroll-margin-top:82px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:0 2px 10px}.section-head h2{margin:0;font-size:20px}.section-head p{margin:5px 0 0;color:var(--muted);font-size:10.5px;line-height:1.55}.section-tag{flex:none;padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#718895;font-size:9.5px;font-weight:850}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}.card{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:var(--shadow)}.card+.card{margin-top:11px}.grid2 .card+.card{margin-top:0}.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 17px 11px}.card-head h3{margin:0;font-size:14px}.card-head p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.5}.table-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.table-actions button{height:31px;padding:0 10px;border:1px solid #b9d5de;border-radius:8px;background:#edf8f6;color:#08776e;font:inherit;font-size:9.5px;font-weight:900;cursor:pointer}.table-actions button:hover{background:#dcf2ee}.table-wrap{overflow:auto;border-top:1px solid var(--line);max-height:540px}table{width:100%;border-collapse:separate;border-spacing:0;font-size:10.8px}th,td{padding:10px 12px;border-right:1px solid #edf2f4;border-bottom:1px solid #edf2f4;text-align:right;white-space:nowrap}thead th{position:sticky;top:0;z-index:4;background:var(--head);color:#fff;text-align:center;font-weight:900}thead th:first-child{left:0;z-index:6}tbody th{position:sticky;left:0;z-index:3;background:#f5f9fa;text-align:center;color:#365c70;font-weight:950}tbody tr:nth-child(even) td{background:#fbfcfd}tbody tr:hover td,tbody tr:hover th{background:#eef8f6}td.left{text-align:left}td.good{color:var(--green);background:var(--greenbg)!important;font-weight:900}td.bad{color:var(--red);background:var(--redbg)!important;font-weight:900}td.pending{color:var(--amber);background:var(--amberbg)!important;font-weight:900}.row-hit td,.row-hit th{outline:2px solid rgba(12,148,136,.35);outline-offset:-2px;background:#eaf8f5!important}.table-note{padding:11px 14px;border-top:1px solid var(--line);background:#f8fbfc;color:#647c89;font-size:10px;line-height:1.7}.table-note b{color:#365c6e}
+.chart-card{margin-top:11px}.chart-wrap{height:350px;padding:12px 17px 18px;border-top:1px solid var(--line)}.chart-note{padding:0 17px 15px;color:#778c97;font-size:9.5px;line-height:1.6}.status-pill{display:inline-flex;padding:4px 7px;border-radius:999px;background:#fff7e7;color:#8b641b;border:1px solid #ead7a9;font-size:9px;font-weight:900}.source-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.source{padding:14px;border:1px solid var(--line);border-radius:13px;background:#fff;text-decoration:none;box-shadow:0 7px 20px rgba(18,55,75,.035)}.source:hover{border-color:#a9d2cd;background:#f3fbf9}.source b{display:block;font-size:11px;color:#2c566b}.source span{display:block;margin-top:4px;color:#78909c;font-size:9.5px;line-height:1.5}.notice{margin-top:11px;padding:14px 15px;border:1px solid #ead7a9;border-radius:13px;background:var(--amberbg);color:#665329;font-size:10px;line-height:1.75}.notice b{color:#523f14}.footer{border-top:1px solid var(--line);padding:22px 14px 34px;text-align:center;color:#82949e;font-size:9.5px}
+@media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.grid2 .card+.card{margin-top:11px}.source-grid{grid-template-columns:1fr 1fr}}@media(max-width:620px){.topbar-inner,.hero-inner,.wrap{width:min(100% - 18px,1280px)}.brand{display:none}.updated{font-size:8.5px}.hero-inner{padding:34px 0 30px}.hero h1{font-size:31px}.kpis{gap:7px}.kpi{padding:13px}.kpi b{font-size:19px}.section-head{align-items:flex-start;flex-direction:column;gap:7px}.quick-find .hint{width:100%;margin-left:0}.source-grid{grid-template-columns:1fr}th,td{padding:9px 10px;font-size:10px}.chart-wrap{height:300px;padding:10px}}
+@media print{.topbar,.navchips,.quick-find,.table-actions,.source-grid,.footer{display:none!important}body{background:#fff}.hero{background:#fff;color:#000}.hero p{color:#444}.hero-inner{padding:14px 0}.wrap{width:100%;padding:0}.kpis{display:none}.card{box-shadow:none;break-inside:avoid}.table-wrap{max-height:none;overflow:visible}thead th,tbody th{position:static}.chart-wrap{height:280px}}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="home" href="index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ <span>홈으로</span></a>
-    <div class="brand">공직 데이터 인사이트 · 표 중심 보기</div>
-    <div class="updated">DATA UPDATED · 2026.08.25</div>
-  </div>
-</header>
+<header class="topbar"><div class="topbar-inner"><a class="home" href="index.html" aria-label="업무지원 서비스 홈으로 이동">⌂ <span>홈으로</span></a><div class="brand">공직 데이터 인사이트</div><div class="updated">DATA UPDATED · 2026.08.25</div></div></header>
+<section class="hero"><div class="hero-inner"><span class="eyebrow">PUBLIC SERVICE · DATA DASHBOARD</span><h1>2008년 이후<br>공무원 관련 동향</h1><p>공무원 보수·물가·최저임금과 공무원 인력 규모를 표로 비교하고, 보수와 소비자물가의 흐름은 꺾은선 그래프로 함께 확인합니다. 교육 분야는 대학 교원·조교를 제외하고 공립 유·초·중·고·특수학교 교원 정원을 별도로 정리했습니다.</p></div></section>
+<main class="wrap">
+<div class="alert"><div>⚠️</div><div><b>2027년 공무원 보수는 아직 확정 전입니다.</b> 공무원보수위원회 권고 범위 3.4~3.9%를 참고 정보로만 표시하며, 정부 예산 및 「공무원보수규정」 확정 전에는 확정값으로 사용하지 않습니다.</div></div>
+<section class="kpis" aria-label="핵심 지표"><article class="kpi"><span>2026 공무원 보수 인상률</span><b>3.5%</b><small>전체 공무원 기준 · 저연차 추가 개선 별도</small></article><article class="kpi"><span>2027 최저임금</span><b>10,700원</b><small>전년 대비 3.7% 인상</small></article><article class="kpi"><span>2026 공립학교 국가공무원 정원</span><b>332,025명</b><small>유·초·중·고·특수학교 및 보건교사 등 · 대학 제외</small></article><article class="kpi"><span>2025 민간 대비 공무원 보수</span><b>84.1%</b><small>100인 이상 민간기업 보수 접근률 기준</small></article></section>
+<nav class="navchips" aria-label="바로가기"><a href="#macro">보수·경제</a><a href="#private">민간 대비 보수</a><a href="#people">공무원 인력</a><a href="#education">교육 분야</a><a href="#sources">출처·유의사항</a></nav>
+<div class="quick-find"><label for="yearFind">연도 빠른 찾기</label><input id="yearFind" type="number" min="2008" max="2027" placeholder="예: 2024"><button id="yearFindBtn" type="button">해당 연도 강조</button><button id="yearClearBtn" type="button">해제</button><span class="hint">입력한 연도가 포함된 표의 행을 강조합니다.</span></div>
 
-<section class="hero">
-  <div class="hero-inner">
-    <span class="eyebrow">PUBLIC SERVICE · TABLE DASHBOARD</span>
-    <h1>2008년 이후<br>공무원 관련 동향</h1>
-    <p>기존 그래프를 모두 제거하고 연도별 수치를 직접 비교하기 쉬운 표 형태로 재구성했습니다. 공무원 보수·물가·최저임금, 민간 대비 보수 수준, 공무원 정원, 국가직 공채 경쟁률, 교육 분야 인력을 한 화면에서 확인할 수 있습니다.</p>
-  </div>
+<section class="section" id="macro"><div class="section-head"><div><h2>01 · 공무원 보수와 경제 지표</h2><p>보수 인상률·소비자물가·최저임금을 연도별로 직접 비교합니다.</p></div><span class="section-tag">2008—2027</span></div>
+<article class="card"><div class="card-head"><div><h3>연도별 보수·물가·최저임금 비교표</h3><p>보수-물가 차이는 단순 차감한 퍼센트포인트입니다.</p></div><div class="table-actions"><button type="button" data-xlsx="macro">엑셀 다운로드</button></div></div><div class="table-wrap"><table id="macroTable"></table></div><div class="table-note"><b>읽는 법</b> · ‘보수-물가 차이’가 음수이면 해당 연도의 공무원 명목 보수 인상률이 소비자물가 상승률보다 낮았다는 뜻입니다. 2026년 소비자물가는 연간 확정 전이며, 2027년 공무원 보수는 권고안 단계입니다.</div></article>
+<article class="card chart-card"><div class="card-head"><div><h3>연도별 공무원 보수 인상률 · 소비자물가 상승률</h3><p>꺾은선 그래프 · 단위 % · 두 지표만 비교</p></div><span class="status-pill">2008~2025 확정치</span></div><div class="chart-wrap"><canvas id="salaryCpiChart"></canvas></div><div class="chart-note">2026년 소비자물가 연간 확정치와 2027년 공무원 보수 확정률이 아직 없으므로 그래프는 두 지표가 모두 확정된 2008~2025년을 표시합니다.</div></article>
 </section>
 
-<main class="wrap">
-  <div class="alert"><div>⚠️</div><div><b>2027년 공무원 보수는 아직 확정 전입니다.</b> 공무원보수위원회 권고 범위 3.4~3.9%를 참고 정보로만 표시하며, 정부 예산 및 「공무원보수규정」 확정 전에는 확정값으로 사용하지 않습니다.</div></div>
+<section class="section" id="private"><div class="section-head"><div><h2>02 · 민간 대비 공무원 보수 수준</h2><p>100인 이상 민간기업 보수와 비교한 공무원 보수 접근률입니다.</p></div><span class="section-tag">2008—2025</span></div><article class="card"><div class="card-head"><div><h3>연도별 민간 대비 보수 수준</h3><p>단위 %</p></div><div class="table-actions"><button type="button" data-xlsx="private">엑셀 다운로드</button></div></div><div class="table-wrap"><table id="privateTable"></table></div></article></section>
 
-  <section class="kpis" aria-label="핵심 지표">
-    <article class="kpi"><span>2026 공무원 보수 인상률</span><b>3.5%</b><small>전체 공무원 기준 · 저연차 추가 개선 별도</small></article>
-    <article class="kpi"><span>2027 최저임금</span><b>10,700원</b><small>전년 대비 3.7% 인상</small></article>
-    <article class="kpi"><span>2026 국가직 9급 경쟁률</span><b>28.6 : 1</b><small>공개경쟁채용 기준</small></article>
-    <article class="kpi"><span>2025 민간 대비 공무원 보수</span><b>84.1%</b><small>100인 이상 민간기업 보수 접근률 기준</small></article>
-  </section>
+<section class="section" id="people"><div class="section-head"><div><h2>03 · 공무원 인력 규모</h2><p>정원 기준 자료입니다. ‘현원’과는 다른 개념입니다.</p></div><span class="section-tag">정원 기준</span></div><div class="grid2">
+<article class="card"><div class="card-head"><div><h3>전체 공무원 운영정원</h3><p>국가+지방 · 행정안전통계연보</p></div><div class="table-actions"><button type="button" data-xlsx="total">엑셀 다운로드</button></div></div><div class="table-wrap"><table id="totalTable"></table></div><div class="table-note">2015년 1,021,544명에서 2024년 1,170,764명으로 증가했습니다. 2023~2024년에는 소폭 감소했습니다.</div></article>
+<article class="card"><div class="card-head"><div><h3>행정부 국가공무원 정원 · 주요 기준점</h3><p>자료에서 정확히 확인된 기준점을 표시합니다.</p></div><div class="table-actions"><button type="button" data-xlsx="national">엑셀 다운로드</button></div></div><div class="table-wrap"><table id="nationalTable"></table></div><div class="table-note"><b>2020.4.1 구조적 단절</b> · 소방공무원 60,137명이 지방직에서 국가직으로 전환되어 전후 단순 비교에 주의가 필요합니다.</div></article>
+</div></section>
 
-  <nav class="navchips" aria-label="표 바로가기">
-    <a href="#macro">보수·경제</a><a href="#private">민간 대비 보수</a><a href="#people">공무원 인력</a><a href="#recruit">공채 경쟁률</a><a href="#education">교육 분야</a><a href="#sources">출처·유의사항</a>
-  </nav>
+<section class="section" id="education"><div class="section-head"><div><h2>04 · 교육 분야 공직 인력</h2><p>대학교 교원·조교는 제외하고 공립 유·초·중·고·특수학교 교원 정원과 교육행정직 관련 정원을 구분해 제공합니다.</p></div><span class="section-tag">대학 교원·조교 제외</span></div><div class="grid2">
+<article class="card"><div class="card-head"><div><h3>공립 유·초·중·고·특수학교 교원 정원</h3><p>「지방교육행정기관 및 공립의 각급 학교에 두는 국가공무원의 정원에 관한 규정」 별표 2 기준</p></div><div class="table-actions"><button type="button" data-xlsx="schoolTeacher">엑셀 다운로드</button></div></div><div class="table-wrap"><table id="schoolTeacherTable"></table></div><div class="table-note"><b>범위</b> · 대학 교원·조교는 포함하지 않습니다. 법령은 중학교와 고등학교를 ‘중학교·고등학교 및 이에 준하는 학교’로 합산해 공표하므로 표에서도 중·고를 하나의 열로 표시합니다. ‘보건교사 등’은 보건·영양·사서·전문상담교사를 별도 정원으로 집계한 값입니다.</div></article>
+<article class="card"><div class="card-head"><div><h3>교육행정직 정원 확인표</h3><p>교육자치 지방공무원 전체 정원과 ‘교육행정’ 직렬을 혼동하지 않도록 구분합니다.</p></div><div class="table-actions"><button type="button" data-xlsx="eduAdmin">엑셀 다운로드</button></div></div><div class="table-wrap"><table id="eduAdminTable"></table></div><div class="table-note"><b>중요</b> · 정부조직관리정보시스템의 2025년 77,654명은 교육행정직만의 수치가 아니라 시·도교육청 소속 지방공무원 전체 직렬입니다. 전국 ‘교육행정’ 직렬만의 정확한 정원은 17개 시·도교육청의 직급·직렬별 정원 규칙을 합산해야 하므로, 확인되지 않은 값을 임의로 표시하지 않았습니다.</div></article>
+</div></section>
 
-  <div class="quick-find">
-    <label for="yearFind">연도 빠른 찾기</label>
-    <input id="yearFind" type="number" min="2008" max="2027" placeholder="예: 2024">
-    <button id="yearFindBtn" type="button">해당 연도 강조</button>
-    <button id="yearClearBtn" type="button">해제</button>
-    <span class="hint">입력한 연도가 포함된 모든 표의 행을 강조합니다.</span>
-  </div>
-
-  <section class="section" id="macro">
-    <div class="section-head"><div><h2>01 · 공무원 보수와 경제 지표</h2><p>보수 인상률·소비자물가·최저임금을 연도별로 직접 비교합니다.</p></div><span class="section-tag">2008—2027</span></div>
-    <article class="card">
-      <div class="card-head"><div><h3>연도별 보수·물가·최저임금 비교</h3><p>보수-물가 차이는 단순 차감한 퍼센트포인트입니다.</p></div><div class="table-actions"><button type="button" data-csv="macro">CSV 저장</button></div></div>
-      <div class="table-wrap"><table id="macroTable"></table></div>
-      <div class="table-note"><b>읽는 법</b> · ‘보수-물가 차이’가 음수이면 해당 연도의 공무원 명목 보수 인상률이 소비자물가 상승률보다 낮았다는 뜻입니다. 2026년 소비자물가는 연간 확정 전이며, 2027년 공무원 보수는 권고안 단계입니다.</div>
-    </article>
-  </section>
-
-  <section class="section" id="private">
-    <div class="section-head"><div><h2>02 · 민간 대비 공무원 보수 수준</h2><p>100인 이상 민간기업 보수와 비교한 공무원 보수 접근률입니다.</p></div><span class="section-tag">2008—2025</span></div>
-    <article class="card">
-      <div class="card-head"><div><h3>연도별 민간 대비 보수 수준</h3><p>단위 %</p></div><div class="table-actions"><button type="button" data-csv="private">CSV 저장</button></div></div>
-      <div class="table-wrap"><table id="privateTable"></table></div>
-    </article>
-  </section>
-
-  <section class="section" id="people">
-    <div class="section-head"><div><h2>03 · 공무원 인력 규모</h2><p>정원 기준 자료입니다. ‘현원’과는 다른 개념입니다.</p></div><span class="section-tag">정원 기준</span></div>
-    <div class="grid2">
-      <article class="card">
-        <div class="card-head"><div><h3>전체 공무원 운영정원</h3><p>국가+지방 · 행정안전통계연보</p></div><div class="table-actions"><button type="button" data-csv="total">CSV 저장</button></div></div>
-        <div class="table-wrap"><table id="totalTable"></table></div>
-        <div class="table-note">2015년 1,021,544명에서 2024년 1,170,764명으로 증가했습니다. 2023~2024년에는 소폭 감소했습니다.</div>
-      </article>
-      <article class="card">
-        <div class="card-head"><div><h3>행정부 국가공무원 정원 · 주요 기준점</h3><p>자료에서 정확히 확인된 기준점을 표시합니다.</p></div><div class="table-actions"><button type="button" data-csv="national">CSV 저장</button></div></div>
-        <div class="table-wrap"><table id="nationalTable"></table></div>
-        <div class="table-note"><b>2020.4.1 구조적 단절</b> · 소방공무원 60,137명이 지방직에서 국가직으로 전환되어 전후 단순 비교에 주의가 필요합니다.</div>
-      </article>
-    </div>
-  </section>
-
-  <section class="section" id="recruit">
-    <div class="section-head"><div><h2>04 · 국가공무원 공채 경쟁률</h2><p>5급·7급·9급 공개경쟁채용의 지원자/선발예정인원 경쟁률입니다.</p></div><span class="section-tag">2008—2026</span></div>
-    <article class="card">
-      <div class="card-head"><div><h3>급수별 연도 경쟁률</h3><p>단위 : 대 1</p></div><div class="table-actions"><button type="button" data-csv="recruit">CSV 저장</button></div></div>
-      <div class="table-wrap"><table id="recruitTable"></table></div>
-      <div class="table-note"><b>9급</b>은 2011년 93.3:1에서 2024년 21.8:1까지 낮아진 뒤 2025년 24.3:1, 2026년 28.6:1로 반등했습니다. <b>7급</b>은 2011년 122.7:1에서 2026년 38.4:1로 낮아졌습니다.</div>
-    </article>
-  </section>
-
-  <section class="section" id="education">
-    <div class="section-head"><div><h2>05 · 교육 분야 공직 인력</h2><p>교원·조교 정원과 교육자치 지방공무원 규모를 구분합니다.</p></div><span class="section-tag">교육 분야</span></div>
-    <div class="grid2">
-      <article class="card">
-        <div class="card-head"><div><h3>교원·조교 공무원 정원</h3><p>교육부 관할 교육공무원 중 교원·조교</p></div><div class="table-actions"><button type="button" data-csv="teacher">CSV 저장</button></div></div>
-        <div class="table-wrap"><table id="teacherTable"></table></div>
-        <div class="table-note">2015년 347,007명에서 2022년 368,213명까지 증가한 뒤 2024년 363,693명으로 감소했습니다.</div>
-      </article>
-      <article class="card">
-        <div class="card-head"><div><h3>교육 분야 최신 참고 현황</h3><p>2025년 기준 참고 수치</p></div></div>
-        <div class="snapshot">
-          <div class="snap"><span>교육자치 지방공무원</span><b>77,654명</b><small>시·도교육청 지방공무원 전체 직렬 기준</small></div>
-          <div class="snap"><span>2025 전체 교원 정원</span><b>360,559명</b><small>행정부 국가·지방 교원 정원 합계</small></div>
-          <div class="snap"><span>2025 초·중·고 학생 수</span><b>약 502만 명</b><small>2025년 교육 관련 정부 발표 참고</small></div>
-        </div>
-        <div class="table-note"><b>교육행정직 주의</b> · 77,654명은 교육행정직만을 뜻하지 않으며 시설·전산·사서 등 시·도교육청 소속 지방공무원 직렬을 포함합니다.</div>
-      </article>
-    </div>
-  </section>
-
-  <section class="section" id="sources">
-    <div class="section-head"><div><h2>06 · 공식 데이터 출처</h2><p>수치 업데이트 시 확인할 원자료입니다.</p></div><span class="section-tag">PUBLIC DATA</span></div>
-    <div class="source-grid">
-      <a class="source" href="https://www.mpm.go.kr/mpm/lawStat/infoStatistics/statisticsEnara/" target="_blank" rel="noopener"><b>인사혁신처 · e-나라지표</b><span>공무원 보수 추이, 민간 대비 보수수준 등</span></a>
-      <a class="source" href="https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1016" target="_blank" rel="noopener"><b>e-나라지표 · 국가공무원 정원</b><span>행정부 국가공무원 정원과 연도별 변동</span></a>
-      <a class="source" href="https://www.minimumwage.go.kr/minWage/policy/decisionMain.do" target="_blank" rel="noopener"><b>최저임금위원회</b><span>연도별 시간급·인상률·월환산액</span></a>
-      <a class="source" href="https://www.data.go.kr/data/15127791/fileData.do" target="_blank" rel="noopener"><b>공공데이터포털 · 5급 공채</b><span>5급 공개경쟁채용 경쟁률</span></a>
-      <a class="source" href="https://www.data.go.kr/data/15127744/fileData.do" target="_blank" rel="noopener"><b>공공데이터포털 · 7·9급 공채</b><span>국가직 7급·9급 공개경쟁채용 경쟁률</span></a>
-      <a class="source" href="https://www.data.go.kr/data/15077899/openapi.do" target="_blank" rel="noopener"><b>행정안전통계연보 · 교원·조교</b><span>교원·조교 공무원 정원 통계</span></a>
-      <a class="source" href="https://www.data.go.kr/data/15077904/openapi.do" target="_blank" rel="noopener"><b>행정안전통계연보 · 공무원 정원</b><span>연도별 전체 공무원 정원·증감</span></a>
-      <a class="source" href="https://www.org.go.kr/psncpa/pbsvnt/selectAll.do" target="_blank" rel="noopener"><b>정부조직관리정보시스템</b><span>국가·지방·교육자치·교원 최신 정원</span></a>
-      <a class="source" href="https://kess.kedi.re.kr/" target="_blank" rel="noopener"><b>교육통계서비스 KESS</b><span>학교·학생·교원 교육기본통계</span></a>
-    </div>
-    <div class="notice"><b>지표 해석 유의사항</b> · ① ‘정원’과 ‘현원’은 다릅니다. ② 2020년 소방공무원 국가직 전환은 국가/지방 시계열에 구조적 단절을 만듭니다. ③ 2026년 소비자물가상승률은 연간 확정치가 아닙니다. ④ 2027년 공무원 보수 3.4~3.9%는 공무원보수위원회 권고안이며 최종 확정값이 아닙니다. ⑤ 교원·조교 시계열은 ‘정원’ 기준으로 교육통계의 실제 교원 현원과 정의가 다를 수 있습니다.</div>
-  </section>
+<section class="section" id="sources"><div class="section-head"><div><h2>05 · 공식 데이터 출처</h2><p>수치 업데이트 시 확인할 원자료입니다.</p></div><span class="section-tag">PUBLIC DATA</span></div><div class="source-grid">
+<a class="source" href="https://www.mpm.go.kr/mpm/lawStat/infoStatistics/statisticsEnara/" target="_blank" rel="noopener"><b>인사혁신처 · e-나라지표</b><span>공무원 보수 추이, 민간 대비 보수수준 등</span></a>
+<a class="source" href="https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1016" target="_blank" rel="noopener"><b>e-나라지표 · 국가공무원 정원</b><span>행정부 국가공무원 정원과 연도별 변동</span></a>
+<a class="source" href="https://www.minimumwage.go.kr/minWage/policy/decisionMain.do" target="_blank" rel="noopener"><b>최저임금위원회</b><span>연도별 시간급·인상률·월환산액</span></a>
+<a class="source" href="https://www.law.go.kr/LSW/flDownload.do?bylClsCd=110201&flSeq=161581677&gubun=" target="_blank" rel="noopener"><b>국가법령정보센터 · 공립학교 교원 정원</b><span>2026년 별표 2 공립의 각급 학교 국가공무원 정원표</span></a>
+<a class="source" href="https://www.moe.go.kr/boardCnts/listRenew.do?boardID=10165&m=0307&s=moe" target="_blank" rel="noopener"><b>교육부 · 지방교육자치</b><span>교육감 소속 지방공무원 정원·인사통계 공개자료</span></a>
+<a class="source" href="https://www.org.go.kr/psncpa/pbsvnt/selectAll.do" target="_blank" rel="noopener"><b>정부조직관리정보시스템</b><span>국가·지방·교육자치·교원 최신 정원</span></a>
+</div><div class="notice"><b>지표 해석 유의사항</b> · ① ‘정원’과 ‘현원’은 다릅니다. ② 2020년 소방공무원 국가직 전환은 국가/지방 시계열에 구조적 단절을 만듭니다. ③ 2026년 소비자물가상승률은 연간 확정치가 아닙니다. ④ 2027년 공무원 보수 3.4~3.9%는 공무원보수위원회 권고안이며 최종 확정값이 아닙니다. ⑤ 공립학교 교원 정원 표는 대학교 교원·조교를 제외합니다. ⑥ 교육자치 지방공무원 전체 정원은 교육행정직 정원과 동일한 개념이 아닙니다.</div></section>
 </main>
-
-<footer class="footer">Public Service Data Table Dashboard · Web design for VibeCoding</footer>
-
+<footer class="footer">Public Service Data Dashboard · Web design for VibeCoding</footer>
 <script>
 const years=Array.from({length:20},(_,i)=>2008+i);
 const salary=[2.5,0,0,5.1,3.5,2.8,1.7,3.8,3.0,3.5,2.6,1.8,2.8,.9,1.4,1.7,2.5,3.0,3.5,null];
 const cpi=[4.7,2.8,2.9,4.0,2.2,1.3,1.3,.7,1.0,1.9,1.5,.4,.5,2.5,5.1,3.6,2.3,2.1,null,null];
 const minRate=[8.3,6.1,2.75,5.1,6.0,6.1,7.2,7.1,8.1,7.3,16.4,10.9,2.87,1.5,5.05,5.0,2.5,1.7,2.9,3.7];
 const minWon=[3770,4000,4110,4320,4580,4860,5210,5580,6030,6470,7530,8350,8590,8720,9160,9620,9860,10030,10320,10700];
-
-const privateYears=Array.from({length:18},(_,i)=>2008+i);
-const privateRatio=[89.0,89.2,84.4,85.2,83.7,84.5,84.3,83.4,83.2,86.0,85.2,86.1,90.5,87.6,83.1,83.1,83.9,84.1];
-
-const totalYears=Array.from({length:10},(_,i)=>2015+i);
-const totalQuota=[1021544,1029471,1049030,1074842,1104508,1131796,1156952,1171413,1171070,1170764];
-
-const nationalYears=[2008,2009,2010,2011,2012,2013,2014,2015,2016,2025];
-const nationalQuota=[607628,609573,612672,611968,615487,615726,622108,625835,628880,753689];
-
-const recruitYears=Array.from({length:19},(_,i)=>2008+i);
-const r9=[49.1,58.7,82.2,93.3,72.1,74.8,64.6,51.6,53.8,46.5,41.0,39.2,37.2,35.0,29.2,22.8,21.8,24.3,28.6];
-const r7=[45.2,79.9,115.4,122.7,108.2,113.3,83.9,81.9,76.7,66.2,47.6,46.4,46.0,47.8,42.7,40.4,40.6,44.6,38.4];
-const r5=[46.2,46.4,45.8,50.2,33.9,32.4,33.8,37.2,45.3,42.6,38.4,36.8,34.9,43.5,37.9,35.6,34.7,34.4,30.5];
-
-const teacherYears=Array.from({length:10},(_,i)=>2015+i);
-const teachers=[347007,347114,351299,354266,358170,362480,366093,368213,365311,363693];
-
+const privateYears=Array.from({length:18},(_,i)=>2008+i);const privateRatio=[89.0,89.2,84.4,85.2,83.7,84.5,84.3,83.4,83.2,86.0,85.2,86.1,90.5,87.6,83.1,83.1,83.9,84.1];
+const totalYears=Array.from({length:10},(_,i)=>2015+i);const totalQuota=[1021544,1029471,1049030,1074842,1104508,1131796,1156952,1171413,1171070,1170764];
+const nationalYears=[2008,2009,2010,2011,2012,2013,2014,2015,2016,2025];const nationalQuota=[607628,609573,612672,611968,615487,615726,622108,625835,628880,753689];
+const schoolTeacherYears=[2021,2022,2023,2024,2025,2026];
+const schoolTeacherTotal=[343525,345370,342351,338838,334746,332025];
+const kindergarten=[14811,14811,14811,14811,14811,14811];
+const elementary=[150035,149819,148683,146559,144146,141877];
+const middleHigh=[143964,143141,140881,138709,136329,134917];
+const specialSchool=[15830,16737,16795,17161,17625,18281];
+const healthEtc=[18885,20862,21181,21598,21835,22139];
+const eduAdminYears=[2017,2018,2019,2020,2021,2022,2025];
+const eduLocalTotal=[67366,68947,70235,71387,72444,73882,77654];
 const fmt=v=>v===null||v===undefined||v===''?'—':(typeof v==='number'&&Number.isInteger(v)&&Math.abs(v)>=1000?v.toLocaleString():String(v));
-const pct=v=>v===null||v===undefined?'—':v.toFixed ? (Number.isInteger(v)?v.toFixed(1):String(v)) : v;
-
-const macroRows=years.map((y,i)=>{
-  const s=salary[i],p=cpi[i],gap=(s!==null&&p!==null)?Number((s-p).toFixed(2)):null;
-  const salaryText=y===2027?'3.4~3.9% (권고)':(s===null?'—':pct(s)+'%');
-  const cpiText=p===null?(y===2026?'연간 확정 전':'—'):pct(p)+'%';
-  const gapText=gap===null?'—':(gap>0?'+':'')+gap.toFixed(1)+'%p';
-  return [y,salaryText,cpiText,gapText,pct(minRate[i])+'%',minWon[i]];
-});
-const macroHeaders=['연도','공무원 보수 인상률','소비자물가 상승률','보수-물가 차이','최저임금 인상률','최저임금 시간급(원)'];
-
+const pct=v=>v===null||v===undefined?'—':(Number.isInteger(v)?v.toFixed(1):String(v));
+const macroRows=years.map((y,i)=>{const s=salary[i],p=cpi[i],gap=(s!==null&&p!==null)?Number((s-p).toFixed(2)):null;return[y,y===2027?'3.4~3.9% (권고)':(s===null?'—':pct(s)+'%'),p===null?(y===2026?'연간 확정 전':'—'):pct(p)+'%',gap===null?'—':(gap>0?'+':'')+gap.toFixed(1)+'%p',pct(minRate[i])+'%',minWon[i]]});
 const datasets={
-  macro:{headers:macroHeaders,rows:macroRows},
-  private:{headers:['연도','민간 대비 공무원 보수 수준(%)'],rows:privateYears.map((y,i)=>[y,privateRatio[i]])},
-  total:{headers:['연도','전체 공무원 운영정원(명)','전년 증감(명)'],rows:totalYears.map((y,i)=>[y,totalQuota[i],i===0?'—':totalQuota[i]-totalQuota[i-1]])},
-  national:{headers:['연도','행정부 국가공무원 정원(명)'],rows:nationalYears.map((y,i)=>[y,nationalQuota[i]])},
-  recruit:{headers:['연도','5급 경쟁률','7급 경쟁률','9급 경쟁률'],rows:recruitYears.map((y,i)=>[y,r5[i],r7[i],r9[i]])},
-  teacher:{headers:['연도','교원·조교 공무원 정원(명)','전년 증감(명)'],rows:teacherYears.map((y,i)=>[y,teachers[i],i===0?'—':teachers[i]-teachers[i-1]])}
+ macro:{sheet:'보수경제',headers:['연도','공무원 보수 인상률','소비자물가 상승률','보수-물가 차이','최저임금 인상률','최저임금 시간급(원)'],rows:macroRows},
+ private:{sheet:'민간대비보수',headers:['연도','민간 대비 공무원 보수 수준(%)'],rows:privateYears.map((y,i)=>[y,privateRatio[i]])},
+ total:{sheet:'전체공무원정원',headers:['연도','전체 공무원 운영정원(명)','전년 증감(명)'],rows:totalYears.map((y,i)=>[y,totalQuota[i],i===0?'—':totalQuota[i]-totalQuota[i-1]])},
+ national:{sheet:'국가공무원정원',headers:['연도','행정부 국가공무원 정원(명)'],rows:nationalYears.map((y,i)=>[y,nationalQuota[i]])},
+ schoolTeacher:{sheet:'학교교원정원',headers:['연도','총계(명)','유치원(명)','초등학교(명)','중·고등학교(명)','특수학교(명)','보건교사 등(명)'],rows:schoolTeacherYears.map((y,i)=>[y,schoolTeacherTotal[i],kindergarten[i],elementary[i],middleHigh[i],specialSchool[i],healthEtc[i]])},
+ eduAdmin:{sheet:'교육행정직확인',headers:['연도','교육감 소속·교육자치 지방공무원 전체 정원(명)','전국 교육행정직만의 정원','비고'],rows:eduAdminYears.map((y,i)=>[y,eduLocalTotal[i],'전국 단일 합계 미공표',y===2025?'정부조직관리정보시스템 기준':'교육부 공개 정원 현황'])}
 };
-
-function renderSimpleTable(id,key){
-  const table=document.getElementById(id),d=datasets[key];
-  let html='<thead><tr>'+d.headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>';
-  d.rows.forEach(r=>{
-    const year=r[0];
-    html+='<tr data-year="'+year+'"><th>'+year+'</th>';
-    r.slice(1).forEach((v,idx)=>{
-      let cls='';
-      if(key==='macro'&&idx===0&&year===2027)cls='pending';
-      if(key==='macro'&&idx===2&&v!=='—')cls=String(v).startsWith('-')?'bad':'good';
-      if((key==='total'||key==='teacher')&&idx===1&&typeof v==='number')cls=v<0?'bad':'good';
-      html+='<td class="'+cls+'">'+fmt(v)+'</td>';
-    });
-    html+='</tr>';
-  });
-  html+='</tbody>';
-  table.innerHTML=html;
-}
-renderSimpleTable('macroTable','macro');
-renderSimpleTable('privateTable','private');
-renderSimpleTable('totalTable','total');
-renderSimpleTable('nationalTable','national');
-renderSimpleTable('recruitTable','recruit');
-renderSimpleTable('teacherTable','teacher');
-
-function csvEscape(v){return '"'+String(v??'').replaceAll('"','""')+'"'}
-function downloadCSV(key){
-  const d=datasets[key];
-  const csv='\ufeff'+[d.headers,...d.rows].map(r=>r.map(csvEscape).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='public_service_'+key+'.csv';
-  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),500);
-}
-document.querySelectorAll('[data-csv]').forEach(btn=>btn.addEventListener('click',()=>downloadCSV(btn.dataset.csv)));
-
-const yearInput=document.getElementById('yearFind');
-function clearHits(){document.querySelectorAll('.row-hit').forEach(el=>el.classList.remove('row-hit'))}
-function highlightYear(){
-  clearHits();
-  const y=String(yearInput.value).trim();
-  if(!y)return;
-  const matches=[...document.querySelectorAll('tr[data-year="'+y+'"]')];
-  matches.forEach(el=>el.classList.add('row-hit'));
-  if(matches[0])matches[0].scrollIntoView({behavior:'smooth',block:'center'});
-}
-document.getElementById('yearFindBtn').addEventListener('click',highlightYear);
-document.getElementById('yearClearBtn').addEventListener('click',()=>{yearInput.value='';clearHits()});
-yearInput.addEventListener('keydown',e=>{if(e.key==='Enter')highlightYear()});
+function renderSimpleTable(id,key){const table=document.getElementById(id),d=datasets[key];let html='<thead><tr>'+d.headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>';d.rows.forEach(r=>{const year=r[0];html+='<tr data-year="'+year+'"><th>'+year+'</th>';r.slice(1).forEach((v,idx)=>{let cls='';if(key==='macro'&&idx===0&&year===2027)cls='pending';if(key==='macro'&&idx===2&&v!=='—')cls=String(v).startsWith('-')?'bad':'good';if(key==='total'&&idx===1&&typeof v==='number')cls=v<0?'bad':'good';html+='<td class="'+cls+'">'+fmt(v)+'</td>'});html+='</tr>'});table.innerHTML=html+'</tbody>'}
+renderSimpleTable('macroTable','macro');renderSimpleTable('privateTable','private');renderSimpleTable('totalTable','total');renderSimpleTable('nationalTable','national');renderSimpleTable('schoolTeacherTable','schoolTeacher');renderSimpleTable('eduAdminTable','eduAdmin');
+function downloadExcel(key){if(!window.XLSX){alert('엑셀 모듈을 불러오지 못했습니다. 인터넷 연결 후 다시 시도해 주세요.');return}const d=datasets[key],aoa=[d.headers,...d.rows],ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=d.headers.map((h,i)=>({wch:Math.min(42,Math.max(i===0?10:16,String(h).length*2+4))}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,d.sheet);XLSX.writeFile(wb,'공무원_관련동향_'+d.sheet+'.xlsx')}
+document.querySelectorAll('[data-xlsx]').forEach(btn=>btn.addEventListener('click',()=>downloadExcel(btn.dataset.xlsx)));
+const chartYears=years.slice(0,18),chartSalary=salary.slice(0,18),chartCpi=cpi.slice(0,18);
+new Chart(document.getElementById('salaryCpiChart'),{type:'line',data:{labels:chartYears,datasets:[{label:'공무원 보수 인상률',data:chartSalary,borderColor:'#0c9488',backgroundColor:'#0c9488',borderWidth:2.5,pointRadius:2.4,pointHoverRadius:5,tension:.25},{label:'소비자물가 상승률',data:chartCpi,borderColor:'#d6783c',backgroundColor:'#d6783c',borderWidth:2.5,pointRadius:2.4,pointHoverRadius:5,tension:.25}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'top',labels:{usePointStyle:true,boxWidth:8,font:{size:11}}},tooltip:{callbacks:{label:c=>c.dataset.label+' '+c.parsed.y+'%'}}},scales:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:10}},y:{beginAtZero:true,title:{display:true,text:'인상률 / 상승률 (%)'},ticks:{callback:v=>v+'%'}}}}});
+const yearInput=document.getElementById('yearFind');function clearHits(){document.querySelectorAll('.row-hit').forEach(el=>el.classList.remove('row-hit'))}function highlightYear(){clearHits();const y=String(yearInput.value).trim();if(!y)return;const matches=[...document.querySelectorAll('tr[data-year="'+y+'"]')];matches.forEach(el=>el.classList.add('row-hit'));if(matches[0])matches[0].scrollIntoView({behavior:'smooth',block:'center'})}document.getElementById('yearFindBtn').addEventListener('click',highlightYear);document.getElementById('yearClearBtn').addEventListener('click',()=>{yearInput.value='';clearHits()});yearInput.addEventListener('keydown',e=>{if(e.key==='Enter')highlightYear()});
 </script>
 </body>
 </html>
