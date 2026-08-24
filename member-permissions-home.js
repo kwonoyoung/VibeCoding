@@ -13,6 +13,10 @@
     const section=findSection(sectionTitle),grid=section?.querySelector('.grid');if(!grid)return;
     const a=document.createElement('a');a.className='tool '+cls;a.href=href;a.innerHTML=`<div class="tool-top"><div class="tool-icon">${icon}</div><div class="arrow">→</div></div><h3>${title}</h3><p>${desc}</p>`;grid.appendChild(a);updateSectionCount(section);
   }
+  function renameStaticMenus(){
+    const parental=document.querySelector('a.tool[href="parental-leave-calculator.html"] h3');
+    if(parental)parental.textContent='2025년 이후 공무원 육아휴직수당 계산기';
+  }
   function addToolSearch(){
     if(document.getElementById('toolSearchBtn'))return;
     const quick=document.querySelector('.quick'),state=document.getElementById('memberState');if(!quick||!state)return;
@@ -24,6 +28,7 @@
   }
 
   addSupportButton();
+  renameStaticMenus();
   addMenu({sectionTitle:'급여·수당',href:'family1.html',cls:'pay',icon:'家',title:'공무원 가족수당 연혁 계산기',desc:'연도별 가족수당 단가와 가족별 개월수를 반영해 금액을 계산합니다.'});
   addMenu({sectionTitle:'급여·수당',href:'family2.html',cls:'pay',icon:'月',title:'가족수당 자녀 지급 만료월 계산기',desc:'자녀의 생년월일과 기준일을 기준으로 만나이·해당여부·지급만료월을 계산합니다.'});
   addMenu({sectionTitle:'급여·수당',href:'age.html',cls:'pay',icon:'年',title:'만나이 계산기',desc:'생년월일과 만나이 기준일을 입력해 기준일 현재의 만나이를 계산합니다.'});
