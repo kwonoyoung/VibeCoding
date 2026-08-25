@@ -95,7 +95,7 @@
       }
     }))).observe(document.body, {childList:true, subtree:true});
 
-    const REVIEWED_AT = "2026-08-25";
+    const REVIEWED_AT = "2026-08-26";
     const groups = {
       ai: {
         no: "01", title: "글로벌 주요 AI 기업 및 에이전트 현황",
@@ -106,7 +106,7 @@
           ["OpenAI","ChatGPT Work · Workspace Agents","미국","장기 실행 업무 에이전트|앱·파일 연결|공유 업무 자동화|승인 기반 작업","https://openai.com/index/chatgpt-for-your-most-ambitious-work/"],
           ["OpenAI","OpenAI Presence","미국","기업용 음성·채팅 에이전트|고객지원|사내 시스템 연동|정책·가드레일·상담원 이관","https://openai.com/index/introducing-openai-presence/"],
           ["Google","Gemini · Gemini 3.7 Flash · Veo · Imagen · NotebookLM","미국","멀티모달 AI|문서·검색|코딩·에이전트|이미지·영상|업무 자동화","https://gemini.google.com/"],
-          ["Anthropic","Claude · Claude Code","미국","문서 분석|고급 코딩|도구 사용|에이전트","https://www.anthropic.com/"],
+          ["Anthropic","Claude Sonnet 5 · Claude Opus 5 · Claude Code","미국","문서 분석|고급 코딩|도구 사용|에이전트","https://www.anthropic.com/"],
           ["Microsoft","Microsoft Copilot · Copilot Studio","미국","Microsoft 365|기업 에이전트|코딩|업무 자동화","https://copilot.microsoft.com/"],
           ["Meta","Meta AI · Muse Spark 1.2 · Muse Code · Muse Glimmer · Llama","미국","대화형·멀티에이전트 AI|코딩 에이전트|로컬 실행 오픈웨이트 모델|개발자 API","https://ai.meta.com/"],
           ["Grok / SpaceXAI (xAI)","Grok · SuperGrok · Grok Imagine · Grok Voice","미국","대화·추론|실시간 웹·X 검색|코딩|음성·이미지·영상|멀티에이전트","https://x.ai/grok"],
@@ -240,7 +240,7 @@
       "Gemini · Gemini 3.7 Flash · Veo · Imagen · NotebookLM": {value:1000000000, label:"10억+명", asOf:"2026-08", source:"Google 공식 발표"},
       "Grok · SuperGrok · Grok Imagine · Grok Voice": {value:117000000, label:"1억 1,700만명", asOf:"2026-03", source:"SpaceX 공시"},
       "Perplexity": {value:100000000, label:"1억+명", asOf:"2026-03", source:"회사 발표·FT"},
-      "Claude · Claude Code": {value:56000000, label:"5,600만명", asOf:"2026-Q2", source:"Sensor Tower·Reuters"}
+      "Claude Sonnet 5 · Claude Opus 5 · Claude Code": {value:56000000, label:"5,600만명", asOf:"2026-Q2", source:"Sensor Tower·Reuters"}
     };
     groups.ai.rows.sort((a,b)=>(mauData[b[1]]?.value||-1)-(mauData[a[1]]?.value||-1));
 
@@ -329,7 +329,7 @@
     const xmlEscape=value=>String(value??"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&apos;"}[char]));
     const utf8=new TextEncoder();
     const crcTable=(()=>{const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;table[n]=c>>>0}return table})();
-    const crc32=bytes=>{let crc=0xffffffff;for(const byte of bytes)crc=crcTable[(crc^byte)&0xff]^(crc>>>8);return (crc^0xffffffff)>>>0};
+    const crc32=bytes=>{let crc=0xffffffff;for(const byte of bytes)crc=crcTable[(crc^byte)&0xff]^(crc>>>1);return (crc^0xffffffff)>>>0};
     const write16=(view,offset,value)=>view.setUint16(offset,value,true);
     const write32=(view,offset,value)=>view.setUint32(offset,value>>>0,true);
     const joinBytes=parts=>{const total=parts.reduce((sum,part)=>sum+part.length,0);const output=new Uint8Array(total);let offset=0;for(const part of parts){output.set(part,offset);offset+=part.length}return output};
