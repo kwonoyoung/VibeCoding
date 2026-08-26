@@ -1,0 +1,47 @@
+{
+  "notebook_url": "https://notebook.google.com/notebook/eda50cd7-dc23-459d-a368-865ea28cf80c",
+  "source_strategy": "google-drive-originals",
+  "note": "Gemini Notebook의 선택 소스 목록 API가 공개되어 있지 않아, 연결된 Google Drive에서 확인된 교육행정 원본 파일을 RAG 원천 후보로 등록합니다.",
+  "sources": [
+    {
+      "id": "1rP-HRs01ceZWOGO-7o20L14Enq-ZMZjB",
+      "title": "0-(등재)2022년도전북교특회계예산편성및운영지침 (1).pdf",
+      "mime_type": "application/pdf",
+      "url": "https://drive.google.com/file/d/1rP-HRs01ceZWOGO-7o20L14Enq-ZMZjB/view",
+      "category": "예산·회계",
+      "rag_status": "source-registered"
+    },
+    {
+      "id": "1K9PhWDnZsYu-uDZSzaiqQsqonerFJQYJ",
+      "title": "(삼우초등학교-7191 (본문) 전북특별자치도완주교육지원청 행정지원과) [알림] 지방공무원 호봉 및 근무연수 정정.pdf",
+      "mime_type": "application/pdf",
+      "url": "https://drive.google.com/file/d/1K9PhWDnZsYu-uDZSzaiqQsqonerFJQYJ/view",
+      "category": "급여·호봉",
+      "rag_status": "source-registered"
+    },
+    {
+      "id": "1u1TiDuMr97tXCTfW9l4stZnP6gwkxJhc",
+      "title": "시간외근무수당 지급 관련 사항 안내(유치원 방과후) 2010년 전북교육청 재무과 공문.pdf",
+      "mime_type": "application/pdf",
+      "url": "https://drive.google.com/file/d/1u1TiDuMr97tXCTfW9l4stZnP6gwkxJhc/view",
+      "category": "급여·수당",
+      "rag_status": "source-registered"
+    },
+    {
+      "id": "1VVH2D2xJ69up1fm78jl-5Rs2WJqq5Yu6",
+      "title": "2025중등교원인사업무처리요령1권.pdf",
+      "mime_type": "application/pdf",
+      "url": "https://drive.google.com/file/d/1VVH2D2xJ69up1fm78jl-5Rs2WJqq5Yu6/view",
+      "category": "교원인사",
+      "rag_status": "source-registered"
+    },
+    {
+      "id": "1LF7Qx88kU8fkZ2iX4ZbEpp0Vm8hI2LnL",
+      "title": "★2025년일반직공무원인사운영기본계획.pdf",
+      "mime_type": "application/pdf",
+      "url": "https://drive.google.com/file/d/1LF7Qx88kU8fkZ2iX4ZbEpp0Vm8hI2LnL/view",
+      "category": "지방공무원 인사",
+      "rag_status": "source-registered"
+    }
+  ]
+}
