@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#073c60">
+  <title>학교현장지원 강화를 위한 조직개편안</title>
+  <style>
+    :root{
+      --navy:#073c60;--navy2:#0b5879;--teal:#0b8f86;--ink:#173042;--muted:#647b89;
+      --line:#d9e5ea;--bg:#eef4f6;--card:#fff;--green:#18785f;--amber:#a96c16;--red:#a94747;
+      --shadow:0 18px 48px rgba(9,52,78,.10)
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+    body{margin:0;background:#edf3f5;color:var(--ink);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;letter-spacing:-.025em}
+    a{color:inherit}.topbar{position:fixed;top:0;left:0;right:0;z-index:1000;height:62px;background:rgba(5,43,68,.94);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.13);color:#fff}
+    .topbar-inner{width:min(1280px,calc(100% - 28px));height:100%;margin:auto;display:flex;align-items:center;gap:10px}
+    .home-btn,.action-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 12px;border:1px solid rgba(255,255,255,.25);border-radius:11px;background:rgba(255,255,255,.10);color:#fff;text-decoration:none;font-weight:900;font-size:12px;cursor:pointer}
+    .top-title{flex:1;min-width:0;font-size:13px;font-weight:950}.top-title small{display:block;margin-top:2px;color:#bddde6;font-size:10px;font-weight:700}
+    .progress{position:fixed;top:62px;left:0;right:0;z-index:999;height:3px;background:rgba(15,87,119,.10)}.progress>span{display:block;height:100%;width:12.5%;background:linear-gradient(90deg,#0a8f86,#68c5bd);transition:.2s}
+    .slide{min-height:100vh;scroll-snap-align:start;display:flex;align-items:center;padding:92px 24px 52px;position:relative;overflow:hidden}
+    .slide:nth-of-type(even){background:#f7f9fa}.slide-inner{width:min(1180px,100%);margin:auto;position:relative;z-index:1}
+    .cover{color:#fff;background:linear-gradient(132deg,#062f4d 0,#0a5576 55%,#078a82 100%)}.cover:before,.cover:after{content:"";position:absolute;border-radius:50%}.cover:before{width:520px;height:520px;border:86px solid rgba(255,255,255,.055);right:-190px;top:-240px}.cover:after{width:300px;height:300px;background:rgba(255,255,255,.04);left:-130px;bottom:-190px}
+    .eyebrow{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);font-size:11px;font-weight:900;color:#dff6f2}.cover h1{margin:18px 0 14px;max-width:900px;font-size:clamp(35px,6vw,68px);line-height:1.08;letter-spacing:-.055em}.cover .lead{max-width:900px;margin:0;color:#d8ebf0;font-size:clamp(15px,2vw,20px);line-height:1.7}.two-pill{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}.two-pill span{padding:10px 14px;border-radius:13px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:850}
+    .slide-no{display:inline-flex;align-items:center;gap:8px;color:#17796f;font-size:11px;font-weight:950;text-transform:uppercase;letter-spacing:.06em}.slide-no:before{content:"";width:26px;height:3px;border-radius:9px;background:#0b8f86}
+    h2{margin:12px 0 10px;font-size:clamp(29px,4.5vw,48px);line-height:1.15;letter-spacing:-.05em}.desc{max-width:930px;margin:0 0 24px;color:var(--muted);font-size:15px;line-height:1.75}
+    .quote{margin-top:26px;padding:24px 26px;border-left:6px solid var(--teal);border-radius:16px;background:#fff;box-shadow:var(--shadow);font-size:clamp(19px,2.6vw,30px);font-weight:950;line-height:1.5;color:#214e61}.quote em{font-style:normal;color:#087b73}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{padding:22px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow)}.card h3{margin:0 0 10px;font-size:18px}.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.72}.card .num{display:block;margin-bottom:12px;font-size:40px;font-weight:950;color:var(--navy);letter-spacing:-.05em}.card .num.teal{color:var(--teal)}
+    .problem{border-top:5px solid #a84f4f}.principle{border-top:5px solid #0c8d82}.measure{border-top:5px solid #326f93}
+    .big-stat{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:center;padding:28px;border-radius:22px;background:linear-gradient(135deg,#073c60,#0a6b83);color:#fff;box-shadow:0 22px 50px rgba(7,60,96,.20)}.big-stat .number{font-size:clamp(62px,9vw,104px);font-weight:1000;line-height:.9;letter-spacing:-.07em}.big-stat .number small{font-size:25px}.big-stat h3{margin:0 0 10px;font-size:23px}.big-stat p{margin:0;color:#d7eaf0;line-height:1.75;font-size:14px}.caution{margin-top:12px;color:#708692;font-size:11px;line-height:1.6}
+    .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:12px;align-items:center;margin-top:22px}.flow-card{min-height:160px;padding:21px;border-radius:18px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow)}.flow-card b{display:block;margin-bottom:8px;font-size:16px}.flow-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.65}.flow-arrow{font-size:30px;font-weight:950;color:#5f8799}
+    .roles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.role{padding:16px;border-radius:15px;background:#f7fbfc;border:1px solid var(--line)}.role b{display:block;margin-bottom:6px;font-size:13px;color:#24556c}.role span{font-size:11px;line-height:1.55;color:#6e8390}
+    .formula{display:flex;align-items:center;justify-content:center;gap:15px;flex-wrap:wrap;margin:20px 0 26px}.formula .box{min-width:180px;padding:22px 18px;border:1px solid var(--line);border-radius:18px;background:#fff;text-align:center;box-shadow:var(--shadow)}.formula .box b{display:block;font-size:34px;color:var(--navy)}.formula .box span{display:block;margin-top:5px;color:var(--muted);font-size:12px}.formula .op{font-size:31px;font-weight:950;color:#6e8b98}.formula .result{background:linear-gradient(135deg,#e9f8f5,#f5fbfa);border-color:#bfe5dc}.formula .result b{color:#087a71}
+    .tasks{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px}.task{min-height:68px;display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff;text-align:center;font-size:11px;font-weight:850;color:#35596a;box-shadow:0 6px 16px rgba(20,54,75,.045)}
+    .support-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.support{padding:17px;border-radius:15px;background:#fff;border:1px solid var(--line)}.support b{display:block;margin-bottom:6px;font-size:13px;color:#0c6f69}.support span{font-size:11px;line-height:1.55;color:#6c828f}
+    .metric{display:flex;align-items:flex-start;gap:13px}.metric .icon{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:13px;background:#eaf5f6;color:#0b766f;font-weight:950}.metric b{display:block;margin:1px 0 5px;font-size:15px}.metric span{font-size:12px;color:var(--muted);line-height:1.55}
+    .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-top:18px}.road{position:relative;padding:20px 17px;border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:var(--shadow)}.road .step{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#e8f5f4;color:#0b776f;font-size:11px;font-weight:950}.road b{display:block;margin:12px 0 7px;font-size:14px}.road p{margin:0;font-size:11px;color:var(--muted);line-height:1.6}
+    .conclusion{background:linear-gradient(135deg,#f3f9f8,#eef5f8)}.conclusion-box{padding:30px;border-radius:24px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}.conclusion-box h3{margin:0 0 18px;font-size:24px}.statement{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}.statement .side{padding:22px;border-radius:18px;background:#f8fbfc;border:1px solid var(--line);font-size:17px;font-weight:900;line-height:1.55}.statement .plus{font-size:30px;color:#0b8279;font-weight:950}.final-line{margin:24px 0 0;padding-top:22px;border-top:1px solid var(--line);font-size:clamp(21px,3vw,32px);line-height:1.45;font-weight:950;color:#164b62}.final-line span{color:#087c73}
+    .nav{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;gap:8px}.nav button{width:11px;height:11px;padding:0;border:0;border-radius:50%;background:#a9bbc4;box-shadow:0 0 0 3px rgba(255,255,255,.65);cursor:pointer}.nav button.active{background:#0b8f86;transform:scale(1.25)}
+    .page-arrows{position:fixed;right:18px;bottom:18px;z-index:901;display:flex;gap:7px}.page-arrows button{width:42px;height:42px;border:1px solid #cbdce4;border-radius:13px;background:rgba(255,255,255,.92);color:#214e62;font-size:20px;font-weight:950;box-shadow:0 8px 24px rgba(16,50,70,.12);cursor:pointer}
+    .speaker-note{margin-top:18px;padding:12px 14px;border-radius:12px;background:#fff9e9;border:1px solid #efddb2;color:#77591f;font-size:11px;line-height:1.65}.speaker-note b{color:#67490f}
+    @media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}.big-stat{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg);text-align:center}.roles,.support-grid,.roadmap{grid-template-columns:repeat(2,1fr)}.tasks{grid-template-columns:repeat(3,1fr)}.statement{grid-template-columns:1fr}.statement .plus{text-align:center}.nav{display:none}}
+    @media(max-width:600px){.slide{padding:88px 14px 42px}.top-title small,.action-btn.print{display:none}.roles,.support-grid,.roadmap{grid-template-columns:1fr}.tasks{grid-template-columns:repeat(2,1fr)}.card{padding:18px}.big-stat{padding:22px}.page-arrows{right:10px;bottom:10px}.home-btn,.action-btn{padding:8px 9px;font-size:11px}}
+    @media print{html{scroll-snap-type:none}.topbar,.progress,.nav,.page-arrows{display:none!important}.slide{min-height:auto;page-break-after:always;padding:30px 20px;background:#fff!important;color:#173042!important}.cover{background:#fff!important;color:#173042!important}.cover .lead{color:#526e7b}.eyebrow{color:#0b6f69;border-color:#bfdcd8}.card,.big-stat,.flow-card,.road,.conclusion-box{box-shadow:none}.big-stat{background:#f2f7f9;color:#173042}.big-stat p{color:#59717e}}
+  </style>
+</head>
+<body>
+  <nav class="topbar"><div class="topbar-inner">
+    <a id="vibecoding-home-btn" data-vibecoding-home="persistent" class="home-btn" href="/VibeCoding/index.html">⌂ 홈</a>
+    <div class="top-title">학교현장지원 강화를 위한 조직개편안<small>학교 현장 업무 경감을 위한 구조적 인력운영·전문지원체계 제안</small></div>
+    <button class="action-btn print" type="button" onclick="window.print()">⎙ 인쇄</button>
+    <button class="action-btn" type="button" id="fullBtn">⛶ 발표모드</button>
+  </div></nav><div class="progress"><span id="progressBar"></span></div>
+
+  <main>
+    <section class="slide cover" id="s1"><div class="slide-inner">
+      <span class="eyebrow">학교현장지원 T/F 제안</span>
+      <h1>학교현장지원 강화를 위한<br>조직개편안</h1>
+      <p class="lead">업무 몇 개를 줄이는 방식이 아니라, <b>인력 운용 방식과 학교지원 체계 자체를 바꾸는 구조적 접근</b>으로 학교가 직접 처리해야 하는 행정업무를 줄이는 방안입니다.</p>
+      <div class="two-pill"><span>제안 ① 일반직 6급 인력의 전략적 재배치</span><span>제안 ② 18개 분야 × 3명 = 54명 전문지원체계</span></div>
+    </div></section>
+
+    <section class="slide" id="s2"><div class="slide-inner">
+      <div class="slide-no">01 · 문제 인식</div><h2>업무 경감의 기준부터 바꿔야 합니다</h2>
+      <p class="desc">공문을 줄이거나 학교 내부에서 업무를 다시 나누는 방식만으로는 체감도 높은 업무 경감에 한계가 있습니다. 핵심은 학교 밖에 강력한 지원역량을 만들고 학교가 직접 처리하는 업무량을 줄이는 것입니다.</p>
+      <div class="grid3">
+        <article class="card problem"><h3>업무의 재분배</h3><p>학교 안에서 담당자만 바뀌면 조직 전체의 업무량은 줄지 않습니다. 특정 직원의 부담이 다른 직원에게 이동할 뿐입니다.</p></article>
+        <article class="card principle"><h3>지원조직의 강화</h3><p>반복·전문 업무를 학교 밖에서 표준화하고 상시 지원해야 학교 현장의 시행착오와 학습비용이 줄어듭니다.</p></article>
+        <article class="card measure"><h3>성과지표의 전환</h3><p>‘본청 몇 명 감축’보다 ‘학교가 직접 처리하는 업무와 시간이 얼마나 줄었는가’를 성과로 측정해야 합니다.</p></article>
+      </div>
+      <div class="quote">“학교 현장 업무 경감은 <em>업무를 옮기는 것</em>이 아니라, 학교가 <em>직접 해야 할 업무 자체를 줄이는 것</em>이어야 합니다.”</div>
+    </div></section>
+
+    <section class="slide" id="s3"><div class="slide-inner">
+      <div class="slide-no">02 · 제안 1</div><h2>일반직 6급 인력을 학교지원의 핵심 실무인력으로</h2>
+      <p class="desc">6급은 장기간 축적된 행정경험과 판단역량을 가진 숙련인력입니다. 학교에 일률적으로 분산 배치하기보다 학교별 실제 업무량과 직무를 분석하여 재배치 가능한 인력을 도교육청·교육지원청·직속기관의 학교지원 기능에 전략적으로 활용하는 방안을 제안합니다.</p>
+      <div class="big-stat"><div class="number">약 800<small>명</small></div><div><h3>학교 근무 일반직 6급 인력의 직무·업무량 전면 분석</h3><p>단순히 학교에서 인력을 빼는 것이 아니라, 학교별 필수 배치수요를 먼저 확인한 뒤 재배치 가능한 숙련인력을 학교지원 조직으로 전환하여 여러 학교가 각각 수행하는 업무를 통합·지원하는 구조로 바꾸자는 제안입니다.</p></div></div>
+      <div class="caution">※ ‘약 800명’은 T/F 논의를 위한 제안 전제값입니다. 최종 정책화 전에는 직급별 현원, 학교규모, 행정실 업무량, 필수배치 기준을 공식 자료로 검증해야 합니다.</div>
+      <div class="roles"><div class="role"><b>본청</b><span>정책·기준·표준화 및 고난도 업무 조정</span></div><div class="role"><b>교육지원청</b><span>지역 단위 학교업무 상시 지원</span></div><div class="role"><b>직속기관</b><span>전문기능·교육·공동처리 기능 강화</span></div><div class="role"><b>학교</b><span>교육활동과 현장 필수업무에 집중</span></div></div>
+    </div></section>
+
+    <section class="slide" id="s4"><div class="slide-inner">
+      <div class="slide-no">03 · 인력운영 모델</div><h2>‘학교 인력 감축’이 아니라 ‘학교지원 역량 재배치’입니다</h2>
+      <p class="desc">인력 재배치는 직급을 기준으로 일괄 이동하는 방식이 아니라, 학교의 업무량과 직무를 먼저 분석하고 지원조직에서 실제로 흡수할 업무를 함께 정하는 방식으로 추진해야 합니다.</p>
+      <div class="flow">
+        <div class="flow-card"><b>① 학교별 직무·업무량 분석</b><p>학교규모, 학생수, 회계·계약량, 시설규모, 민원량, 교육공무직 규모 등을 기준으로 실제 행정수요를 산정합니다.</p></div><div class="flow-arrow">→</div>
+        <div class="flow-card"><b>② 재배치 가능 인력 선별</b><p>필수배치 인력을 제외하고 숙련도·경력·전문성을 고려하여 본청·교육지원청·직속기관의 학교지원 기능으로 이동합니다.</p></div><div class="flow-arrow">→</div>
+        <div class="flow-card"><b>③ 학교업무의 실질적 흡수</b><p>인력만 이동시키지 않고 반복업무·고난도업무·공동처리 가능업무를 지원조직이 함께 가져갑니다.</p></div>
+      </div>
+      <div class="speaker-note"><b>회의 발언 포인트</b> · “학교에서 사람만 빼자는 것이 아닙니다. 재배치되는 인력만큼 학교가 직접 처리하던 업무를 교육청이 실제로 가져와야 합니다. 인력과 업무가 동시에 이동해야 학교가 체감합니다.”</div>
+    </div></section>
+
+    <section class="slide" id="s5"><div class="slide-inner">
+      <div class="slide-no">04 · 제안 2</div><h2>18개 학교행정 분야에 3명씩, 54명의 전문가를 배치합니다</h2>
+      <p class="desc">학교 행정업무를 일정한 핵심 분야로 유형화하고, 분야별 전문인력을 지속적으로 양성해 학교가 언제든 도움을 받을 수 있는 ‘학교 현장 업무 전문지원팀’을 운영하는 방안입니다.</p>
+      <div class="formula"><div class="box"><b>18</b><span>핵심 업무 분야</span></div><div class="op">×</div><div class="box"><b>3</b><span>분야별 전문가</span></div><div class="op">=</div><div class="box result"><b>54명</b><span>학교 현장 업무 전문지원팀</span></div></div>
+      <div class="grid2"><article class="card"><span class="num teal">1 업무 · 3 전문가</span><h3>개인에게 지식이 묶이지 않는 구조</h3><p>1명이 휴직·전보해도 지원이 중단되지 않도록 분야마다 최소 3명의 전문가가 업무지식을 공동으로 축적합니다.</p></article><article class="card"><span class="num">365일</span><h3>상시 접근 가능한 지원체계</h3><p>담당자가 바뀔 때마다 학교가 처음부터 다시 배우는 구조를 바꾸고, ‘이 업무는 이 팀에 문의하면 해결된다’는 명확한 지원창구를 만듭니다.</p></article></div>
+    </div></section>
+
+    <section class="slide" id="s6"><div class="slide-inner">
+      <div class="slide-no">05 · 전문지원 범위</div><h2>학교업무를 분야별로 표준화하고 지식을 교육청에 축적합니다</h2>
+      <p class="desc">아래 18개는 논의를 위한 예시 분류입니다. 실제 T/F에서는 학교 업무조사를 통해 최종 분야를 확정하고 분야 간 업무량 편차에 따라 전문가 수를 조정할 수 있습니다.</p>
+      <div class="tasks"><div class="task">급여·수당</div><div class="task">인사</div><div class="task">복무</div><div class="task">예산</div><div class="task">계약</div><div class="task">지출</div><div class="task">세입·수납</div><div class="task">물품</div><div class="task">공유재산</div><div class="task">시설</div><div class="task">교육공무직</div><div class="task">기록물</div><div class="task">정보공개</div><div class="task">개인정보</div><div class="task">민원</div><div class="task">감사·내부통제</div><div class="task">법령·규정 해석</div><div class="task">학교회계 결산</div></div>
+      <div class="support-grid"><div class="support"><b>상시 업무상담</b><span>전화·메신저·게시판 등 단일 창구 운영</span></div><div class="support"><b>원격 업무지원</b><span>화면공유 등을 통한 실시간 처리 지원</span></div><div class="support"><b>찾아가는 컨설팅</b><span>복잡한 사안은 전문가가 현장 방문 지원</span></div><div class="support"><b>신규·저경력자 교육</b><span>업무별 실습형 교육과 사례 중심 연수</span></div><div class="support"><b>표준 매뉴얼·서식</b><span>학교마다 다르게 처리하는 업무의 표준화</span></div><div class="support"><b>반복질의 분석</b><span>자주 묻는 질문을 제도개선 과제로 환류</span></div><div class="support"><b>오류·감사사례 관리</b><span>실수를 예방하는 체크리스트와 사전검토</span></div><div class="support"><b>고난도 업무 직접지원</b><span>예외·분쟁·복합사안은 전문가가 함께 처리</span></div></div>
+    </div></section>
+
+    <section class="slide" id="s7"><div class="slide-inner">
+      <div class="slide-no">06 · 성과관리</div><h2>조직개편의 성과는 ‘감축 인원’이 아니라 ‘학교의 절감 업무량’으로</h2>
+      <p class="desc">학교현장지원이라는 목적이 분명하다면 조직개편의 KPI도 학교 관점에서 설계해야 합니다. 다음 지표를 개편 전·후로 비교하면 실제 효과를 검증할 수 있습니다.</p>
+      <div class="grid2">
+        <article class="card"><div class="metric"><div class="icon">時</div><div><b>학교 행정업무 시간 절감</b><span>주요 18개 업무별 월평균 처리시간이 얼마나 감소했는지 측정</span></div></div></article>
+        <article class="card"><div class="metric"><div class="icon">↓</div><div><b>학교 직접처리 업무 감소</b><span>학교에서 교육청 지원조직으로 이관·공동처리된 업무 건수와 비율</span></div></div></article>
+        <article class="card"><div class="metric"><div class="icon">✓</div><div><b>오류·감사 지적 감소</b><span>급여·계약·회계 등 반복 오류와 감사 지적의 감소율</span></div></div></article>
+        <article class="card"><div class="metric"><div class="icon">★</div><div><b>현장 만족도·해결률</b><span>전문지원팀 상담의 1차 해결률, 처리시간, 학교 만족도를 정기 측정</span></div></div></article>
+      </div>
+      <div class="roadmap"><div class="road"><span class="step">1</span><b>업무 전수조사</b><p>학교 업무량·직급별 역할·반복질의 분석</p></div><div class="road"><span class="step">2</span><b>시범운영</b><p>고빈도 5~6개 분야부터 전문가 지원 시작</p></div><div class="road"><span class="step">3</span><b>54명 체계 확대</b><p>성과 검증 후 18개 분야 전문지원팀 완성</p></div><div class="road"><span class="step">4</span><b>인력 재배치 연계</b><p>지원업무 흡수량을 근거로 인력을 적재적소 배치</p></div></div>
+    </div></section>
+
+    <section class="slide conclusion" id="s8"><div class="slide-inner">
+      <div class="slide-no">07 · 결론</div><h2>두 제안은 하나의 구조로 연결되어야 합니다</h2>
+      <div class="conclusion-box"><h3>학교지원 역량을 학교 밖에 집중하고, 그 역량으로 학교의 직접 업무를 줄입니다.</h3>
+        <div class="statement"><div class="side"><b>① 숙련된 6급 인력의 전략적 재배치</b><br><span style="font-size:12px;color:#6d828e">학교별 업무량 분석 → 본청·교육지원청·직속기관의 학교지원 기능 강화</span></div><div class="plus">＋</div><div class="side"><b>② 18개 분야 · 54명 전문지원체계</b><br><span style="font-size:12px;color:#6d828e">상담·교육·원격지원·컨설팅·표준화·고난도 업무지원</span></div></div>
+        <div class="final-line">이번 조직개편을 “본청 인원을 몇 명 줄였는가”가 아니라<br><span>“학교 직원들이 몇 시간의 업무를 덜 하게 되었는가”</span>로 평가했으면 합니다.</div>
+      </div>
+      <div class="speaker-note"><b>마무리 발언</b> · “학교현장 지원이라는 이름의 조직개편이라면 가장 중요한 성과는 학교의 체감입니다. 인력과 전문성을 학교지원 조직에 집중하고, 그만큼 학교가 직접 하는 업무를 실제로 줄이는 구조를 만들었으면 합니다.”</div>
+    </div></section>
+  </main>
+
+  <div class="nav" id="navDots" aria-label="발표 페이지 이동"></div>
+  <div class="page-arrows"><button type="button" id="prevBtn" aria-label="이전 페이지">↑</button><button type="button" id="nextBtn" aria-label="다음 페이지">↓</button></div>
+  <script>
+    const slides=[...document.querySelectorAll('.slide')],dots=document.getElementById('navDots'),bar=document.getElementById('progressBar');
+    let current=0;
+    slides.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.title=`${i+1} / ${slides.length}`;b.addEventListener('click',()=>go(i));dots.appendChild(b)});
+    const dotButtons=[...dots.children];
+    function go(i){current=Math.max(0,Math.min(slides.length-1,i));slides[current].scrollIntoView({behavior:'smooth',block:'start'});update(current)}
+    function update(i){current=i;dotButtons.forEach((b,n)=>b.classList.toggle('active',n===i));bar.style.width=((i+1)/slides.length*100)+'%'}
+    const io=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;const i=slides.indexOf(visible.target);if(i>=0)update(i)},{threshold:[.45,.6,.75]});slides.forEach(s=>io.observe(s));
+    document.getElementById('prevBtn').onclick=()=>go(current-1);document.getElementById('nextBtn').onclick=()=>go(current+1);
+    document.addEventListener('keydown',e=>{if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(current+1)}else if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(current-1)}else if(e.key==='Home'){go(0)}else if(e.key==='End'){go(slides.length-1)}});
+    document.getElementById('fullBtn').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch{}};
+    update(0);
+  </script>
+  <script src="latest-home-nav.js?v=20260827-organization"></script>
+</body>
+</html>
