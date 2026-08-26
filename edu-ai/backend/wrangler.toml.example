@@ -1,0 +1,10 @@
+name = "jeonbuk-edu-ai"
+main = "worker.js"
+compatibility_date = "2026-08-26"
+
+[vars]
+ALLOWED_ORIGIN = "https://kwonoyoung.github.io"
+OPENAI_MODEL = "gpt-5.6-luna"
+
+# 배포 전 Cloudflare에서 비밀값으로 등록:
+# wrangler secret put OPENAI_API_KEY
