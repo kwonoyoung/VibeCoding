@@ -40,6 +40,56 @@
     "url":"https://www.jbe.go.kr"
   },
   {
+    "id":"drive-budget-2022-001",
+    "title":"2022년도 전북교육특별회계 예산편성 및 운영지침",
+    "category":"예산·회계",
+    "summary":"Google Drive에 보관된 전북교육특별회계 예산편성 및 운영지침 원본 PDF입니다. Notebook 원본자료 RAG 후보로 등록했습니다.",
+    "keywords":["전북","교육특별회계","예산","편성","운영지침","회계"],
+    "url":"https://drive.google.com/file/d/1rP-HRs01ceZWOGO-7o20L14Enq-ZMZjB/view",
+    "sourceType":"google-drive",
+    "driveFileId":"1rP-HRs01ceZWOGO-7o20L14Enq-ZMZjB"
+  },
+  {
+    "id":"drive-step-correction-001",
+    "title":"지방공무원 호봉 및 근무연수 정정",
+    "category":"급여·호봉",
+    "summary":"전북특별자치도완주교육지원청 관련 지방공무원 호봉 및 근무연수 정정 공문 원본 PDF입니다. 호봉 정정·소급 관련 질의의 근거자료 후보입니다.",
+    "keywords":["지방공무원","호봉","근무연수","정정","소급","전북교육청"],
+    "url":"https://drive.google.com/file/d/1K9PhWDnZsYu-uDZSzaiqQsqonerFJQYJ/view",
+    "sourceType":"google-drive",
+    "driveFileId":"1K9PhWDnZsYu-uDZSzaiqQsqonerFJQYJ"
+  },
+  {
+    "id":"drive-overtime-2010-001",
+    "title":"시간외근무수당 지급 관련 사항 안내(유치원 방과후)",
+    "category":"급여·수당",
+    "summary":"전북교육청 재무과의 시간외근무수당 지급 관련 안내 공문 원본 PDF입니다.",
+    "keywords":["시간외근무수당","초과근무","유치원","방과후","재무과","수당"],
+    "url":"https://drive.google.com/file/d/1u1TiDuMr97tXCTfW9l4stZnP6gwkxJhc/view",
+    "sourceType":"google-drive",
+    "driveFileId":"1u1TiDuMr97tXCTfW9l4stZnP6gwkxJhc"
+  },
+  {
+    "id":"drive-teacher-hr-2025-001",
+    "title":"2025 중등교원 인사업무처리요령 1권",
+    "category":"교원인사",
+    "summary":"중등교원 인사업무 처리 기준을 확인하기 위한 Google Drive 원본 PDF입니다.",
+    "keywords":["중등교원","교원인사","인사업무","처리요령","교사","전보"],
+    "url":"https://drive.google.com/file/d/1VVH2D2xJ69up1fm78jl-5Rs2WJqq5Yu6/view",
+    "sourceType":"google-drive",
+    "driveFileId":"1VVH2D2xJ69up1fm78jl-5Rs2WJqq5Yu6"
+  },
+  {
+    "id":"drive-civil-hr-2025-001",
+    "title":"2025년 일반직공무원 인사운영 기본계획",
+    "category":"지방공무원 인사",
+    "summary":"일반직 지방공무원 인사운영 기준을 확인하기 위한 Google Drive 원본 PDF입니다.",
+    "keywords":["일반직","지방공무원","인사운영","기본계획","승진","전보"],
+    "url":"https://drive.google.com/file/d/1LF7Qx88kU8fkZ2iX4ZbEpp0Vm8hI2LnL/view",
+    "sourceType":"google-drive",
+    "driveFileId":"1LF7Qx88kU8fkZ2iX4ZbEpp0Vm8hI2LnL"
+  },
+  {
     "id":"tool-salary-class-001",
     "title":"기간제교원 호봉획정 계산기",
     "category":"내부 업무도구",
