@@ -24,6 +24,22 @@
     .nav{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:900;display:flex;flex-direction:column;gap:9px}.nav button{width:12px;height:12px;padding:0;border:0;border-radius:50%;background:#a9bbc4;box-shadow:0 0 0 3px rgba(255,255,255,.65);cursor:pointer}.nav button.active{background:var(--teal);transform:scale(1.25)}.arrows{position:fixed;right:18px;bottom:18px;z-index:901;display:flex;gap:7px}.arrows button{width:48px;height:48px;border:1px solid #cbdce4;border-radius:13px;background:rgba(255,255,255,.95);color:#214e62;font-size:24px;font-weight:950;box-shadow:0 8px 24px rgba(16,50,70,.12);cursor:pointer}
     @media(max-width:1120px){.metrics3,.principles,.weights{grid-template-columns:repeat(2,1fr)}.staff-grid,.finance-grid{grid-template-columns:1fr}.decision{grid-template-columns:1fr}.step:after{display:none}.nav{display:none}}
     @media(max-width:760px){.slide{padding:94px 15px 46px}.top-title small,.print-btn{display:none}.top-title{font-size:13px}.btn{padding:8px 9px;font-size:11px}.metrics3,.timeline,.principles,.weights,.questions,.checks{grid-template-columns:1fr}.metric-card .to{font-size:48px}.desc{font-size:18px}.q{font-size:18px}.time-card p,.principle p{font-size:16px}}
+
+    /* 2026-08-27 typography rebalance: content headings one step down, all supporting text one step up */
+    h2{font-size:clamp(36px,4.2vw,54px)}
+    .top-title{font-size:18px}.top-title small{font-size:14px}.btn{font-size:16px}
+    .eyebrow{font-size:18px}.cover h1{font-size:clamp(56px,6.5vw,86px)}.cover .lead{font-size:clamp(25px,2.6vw,33px)}.pills span{font-size:20px}
+    .no{font-size:18px}.desc{font-size:23px}.quote{font-size:clamp(28px,2.8vw,38px)}
+    .metric-card .label{font-size:20px}.metric-card .from{font-size:36px}.metric-card .arrow{font-size:38px}.metric-card .to{font-size:62px}.metric-card .delta{font-size:18px}.metric-card p{font-size:20px}
+    .time-card .date{font-size:28px}.time-card .tag{font-size:16px}.time-card b{font-size:23px}.time-card p{font-size:19px}.struct{font-size:18px}
+    .staff-box b{font-size:23px}.staff-box .value{font-size:52px}.staff-box .value span{font-size:25px}.staff-box p{font-size:19px}.trend h3{font-size:27px}.trend-row{font-size:19px}.trend-row b{font-size:21px}.trend-note{font-size:18px}
+    .principle .n{font-size:19px}.principle b{font-size:23px}.principle p{font-size:19px}
+    .weight b{font-size:23px}.weight strong{font-size:29px}.weight p{font-size:18.5px}
+    .finance-stat h3{font-size:28px}.people-flow .num{font-size:68px}.people-flow .arr{font-size:42px}.people-flow small{font-size:17px}.cut b{font-size:33px}.cut span{font-size:17px}.check{font-size:19px}.check b{font-size:21px}
+    .q{font-size:22px}.q b{font-size:24px}.step b{font-size:21px}.step p{font-size:17px}.step:after{font-size:29px}
+    .closing-box h3{font-size:34px}.closing-line{font-size:clamp(33px,3.6vw,46px)}.speaker{font-size:19px}.arrows button{font-size:26px}
+    @media(max-width:760px){.top-title{font-size:14px}.btn{font-size:12px}.metric-card .to{font-size:52px}.desc{font-size:20px}.q{font-size:20px}.time-card p,.principle p{font-size:18px}}
+
     @media print{html{scroll-snap-type:none}.topbar,.progress,.nav,.arrows{display:none!important}.slide{min-height:auto;page-break-after:always;padding:30px 20px;background:#fff!important;color:#173042!important}.cover{background:#fff!important;color:#173042!important}.cover .lead{color:#526e7b}.card,.metric-card,.time-card,.staff-box,.trend,.principle,.weight,.check,.q,.closing-box{box-shadow:none}}
   </style>
 </head>
