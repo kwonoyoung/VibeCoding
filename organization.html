@@ -22,6 +22,20 @@
 @media(max-width:1050px){.g3,.big,.flow{grid-template-columns:1fr}.arr{transform:rotate(90deg);text-align:center}.roles,.supports,.roads,.tasks{grid-template-columns:repeat(2,1fr)}.statement{grid-template-columns:1fr}.plus{text-align:center}.nav{display:none}}
 @media(max-width:650px){.slide{padding:92px 15px 46px}.top-title small,.print{display:none}.top-title{font-size:13px}.roles,.supports,.roads,.g2,.tasks{grid-template-columns:1fr}.home-btn,.action-btn{padding:8px 9px;font-size:11px}.desc{font-size:17px}.card p{font-size:15.5px}.task{font-size:16px;min-height:70px}}
 @media print{html{scroll-snap-type:none}.topbar,.progress,.nav,.arrows{display:none!important}.slide{min-height:auto;page-break-after:always;padding:30px 20px;background:#fff!important;color:#173042!important}.cover{background:#fff!important;color:#173042!important}.cover .lead{color:#526e7b}}
+
+/* 2026-08-27 typography rebalance v2: requested headings smaller, all other text larger */
+.cover h1{font-size:clamp(42px,5.4vw,68px)!important}h2{font-size:clamp(34px,4.1vw,52px)!important}
+.top-title{font-size:18px!important}.top-title small{font-size:14px!important}.home-btn,.action-btn{font-size:16px!important}
+.eyebrow{font-size:17px!important}.cover .lead{font-size:clamp(23px,2.5vw,31px)!important}.pills span{font-size:19px!important}
+.no{font-size:17px!important}.desc{font-size:22px!important}.quote{font-size:clamp(28px,3vw,39px)!important}
+.card h3{font-size:25px!important}.card p{font-size:19px!important}.num{font-size:50px!important}
+.big .n{font-size:clamp(80px,9.5vw,124px)!important}.big .n small{font-size:33px!important}.big h3{font-size:31px!important}.big p{font-size:21px!important}.caution{font-size:17px!important}
+.role b,.support b{font-size:20px!important}.role span,.support span{font-size:17px!important}
+.flow b{font-size:23px!important}.flow p{font-size:18.5px!important}.arr{font-size:40px!important}
+.formula b{font-size:46px!important}.formula span{font-size:19px!important}.op{font-size:42px!important}
+.task{font-size:20px!important}.metric i{font-size:20px!important}.metric b{font-size:22px!important}.metric span{font-size:18px!important}.road b{font-size:21px!important}.road p{font-size:17px!important}
+.conbox h3{font-size:32px!important}.side{font-size:24px!important}.side span{font-size:18px!important}.plus{font-size:40px!important}.final{font-size:clamp(31px,3.5vw,43px)!important}.note{font-size:18px!important}.arrows button{font-size:25px!important}
+@media(max-width:650px){.cover h1{font-size:clamp(38px,11vw,54px)!important}h2{font-size:clamp(30px,8.2vw,40px)!important}.top-title{font-size:14px!important}.home-btn,.action-btn{font-size:12px!important}.cover .lead{font-size:20px!important}.pills span{font-size:18px!important}.desc{font-size:19px!important}.card p{font-size:17.5px!important}.task{font-size:18px!important}}
 </style></head><body>
 <nav class="topbar"><div class="topbar-inner"><a id="vibecoding-home-btn" data-vibecoding-home="persistent" class="home-btn" href="/VibeCoding/index.html">⌂ 홈</a><div class="top-title">학교현장지원 강화를 위한 조직개편안<small>학교 현장 업무 경감을 위한 구조적 인력운영·전문지원체계 제안</small></div><button class="action-btn print" onclick="window.print()">⎙ 인쇄</button><button class="action-btn" id="fullBtn">⛶ 발표모드</button></div></nav><div class="progress"><span id="bar"></span></div>
 <main>
