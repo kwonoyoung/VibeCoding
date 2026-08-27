@@ -1,0 +1,14 @@
+/* 2026-08-27 typography rebalance v3: requested headings one more step smaller; all other text one more step larger */
+h2{font-size:clamp(28px,3.4vw,44px)!important}
+.top-title{font-size:22px!important}.top-title small{font-size:18px!important}.btn{font-size:20px!important}
+.eyebrow{font-size:22px!important}.cover h1{font-size:clamp(68px,7.4vw,98px)!important}.cover .lead{font-size:clamp(29px,3vw,38px)!important}.pills span{font-size:24px!important}
+.no{font-size:22px!important}.desc{font-size:27px!important}.quote{font-size:clamp(32px,3.2vw,43px)!important}
+.metric-card .label{font-size:24px!important}.metric-card .from{font-size:42px!important}.metric-card .arrow{font-size:44px!important}.metric-card .to{font-size:72px!important}.metric-card .delta{font-size:22px!important}.metric-card p{font-size:24px!important}
+.time-card .date{font-size:33px!important}.time-card .tag{font-size:20px!important}.time-card b{font-size:27px!important}.time-card p{font-size:23px!important}.struct{font-size:22px!important}
+.staff-box b{font-size:27px!important}.staff-box .value{font-size:60px!important}.staff-box .value span{font-size:29px!important}.staff-box p{font-size:23px!important}.trend h3{font-size:32px!important}.trend-row{font-size:23px!important}.trend-row b{font-size:25px!important}.trend-note{font-size:22px!important}
+.principle .n{font-size:23px!important}.principle b{font-size:27px!important}.principle p{font-size:23px!important}
+.weight b{font-size:27px!important}.weight strong{font-size:34px!important}.weight p{font-size:22.5px!important}
+.finance-stat h3{font-size:33px!important}.people-flow .num{font-size:78px!important}.people-flow .arr{font-size:48px!important}.people-flow small{font-size:21px!important}.cut b{font-size:38px!important}.cut span{font-size:21px!important}.check{font-size:23px!important}.check b{font-size:25px!important}
+.q{font-size:26px!important}.q b{font-size:28px!important}.step b{font-size:25px!important}.step p{font-size:21px!important}.step:after{font-size:33px!important}
+.closing-box h3{font-size:39px!important}.closing-line{font-size:clamp(38px,4.1vw,52px)!important}.speaker{font-size:23px!important}.arrows button{font-size:30px!important}
+@media(max-width:760px){h2{font-size:clamp(26px,7.6vw,35px)!important}.top-title{font-size:16px!important}.btn{font-size:14px!important}.cover h1{font-size:clamp(52px,13.5vw,70px)!important}.cover .lead{font-size:25px!important}.pills span{font-size:21px!important}.no{font-size:20px!important}.desc{font-size:24px!important}.q{font-size:24px!important}.time-card p,.principle p{font-size:22px!important}.metric-card .to{font-size:60px!important}}
