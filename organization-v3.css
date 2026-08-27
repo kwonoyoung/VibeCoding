@@ -1,0 +1,13 @@
+/* 2026-08-27 typography rebalance v3: requested headings one more step smaller; all other text one more step larger */
+.cover h1{font-size:clamp(38px,5vw,62px)!important}h2{font-size:clamp(30px,3.7vw,46px)!important}
+.top-title{font-size:20px!important}.top-title small{font-size:16px!important}.home-btn,.action-btn{font-size:18px!important}
+.eyebrow{font-size:19px!important}.cover .lead{font-size:clamp(25px,2.7vw,33px)!important}.pills span{font-size:21px!important}
+.no{font-size:19px!important}.desc{font-size:24px!important}.quote{font-size:clamp(30px,3.2vw,41px)!important}
+.card h3{font-size:27px!important}.card p{font-size:21px!important}.num{font-size:54px!important}
+.big .n{font-size:clamp(84px,9.8vw,128px)!important}.big .n small{font-size:35px!important}.big h3{font-size:33px!important}.big p{font-size:23px!important}.caution{font-size:19px!important}
+.role b,.support b{font-size:22px!important}.role span,.support span{font-size:19px!important}
+.flow b{font-size:25px!important}.flow p{font-size:20.5px!important}.arr{font-size:42px!important}
+.formula b{font-size:50px!important}.formula span{font-size:21px!important}.op{font-size:44px!important}
+.task{font-size:21px!important}.metric i{font-size:22px!important}.metric b{font-size:24px!important}.metric span{font-size:20px!important}.road b{font-size:23px!important}.road p{font-size:19px!important}
+.conbox h3{font-size:34px!important}.side{font-size:26px!important}.side span{font-size:20px!important}.plus{font-size:42px!important}.final{font-size:clamp(33px,3.7vw,45px)!important}.note{font-size:20px!important}.arrows button{font-size:27px!important}
+@media(max-width:650px){.cover h1{font-size:clamp(34px,10vw,48px)!important}h2{font-size:clamp(27px,7.6vw,36px)!important}.top-title{font-size:15px!important}.home-btn,.action-btn{font-size:13px!important}.cover .lead{font-size:22px!important}.pills span{font-size:20px!important}.desc{font-size:21px!important}.card p{font-size:19px!important}.task{font-size:19px!important}}
