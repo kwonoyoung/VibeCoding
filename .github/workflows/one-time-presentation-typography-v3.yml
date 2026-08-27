@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Apply typography overrides v3
-        shell: python
+        shell: python {0}
         run: |
           from pathlib import Path
 
@@ -78,5 +78,3 @@ jobs:
           fi
           git commit -m "Increase presentation typography contrast again"
           git push
-
-# trigger after workflow exists on default branch
