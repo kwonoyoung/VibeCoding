@@ -78,3 +78,5 @@ jobs:
           fi
           git commit -m "Increase presentation typography contrast again"
           git push
+
+# trigger after workflow exists on default branch
