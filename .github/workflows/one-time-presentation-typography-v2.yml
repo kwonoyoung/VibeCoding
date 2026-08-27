@@ -80,3 +80,5 @@ jobs:
           fi
           git commit -m "Refine presentation typography on both pages"
           git push
+
+# trigger: 2026-08-27 v2
