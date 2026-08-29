@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10243a">
+<title>호봉정정 사례로 보는 인사·복무·보수 통합지원팀</title>
+<style>
+:root{--navy:#10243a;--navy2:#193d61;--teal:#1699a7;--blue:#2f6edb;--orange:#f39a43;--violet:#7257d9;--ink:#14263a;--muted:#66788a;--line:#d9e2ea;--soft:#f3f6f8;--body:22px;--title:40px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:#e8edf1}
+body{margin:0;font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);background:#e8edf1;letter-spacing:-.025em}
+.toolbar{position:fixed;z-index:9999;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:8px;padding:8px;border-radius:16px;background:rgba(16,36,58,.92);box-shadow:0 12px 30px rgba(16,36,58,.2);backdrop-filter:blur(10px)}
+.toolbar a,.toolbar button{height:38px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;text-decoration:none;font-weight:850;font-size:14px;cursor:pointer}.toolbar .primary{background:var(--teal)}
+.deck{padding:76px 0 40px}
+.slide{position:relative;width:min(96vw,1500px);aspect-ratio:16/9;margin:0 auto 28px;background:#fff;border:1px solid #d6e0e7;border-radius:16px;box-shadow:0 18px 45px rgba(16,36,58,.14);overflow:hidden}
+.slide.dark{background:var(--navy);color:#fff;border-color:var(--navy)}
+.inner{position:absolute;inset:0;padding:64px 74px 54px;display:flex;flex-direction:column}
+.kicker{font-size:16px;font-weight:900;color:var(--teal);margin-bottom:12px;letter-spacing:.04em}
+.dark .kicker{color:#a7dfdf}
+h1{margin:0;font-size:var(--title);line-height:1.18;letter-spacing:-.045em}
+h2{margin:0;font-size:var(--title);line-height:1.18;letter-spacing:-.045em}
+p,li,td,th,.body{font-size:var(--body);line-height:1.45}
+.sub{margin-top:16px;color:var(--muted);font-size:20px;line-height:1.45}.dark .sub{color:#c9d4df}
+.em{font-weight:900}.accent{color:var(--teal)}.blue{color:var(--blue)}.orange{color:var(--orange)}.violet{color:var(--violet)}
+.rule{height:1px;background:#dce4ea;margin:24px 0}.dark .rule{background:rgba(255,255,255,.16)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{border:1px solid var(--line);border-radius:14px;padding:20px 22px;background:#fff}.card.soft{background:#f7f9fb}.card.bluebg{background:#edf4ff;border-color:#d8e5fb}.card.tealbg{background:#eaf8f6;border-color:#d4eee9}.card.orangebg{background:#fff4e8;border-color:#f3dfc6}.card.violetbg{background:#f3efff;border-color:#e3dcfb}.dark .card{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#fff}
+.card h3{margin:0 0 10px;font-size:24px;line-height:1.25}.card p{margin:0;font-size:20px}
+.bigquote{font-size:34px;line-height:1.35;font-weight:900;max-width:760px}
+.pills{display:flex;gap:12px;flex-wrap:wrap}.pill{padding:12px 18px;border-radius:11px;background:#e9f0f5;font-size:20px;font-weight:850}.dark .pill{background:#20466d;color:#fff}
+.flow{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap}.step{min-width:128px;padding:17px 13px;border-radius:12px;background:#f4f7fa;border:1px solid #dce4ea;text-align:center;font-size:19px;font-weight:850}.step.darkstep{background:#10243a;color:#fff;border-color:#10243a}.step.danger{background:#fff0f1;color:#b5414d;border-color:#f0d2d6}.arrow{font-size:24px;color:#8ca0af;font-weight:900}
+.hub{display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:28px;align-items:center;flex:1}.hub .center{background:#10243a;color:white;border-radius:14px;padding:30px;text-align:center;font-size:28px;font-weight:900}
+.small-list{margin:8px 0 0;padding-left:22px}.small-list li{font-size:19px;margin:5px 0}
+.compare{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:12px}.compare th,.compare td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}.compare th{background:#10243a;color:#fff;text-align:center}.compare th:nth-child(2){background:#c64545}.compare th:nth-child(3){background:#1598a5}.compare tr:last-child td{border-bottom:0}.compare td:first-child{width:14%;font-weight:900;background:#f6f8fa;text-align:center}
+.rolebox{border:1px solid var(--line);border-radius:14px;padding:20px;background:#fff}.rolebox h3{font-size:24px;margin:0 0 15px;text-align:center}.rolebox .band{display:grid;grid-template-columns:66px 1fr;gap:10px;align-items:center;margin:10px 0}.badge{padding:8px 7px;text-align:center;border-radius:8px;color:#fff;font-weight:900;font-size:16px}.b1{background:#316fd4}.b2{background:#1597a3}.b3{background:#ed923d}
+.kpis{display:flex;gap:10px;flex-wrap:wrap}.kpi{background:#173b61;color:white;border-radius:9px;padding:10px 16px;font-size:17px;font-weight:850}
+.roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;align-items:start}.road{position:relative;border:1px solid var(--line);border-radius:14px;padding:18px;background:#fff}.road:not(:last-child):after{content:"→";position:absolute;right:-19px;top:47%;font-size:26px;color:#8fa0ac}.num{display:inline-block;padding:5px 9px;border-radius:6px;background:#2f6edb;color:#fff;font-size:14px;font-weight:900;margin-bottom:12px}
+.footer{position:absolute;left:74px;right:74px;bottom:20px;display:flex;justify-content:space-between;color:#8a9aa6;font-size:12px}.dark .footer{color:#8ea0b1}
+.note{margin-top:auto;padding-top:18px;font-size:20px;font-weight:800}
+.centerall{display:flex;flex-direction:column;justify-content:center;height:100%}
+.presentation body,.presentation{background:#04080d}.presentation .toolbar{opacity:.15}.presentation .toolbar:hover{opacity:1}.presentation .deck{padding:0}.presentation .slide{display:none;width:100vw;height:100vh;max-width:none;aspect-ratio:auto;margin:0;border:0;border-radius:0;box-shadow:none}.presentation .slide.active{display:block}.presentation .inner{padding:6vh 6vw}.presentation .footer{display:none}
+.nav{position:fixed;z-index:9998;right:16px;bottom:16px;display:flex;gap:7px}.nav button{width:42px;height:42px;border:0;border-radius:11px;background:rgba(16,36,58,.92);color:white;font-size:20px;font-weight:900;cursor:pointer}
+@media(max-width:900px){:root{--title:30px;--body:17px}.inner{padding:46px 34px 40px}.grid3,.grid4,.roadmap{gap:10px}.card{padding:14px}.card h3{font-size:19px}.card p,.small-list li{font-size:16px}.footer{left:34px;right:34px}.rolebox .band{grid-template-columns:56px 1fr}.compare th,.compare td{padding:8px 9px}.toolbar{top:6px}.deck{padding-top:62px}}
+@media(max-width:640px){.slide{width:99vw;border-radius:8px}.toolbar a,.toolbar button{height:33px;padding:0 9px;font-size:12px}.grid2,.grid3,.grid4,.roadmap{grid-template-columns:1fr}.hub{grid-template-columns:1fr}.flow{justify-content:flex-start}.slide{aspect-ratio:auto;min-height:820px}.inner{position:relative;min-height:820px}.footer{display:none}}
+@media print{body{background:#fff}.toolbar,.nav{display:none!important}.deck{padding:0}.slide{width:100%;page-break-after:always;margin:0;border:0;border-radius:0;box-shadow:none}}
+</style>
+</head>
+<body>
+<nav class="toolbar" aria-label="발표자료 도구">
+<a id="vibecoding-home-btn" data-vibecoding-home="persistent" href="index.html">⌂ 홈</a>
+<button type="button" onclick="window.print()">⎙ 인쇄</button>
+<button id="presentBtn" class="primary" type="button">⛶ 발표모드</button>
+<button id="exitBtn" type="button">발표 종료</button>
+</nav>
+<main class="deck">
+
+<section class="slide dark" id="s1"><div class="inner centerall">
+<div class="kicker">조직개편 보완사례</div>
+<h1>호봉정정 사례로 보는<br>인사·복무·보수 통합지원팀</h1>
+<p class="sub">학교현장지원 강화를 위한 조직개편안 제안 2가지와 연결한 실제 사례</p>
+<div class="rule"></div>
+<p class="body em">핵심 메시지&nbsp;&nbsp; 조직을 합치는 것이 아니라, 업무를 연결하는 것입니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>1/12</span></div>
+</div></section>
+
+<section class="slide" id="s2"><div class="inner">
+<div class="kicker">핵심</div><h2>학교 현장의 문제는<br>“인사·복무·보수”라는<br>이름표를 달고 오지 않습니다.</h2>
+<div style="flex:1;display:grid;grid-template-columns:1.15fr 1fr;gap:36px;align-items:center">
+<div></div>
+<div class="grid3" style="grid-template-columns:1fr">
+<div class="card bluebg"><h3>1&nbsp; 문제</h3><p>사안은 하나인데 답변은 여러 갈래로 나뉩니다.</p></div>
+<div class="card tealbg"><h3>2&nbsp; 대안</h3><p>인사·복무·보수 담당자가 한 사안으로 공동 검토합니다.</p></div>
+<div class="card violetbg"><h3>3&nbsp; 효과</h3><p>학교는 한 곳에 문의하고 하나의 기준을 받습니다.</p></div>
+</div></div>
+<p class="note">조직개편안의 방향을 “인력 배치”에서 끝내지 않고, 실제 학교가 겪는 복합 사안을 처리하는 구조로 구체화합니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>2/12</span></div>
+</div></section>
+
+<section class="slide" id="s3"><div class="inner">
+<div class="kicker">맥락</div><h2>기존 조직개편안 2가지와 연결되는 보완안</h2>
+<div class="grid3" style="margin-top:38px;align-items:stretch">
+<div class="card bluebg"><h3>제안 ①</h3><p class="em">숙련된 6급 인력<br>전략적 재배치</p><p style="margin-top:12px">경험과 판단역량을<br>학교지원 기능에 집중</p></div>
+<div class="card" style="background:#10243a;color:#fff"><h3>보완 제안</h3><p class="em">연계성이 높은 업무는<br>통합 전문지원팀으로 운영</p><p style="margin-top:12px;color:#b9dede">사례 : 호봉정정</p></div>
+<div class="card orangebg"><h3>제안 ②</h3><p class="em">18개 분야 × 3명<br>전문지원체계</p><p style="margin-top:12px">업무지식을 개인이 아닌<br>팀 단위로 축적</p></div>
+</div>
+<p class="note">기존 제안서의 핵심: 학교 밖에 강력한 지원역량을 만들고, 학교가 직접 처리하는 업무량을 줄이는 것</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>3/12</span></div>
+</div></section>
+
+<section class="slide" id="s4"><div class="inner">
+<div class="kicker">실제 사례</div><h2>호봉정정은 단일 부서 업무가 아닙니다</h2>
+<p class="sub">하나의 처분이 네 가지 업무를 동시에 움직입니다.</p>
+<div class="hub">
+<div><div class="card bluebg"><h3>인사</h3><ul class="small-list"><li>경력 인정</li><li>호봉획정·정정</li><li>처분 근거·적용일</li></ul></div><div class="card violetbg" style="margin-top:18px"><h3>법률·절차</h3><ul class="small-list"><li>하자 정도</li><li>당연무효 여부</li><li>소멸시효 검토</li></ul></div></div>
+<div class="center">호봉정정<br>+ 급여 환수</div>
+<div><div class="card tealbg"><h3>보수</h3><ul class="small-list"><li>급여 재산정</li><li>환수·추가지급</li><li>월별 금액 산출</li></ul></div><div class="card orangebg" style="margin-top:18px"><h3>학교</h3><ul class="small-list"><li>처분 확인</li><li>당사자 안내</li><li>후속 업무 처리</li></ul></div></div>
+</div>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>4/12</span></div>
+</div></section>
+
+<section class="slide" id="s5"><div class="inner">
+<div class="kicker">Before</div><h2>조직개편 전 : 학교가 답변을 “조립” 해야 합니다</h2>
+<div class="flow" style="margin:42px 0 30px"><div class="step darkstep">호봉정정<br>발생</div><span class="arrow">→</span><div class="step">인사부서<br>문의</div><span class="arrow">→</span><div class="step">보수부서<br>문의</div><span class="arrow">→</span><div class="step">법률검토<br>재문의</div><span class="arrow">→</span><div class="step">학교가<br>답변 취합</div><span class="arrow">→</span><div class="step danger">당사자<br>안내·분쟁</div></div>
+<div class="grid4">
+<div><h3 style="font-size:21px;color:#2f6edb">반복 설명</h3><p style="font-size:19px">동일한 사실관계를 여러 부서에 반복 설명</p></div>
+<div><h3 style="font-size:21px;color:#f39a43">기준 차이</h3><p style="font-size:19px">부서마다 판단 범위와 답변의 결이 달라짐</p></div>
+<div><h3 style="font-size:21px;color:#1699a7">학교 부담</h3><p style="font-size:19px">학교가 최종적으로 답변을 취합·정리</p></div>
+<div><h3 style="font-size:21px;color:#c64545">분쟁 위험</h3><p style="font-size:19px">환수·소멸시효 쟁점이 뒤늦게 민원화</p></div>
+</div>
+<p class="note">핵심 문제 : 업무가 복잡해서가 아니라, 연결된 업무가 분절되어 있기 때문입니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>5/12</span></div>
+</div></section>
+
+<section class="slide dark" id="s6"><div class="inner">
+<div class="kicker">현장의 체감 문제</div><h2>분절 구조가 만드는 세 가지 리스크</h2>
+<div class="grid3" style="margin-top:42px">
+<div class="card" style="background:#1d3e67"><h3>교원·당사자</h3><p class="em">왜 환수되는지<br>근거를 알기 어려움</p><p style="margin-top:16px;color:#aac2dc">방어권 제약</p></div>
+<div class="card" style="background:#164e5b"><h3>학교 담당자</h3><p class="em">부서 답변을<br>취합·조정해야 함</p><p style="margin-top:16px;color:#aee2dc">업무 부담 증가</p></div>
+<div class="card" style="background:#4b315f"><h3>교육청</h3><p class="em">처분·환수 기준이<br>뒤늦게 다투어짐</p><p style="margin-top:16px;color:#d7c2ed">민원·소송 리스크</p></div>
+</div>
+<p class="note">호봉정정은 “처분”과 “금전 처리”가 이어지는 사안이므로, 초기 판단의 품질이 곧 분쟁 예방입니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>6/12</span></div>
+</div></section>
+
+<section class="slide" id="s7"><div class="inner">
+<div class="kicker">After</div><h2>조직개편 후 : 한 곳에서 공동 검토합니다</h2>
+<div style="display:grid;grid-template-columns:170px 1fr 170px;gap:28px;align-items:center;flex:1">
+<div class="step" style="font-size:24px;background:#fff">학교<br>단일 접수</div>
+<div class="card soft" style="padding:26px">
+<h3 style="text-align:center">인사·복무·보수 통합 전문지원팀</h3>
+<div class="grid3" style="margin-top:20px">
+<div class="card bluebg"><h3>인사</h3><p>경력·호봉<br>처분 근거</p></div>
+<div class="card tealbg"><h3>복무</h3><p>휴직·복직<br>승급 연계</p></div>
+<div class="card orangebg"><h3>보수</h3><p>급여 재산정<br>환수·추가지급</p></div>
+</div>
+<p style="margin:18px 0 0;text-align:center;font-size:18px;font-weight:850">공동 검토 · 기준 통일 · 경위서 제공 · 학교 안내</p>
+</div>
+<div class="step darkstep" style="font-size:24px">하나의<br>처리기준</div>
+</div>
+<p class="note">학교는 한 곳에 문의하고, 하나의 답변을 받습니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>7/12</span></div>
+</div></section>
+
+<section class="slide" id="s8"><div class="inner">
+<div class="kicker">Before / After</div><h2>호봉정정 처리 방식 비교</h2>
+<table class="compare" style="margin-top:30px">
+<tr><th>구분</th><th>현행 분절형 조직</th><th>통합 전문지원팀</th></tr>
+<tr><td>문의창구</td><td>인사·보수·법률 검토를<br>각각 확인</td><td>통합팀에 단일 접수</td></tr>
+<tr><td>판단방식</td><td>부서별 판단을<br>학교가 취합</td><td>인사·보수 담당자<br>공동 검토</td></tr>
+<tr><td>학교부담</td><td>반복 설명·답변 정리<br>당사자 항의 대응</td><td>최종 방안만 확인하고<br>후속 처리</td></tr>
+<tr><td>리스크</td><td>기준 차이로 민원·쟁송<br>가능성 증가</td><td>기준 통일로 분쟁<br>사전 예방</td></tr>
+</table>
+<p class="note">비교의 핵심 : 학교가 “해석자”가 아니라 “지원받는 주체”가 되어야 합니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>8/12</span></div>
+</div></section>
+
+<section class="slide" id="s9"><div class="inner">
+<div class="kicker">운영 설계</div><h2>통합 전문지원팀 구성 초안</h2>
+<p class="sub">직종별 칸막이를 유지하되, 사안 처리는 통합합니다.</p>
+<div class="grid3" style="margin-top:30px">
+<div class="rolebox"><h3 class="blue">교원</h3><div class="band"><span class="badge b1">인사</span><span>임용·경력·호봉</span></div><div class="band"><span class="badge b1">복무</span><span>휴직·복직·승급</span></div><div class="band"><span class="badge b1">보수</span><span>급여·환수·정산</span></div></div>
+<div class="rolebox"><h3 class="accent">지방공무원</h3><div class="band"><span class="badge b2">인사</span><span>임용·경력·호봉</span></div><div class="band"><span class="badge b2">복무</span><span>휴직·복직·승급</span></div><div class="band"><span class="badge b2">보수</span><span>급여·환수·정산</span></div></div>
+<div class="rolebox"><h3 class="orange">교육공무직</h3><div class="band"><span class="badge b3">인사</span><span>임용·경력·호봉</span></div><div class="band"><span class="badge b3">복무</span><span>휴직·복직·승급</span></div><div class="band"><span class="badge b3">보수</span><span>급여·환수·정산</span></div></div>
+</div>
+<p class="note"><span class="accent">공통 운영 원칙</span>&nbsp;&nbsp; 단일 접수 · 공동 검토 · 표준서식 · 경위서 제공 · 사례 축적</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>9/12</span></div>
+</div></section>
+
+<section class="slide" id="s10"><div class="inner">
+<div class="kicker">성과는 학교 관점에서</div><h2>통합팀 구성에 따른 시너지</h2>
+<div class="grid2" style="margin-top:28px">
+<div class="card bluebg"><h3>문의창구 일원화</h3><p>“어디에 물어봐야 하나”를 없앱니다.</p></div>
+<div class="card tealbg"><h3>처리기준 표준화</h3><p>직종·부서별 다른 답변을 줄입니다.</p></div>
+<div class="card bluebg"><h3>오류 예방</h3><p>인사처분과 보수처리를 함께 검토합니다.</p></div>
+<div class="card tealbg"><h3>분쟁 감소</h3><p>민원·정보공개·쟁송 가능성을 줄입니다.</p></div>
+</div>
+<h3 style="font-size:23px;margin:24px 0 12px">성과지표 예시</h3>
+<div class="kpis"><span class="kpi">1차 해결률</span><span class="kpi">평균 처리기간</span><span class="kpi">학교 반복문의 감소</span><span class="kpi" style="background:#ef9441">환수 관련 민원 감소</span><span class="kpi" style="background:#7559dd">표준사례 축적 건수</span></div>
+<p class="note">조직개편의 평가는 “본청 인원이 몇 명 줄었는가”보다 “학교가 직접 처리하는 업무와 시간이 얼마나 줄었는가”로 해야 합니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>10/12</span></div>
+</div></section>
+
+<section class="slide" id="s11"><div class="inner">
+<div class="kicker">운영 로드맵</div><h2>실행은 작게 시작해 표준화합니다</h2>
+<div class="roadmap" style="margin-top:44px">
+<div class="road"><span class="num">1단계</span><h3>사례 선정</h3><p>호봉정정·급여환수 등<br>연계성이 높은 업무부터</p></div>
+<div class="road"><span class="num" style="background:#1598a5">2단계</span><h3>시범 운영</h3><p>통합 접수·공동 검토<br>경위서·표준답변 작성</p></div>
+<div class="road"><span class="num" style="background:#ef9441">3단계</span><h3>표준화</h3><p>공문 서식·체크리스트<br>FAQ·사례집 정비</p></div>
+<div class="road"><span class="num" style="background:#7559dd">4단계</span><h3>확대 적용</h3><p>인사·복무·보수 전반<br>직종별 통합지원 확대</p></div>
+</div>
+<p class="note">첫 시범업무로 호봉정정을 선택하면 “사안 중심 통합지원”의 필요성과 효과를 가장 빠르게 보여줄 수 있습니다.</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>11/12</span></div>
+</div></section>
+
+<section class="slide dark" id="s12"><div class="inner centerall">
+<h1>핵심은 조직을 합치는 것이 아니라,<br>업무를 연결하는 것입니다.</h1>
+<p class="sub" style="max-width:1000px;margin-top:26px">학교 현장의 문제는 행정기관 내부의 업무분장대로 발생하지 않습니다.<br>따라서 학교지원 조직도 학교가 문제를 해결하는 흐름에 맞춰 설계되어야 합니다.</p>
+<div class="pills" style="margin-top:38px"><span class="pill">학교 부담 감소</span><span class="pill">기준 통일</span><span class="pill">분쟁 예방</span></div>
+<p style="margin-top:42px;color:#f5b342;font-size:22px;font-weight:900">제안 : 호봉정정 사례를 시작점으로 「인사·복무·보수 통합 전문지원팀」 시범 운영</p>
+<div class="footer"><span>학교현장지원 조직개편 보완사례</span><span>12/12</span></div>
+</div></section>
+
+</main>
+<div class="nav"><button id="prevBtn" aria-label="이전 슬라이드">‹</button><button id="nextBtn" aria-label="다음 슬라이드">›</button></div>
+<script src="latest-home-nav.js?v=20260829-organization2"></script>
+<script>
+(()=>{const slides=[...document.querySelectorAll('.slide')];let i=0;
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));if(document.documentElement.classList.contains('presentation'))location.hash='s'+(i+1)}
+function enter(){document.documentElement.classList.add('presentation');show(i);document.documentElement.requestFullscreen?.().catch(()=>{})}
+function exit(){document.documentElement.classList.remove('presentation');slides.forEach(s=>s.classList.remove('active'));if(document.fullscreenElement)document.exitFullscreen?.().catch(()=>{})}
+document.getElementById('presentBtn').onclick=enter;document.getElementById('exitBtn').onclick=exit;document.getElementById('prevBtn').onclick=()=>show(i-1);document.getElementById('nextBtn').onclick=()=>show(i+1);
+document.addEventListener('keydown',e=>{if(!document.documentElement.classList.contains('presentation'))return;if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){e.preventDefault();show(i+1)}else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}else if(e.key==='Escape')exit()});
+const m=location.hash.match(/^#s(\d+)$/);if(m)i=Math.max(0,Math.min(slides.length-1,Number(m[1])-1));
+})();
+</script>
+</body></html>
