@@ -63,7 +63,7 @@
   const SUPABASE_URL='https://eqpiuszmgrwituwprgdc.supabase.co';
   const SUPABASE_KEY='sb_publishable_SN2iYw3cBqstKGIS3NdoTw_5ghetwqQ';
   if(!window.supabase){setTimeout(addPublicStatsMenu,0);return}
-  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),tools=[...document.querySelectorAll('a.tool[href]')];
+  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY),tools=[...document.querySelectorAll('a.tool[href]')].filter(a=>{const h=a.getAttribute('href')||'';return h!=='reorganization.html'&&!h.endsWith('/reorganization.html')});
   const style=document.createElement('style');style.textContent=`.permission-badge{position:absolute;right:14px;bottom:12px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:900;letter-spacing:-.02em;border:1px solid transparent;z-index:3}.permission-ok{background:#e8f7ef;color:#167346;border-color:#c9ead8}.permission-no{background:#fff0f1;color:#b33f4b;border-color:#f2cfd3}.permission-wait{background:#fff7e6;color:#9a6811;border-color:#f0dfb8}.permission-login{background:#eef3f6;color:#5b7280;border-color:#dae5eb}.tool.permission-denied{opacity:.58;filter:saturate(.72)}.tool.permission-denied .arrow{background:#fff0f1;color:#b33f4b}`;document.head.appendChild(style);
   function pageName(a){try{const u=new URL(a.href,location.href),marker='/VibeCoding/',i=u.pathname.indexOf(marker);return decodeURIComponent((i>=0?u.pathname.slice(i+marker.length):u.pathname.replace(/^\/+/,''))||'')}catch{return''}}
   function setBadge(a,text,kind){let b=a.querySelector('.permission-badge');if(!b){b=document.createElement('span');b.className='permission-badge';a.appendChild(b)}b.textContent=text;b.className='permission-badge '+kind}
