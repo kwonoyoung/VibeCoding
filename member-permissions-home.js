@@ -53,7 +53,7 @@
   addMenu({sectionTitle:'급여·수당',href:'parental2024.html',cls:'leave',icon:'24',title:'2024년 공무원 육아휴직수당 월중 계산기',desc:'2024년 기준의 역월·월중 일할계산과 복직합산금을 계산합니다.'});
   reorderParentalMenus();
   addMenu({sectionTitle:'공문서·업무지원',href:'school_budget.html',cls:'doc',icon:'₩',title:'학교 예산 현황 분석',desc:'학교회계 예산 업무를 빠르게 확인하고 처리하는 도구입니다.'});
-  addMenu({sectionTitle:'공문서·업무지원',href:'organization.html',cls:'doc',icon:'組',title:'학교현장지원 강화를 위한 조직개편안',desc:'학교 업무 경감을 위한 6급 인력 재배치와 54명 전문지원체계 제안입니다.'});
+  addMenu({sectionTitle:'공문서·업무지원',href:'organization2.html',cls:'doc',icon:'組',title:'학교현장지원 강화를 위한 조직개편안',desc:'호봉정정 사례로 보는 인사·복무·보수 통합 전문지원팀 제안입니다.'});
   addMenu({sectionTitle:'공문서·업무지원',href:'reorganization-presentation.html',cls:'doc',icon:'▶',title:'학교현장지원 강화를 위한 조직개편(발표)',desc:'조직개편 연혁·본청 인력 추이·적정인력 판단과 T/F 핵심질문을 발표 화면으로 확인합니다.'});
   addMenu({sectionTitle:'복무·인사',href:'resource.html',cls:'people',icon:'👥',title:'인사발령 자료 분석',desc:'학교·기관별, 지역별, 직렬·직군·과목별 전입·전출 명단을 집계합니다.'});
   addMenu({sectionTitle:'복무·인사',href:'vctn.html',cls:'people',icon:'休',title:'연차개수 계산기',desc:'입사일·퇴직일을 기준으로 연차 유급휴가 발생 일수를 계산합니다.'});
