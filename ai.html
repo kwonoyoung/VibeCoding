@@ -25,9 +25,9 @@
     <div class="updated">
       <span id="freshness" class="freshness"><span class="freshness-dot"></span><span id="freshnessText">검토 상태 확인 중</span></span>
       <span class="freshness">최근 검토: <strong id="lastReviewed">-</strong></span>
-      <span class="freshness">다음 검토: <strong id="nextReview">-</strong></span>
+      <span class="freshness">다음 실행 예정: <strong id="nextReview">-</strong></span>
     </div>
-    <div class="review-policy">매일 오전 1시(한국시간)에 4개 영역의 신규·종료·명칭 변경·공식 링크와 최신 공개 MAU를 점검합니다. 검증된 내용만 반영하고 확인할 수 없는 수치는 추정하지 않습니다.</div>
+    <div class="review-policy">매일 오전 1시(한국시간)에 자동 검토를 시작하여 4개 영역의 신규·종료·명칭 변경·공식 링크와 최신 공개 MAU를 점검합니다. 검증된 내용만 반영하고 확인할 수 없는 수치는 추정하지 않습니다. 검토·배포에 시간이 소요될 수 있으며, 최근 검토일은 검토가 성공한 경우에만 갱신됩니다.</div>
   </div></header>
 
   <main class="wrap">
@@ -250,22 +250,27 @@
 
     const formatKoreanDate = date => new Intl.DateTimeFormat("ko-KR", {year:"numeric",month:"long",day:"numeric",timeZone:"Asia/Seoul"}).format(date);
     const reviewedDate = new Date(`${REVIEWED_AT}T00:00:00+09:00`);
-    const nextReviewDate = new Date(reviewedDate.getTime()+86400000);
-    const todayKst = new Date(new Date().toLocaleString("en-US", {timeZone:"Asia/Seoul"}));
-    todayKst.setHours(0,0,0,0);
+    const now = new Date();
+    const kstParts = new Intl.DateTimeFormat("en-CA", {
+      timeZone:"Asia/Seoul", year:"numeric", month:"2-digit", day:"2-digit"
+    }).formatToParts(now);
+    const part = type => kstParts.find(item => item.type === type).value;
+    const todayKst = new Date(`${part("year")}-${part("month")}-${part("day")}T00:00:00+09:00`);
+    const scheduledToday = new Date(todayKst.getTime() + 3600000);
+    const nextRun = new Date(scheduledToday.getTime() + (now >= scheduledToday ? 86400000 : 0));
+    const dueDate = new Date(reviewedDate.getTime() + 86400000 + 3600000);
     document.getElementById("lastReviewed").textContent = formatKoreanDate(reviewedDate);
-    document.getElementById("nextReview").textContent = formatKoreanDate(nextReviewDate);
+    document.getElementById("nextReview").textContent = `${formatKoreanDate(nextRun)} 오전 1시`;
     const freshness = document.getElementById("freshness");
     const freshnessText = document.getElementById("freshnessText");
-    const daysUntil = Math.ceil((nextReviewDate - todayKst) / 86400000);
-    if (todayKst > nextReviewDate) {
+    if (now >= dueDate) {
       freshness.classList.add("overdue");
-      freshnessText.textContent = `검토 기한 ${Math.abs(daysUntil)}일 경과 · 현행화 필요`;
-    } else if (daysUntil <= 2) {
-      freshness.classList.add("review");
-      freshnessText.textContent = `다음 검토까지 ${daysUntil}일`;
+      const overdueDays = Math.floor((now - dueDate) / 86400000);
+      freshnessText.textContent = overdueDays > 0
+        ? `검토 기한 ${overdueDays}일 경과 · 현행화 필요`
+        : "오늘 검토 결과 대기 · 완료 여부 확인 필요";
     } else {
-      freshnessText.textContent = `최신 검토 완료 · ${daysUntil}일 후 재검토`;
+      freshnessText.textContent = "최근 검토 완료 · 다음 자동 검토 예정";
     }
 
     const sectionsEl = document.getElementById("sections");
