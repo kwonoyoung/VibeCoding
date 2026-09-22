@@ -58,6 +58,6 @@ async function load(file){if(!file)return;loadedFileName=file.name;$('fileName')
 $('loadBtn').onclick=()=>$('fileInput').click();$('fileInput').onchange=e=>load(e.target.files[0]);$('resetBtn').onclick=resetAll;$('groupMode').onchange=()=>{activeGroup='전체';render()};$('dateFilter').onchange=()=>{activeGroup='전체';render()};$('resultSearch').oninput=()=>{activeGroup='전체';render()};$('downloadBtn').onclick=download;$('modalClose').onclick=()=>$('modalBg').classList.remove('show');$('modalBg').onclick=e=>{if(e.target===$('modalBg'))$('modalBg').classList.remove('show')};
 </script>
 <script src="latest-home-nav.js?v=20260825-resource-columns"></script>
-<script src="./resource-202610-hotfix.js?v=20260922-20261001"></script>
+<script src="./resource-202610-hotfix.js?v=20260922-transfer-export"></script>
 <script src="./resource-formatdept-fix.js?v=20260922-formatdept"></script>
 </body></html>
