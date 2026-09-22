@@ -9,9 +9,6 @@
       typeof normalizeDate !== 'function' || typeof rank !== 'function' ||
       typeof norm !== 'function' || typeof dateText !== 'function') return;
 
-  if (Array.isArray(TYPES) && !TYPES.includes('인사발령')) TYPES.unshift('인사발령');
-  if (typeof BC === 'object') BC['인사발령'] = 'general';
-
   const FALLBACK_2025 = {
     s: 0.0782, n: 0.1393, ag: 0.2356, at: 0.3247,
     a: 0.5126, cg: 0.6089, ct: 0.6980, c: 0.8820, d: 0.9580
@@ -138,25 +135,24 @@
       r.oldTitle = '';
       r.oldDept = '';
       r.oldStatus = '';
-      r.type = '인사발령';
+      r.type = '전보';
       r.subtype = '신규임용';
       r.changes = ['신규임용'];
       return r;
     }
 
     r.changes = [];
-    const oldRank = rank(r.oldGrade), newRank = rank(r.newGrade);
-    if (oldRank && newRank && newRank > oldRank) r.changes.push('승진');
+    if (isPromotion(r.oldGrade,r.newGrade)) r.changes.push('승진');
     else if (r.oldGrade && r.newGrade && compact(r.oldGrade) !== compact(r.newGrade)) r.changes.push('직급변경');
     if (norm(r.oldTitle) !== norm(r.newTitle) && (r.oldTitle || r.newTitle)) r.changes.push('직위변경');
     if (norm(r.oldDept) !== norm(r.newDept) && (r.oldDept || r.newDept)) r.changes.push('전보');
-    r.type = r.changes.includes('승진') ? '승진' : '인사발령';
-    r.subtype = r.changes.join(' + ') || '인사발령';
+    r.type = r.changes.includes('승진') ? '승진' : '전보';
+    r.subtype = r.changes.join(' + ') || '전보';
     return r;
   }
 
   function normalizeSpecialRecord(r) {
-    if (r.type === '인사발령') return normalizeGeneralRecord(r);
+    if (r.type === '전보' || r.type === '인사발령') return normalizeGeneralRecord(r);
     if (r.type === '명예퇴직') {
       const m = compact(r.rawAppointment).match(/(20\d{2})[.\-/](\d{1,2})[.\-/](\d{1,2})\.?/);
       if (m) r.appointmentDate = dateText(m[1], m[2], m[3]);
@@ -276,38 +272,6 @@
     fileYear = detectYear(file.name, all) || fileYear;
     resolveDates(out);
     return out;
-  };
-
-  render = function() {
-    let rows = filtered(), m = $('groupMode').value, map = new Map();
-    rows.forEach(r => { let k = key(r, m); map.set(k, (map.get(k) || 0) + 1); });
-    let gs = [...map.entries()].sort((a, b) => b[1] - a[1]);
-    $('groupCount').textContent = `${gs.length}개`;
-    $('groupRows').innerHTML = `<tr class="group-row ${activeGroup === '전체' ? 'active' : ''}" data-g="전체"><td>전체</td><td class="num"><span class="pill">${rows.length}</span></td></tr>` +
-      gs.map(x => `<tr class="group-row ${activeGroup === x[0] ? 'active' : ''}" data-g="${esc(x[0])}"><td>${esc(x[0])}</td><td class="num"><span class="pill">${x[1]}</span></td></tr>`).join('');
-    $('groupRows').querySelectorAll('tr').forEach(tr => tr.onclick = () => { activeGroup = tr.dataset.g; render(); });
-    if (activeGroup !== '전체') rows = rows.filter(r => key(r, m) === activeGroup);
-    $('detailCount').textContent = `${rows.length}명`;
-    $('detailTitle').textContent = activeType === '전체' ? '전체 발령 명단' : `${activeType} 명단`;
-    let head = '', body = '';
-    if (activeType === '전체' || activeType === '승진' || activeType === '인사발령') {
-      head = groupedHead(); body = rows.map(groupedRow).join('');
-    } else if (activeType === '복직') {
-      head = '<tr><th>번호</th><th>성명</th><th>임용 직급</th><th>임용 직위</th><th>임용 부서</th><th>현임 직급</th><th>현임 직위</th><th>현임 부서</th><th>분석</th><th>임용일</th></tr>';
-      body = rows.map(r => `<tr class="detail-row" data-i="${records.indexOf(r)}"><td>${r.serial}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.newGrade || '-')}</td><td>${esc(r.newTitle || '-')}</td><td>${esc(formatDept(r.newDept) || '-')}</td><td>${esc(r.oldGrade || '-')}</td><td>${esc(r.oldTitle || '-')}</td><td>${esc(formatDept(r.oldDept) || '-')}</td><td>${tags(r)}</td><td>${esc(r.appointmentDate || '-')}</td></tr>`).join('');
-    } else if (activeType === '휴직') {
-      head = '<tr><th>번호</th><th>성명</th><th>현임 직급</th><th>현임 직위</th><th>현임 부서</th><th>휴직구분</th><th>휴직기간</th><th>임용일</th></tr>';
-      body = rows.map(r => `<tr class="detail-row" data-i="${records.indexOf(r)}"><td>${r.serial}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.oldGrade || '-')}</td><td>${esc(r.oldTitle || '-')}</td><td>${esc(formatDept(r.oldDept) || '-')}</td><td>${esc(r.subtype)}</td><td>${esc(r.period || '-')}</td><td>${esc(r.appointmentDate || '-')}</td></tr>`).join('');
-    } else if (activeType === '파견') {
-      head = '<tr><th>번호</th><th>성명</th><th>현임 직급</th><th>현임 직위</th><th>현임 부서</th><th>파견기관</th><th>구분</th><th>파견기간</th><th>임용일</th></tr>';
-      body = rows.map(r => `<tr class="detail-row" data-i="${records.indexOf(r)}"><td>${r.serial}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.oldGrade || '-')}</td><td>${esc(r.oldTitle || '-')}</td><td>${esc(formatDept(r.oldDept) || '-')}</td><td>${esc(r.target || '-')}</td><td>${esc(r.subtype)}</td><td>${esc(r.period || '-')}</td><td>${esc(r.appointmentDate || '-')}</td></tr>`).join('');
-    } else {
-      head = '<tr><th>번호</th><th>성명</th><th>현임 직급</th><th>현임 직위</th><th>현임 부서</th><th>퇴직구분</th><th>퇴직일</th></tr>';
-      body = rows.map(r => `<tr class="detail-row" data-i="${records.indexOf(r)}"><td>${r.serial}</td><td><b>${esc(r.name)}</b></td><td>${esc(r.oldGrade || '-')}</td><td>${esc(r.oldTitle || '-')}</td><td>${esc(formatDept(r.oldDept) || '-')}</td><td>${esc(r.subtype)}</td><td>${esc(r.appointmentDate || '-')}</td></tr>`).join('');
-    }
-    $('detailHead').innerHTML = head;
-    $('detailRows').innerHTML = body || '<tr><td colspan="11" class="empty">조건에 맞는 자료가 없습니다.</td></tr>';
-    $('detailRows').querySelectorAll('.detail-row').forEach(tr => tr.onclick = () => detail(records[+tr.dataset.i]));
   };
 
   const originalSetup = setup;
