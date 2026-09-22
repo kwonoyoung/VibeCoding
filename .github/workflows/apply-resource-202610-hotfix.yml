@@ -1,0 +1,45 @@
+name: Apply resource 2026-10 hotfix
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/apply-resource-202610-hotfix.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch-resource:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Add resource hotfix script
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('resource.html')
+          text = p.read_text(encoding='utf-8-sig')
+          tag = '<script src="./resource-202610-hotfix.js?v=20260922-20261001"></script>'
+          if tag not in text:
+              marker = '<script src="latest-home-nav.js?v=20260825-resource-columns"></script>'
+              if marker in text:
+                  text = text.replace(marker, marker + '\n' + tag)
+              else:
+                  text = text.replace('</body>', tag + '\n</body>')
+              p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit patch
+        shell: bash
+        run: |
+          if git diff --quiet -- resource.html; then
+            echo "resource.html already patched"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add resource.html
+          git commit -m "resource.html 2026.10.1 인사발령 분석 보정 연결"
+          git push
