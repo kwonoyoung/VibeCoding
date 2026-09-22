@@ -1,0 +1,42 @@
+name: Apply resource formatDept fix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-resource-formatdept-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inject formatDept recovery script
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('resource.html')
+          text = p.read_text(encoding='utf-8-sig')
+          tag = '<script src="./resource-formatdept-fix.js?v=20260922-formatdept"></script>'
+          if tag not in text:
+              marker = '<script src="./resource-202610-hotfix.js?v=20260922-20261001"></script>'
+              if marker in text:
+                  text = text.replace(marker, marker + '\n' + tag)
+              else:
+                  text = text.replace('</body>', tag + '\n</body>')
+              p.write_text(text, encoding='utf-8')
+          PY
+      - name: Commit patch
+        run: |
+          if git diff --quiet -- resource.html; then
+            echo "No change needed"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add resource.html
+          git commit -m "resource.html formatDept 오류 수정 연결"
+          git push
