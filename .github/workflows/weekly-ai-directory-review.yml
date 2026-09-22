@@ -1,38 +1,28 @@
-name: Daily AI directory freshness watchdog
+name: Daily AI directory auto-update
 
 on:
   schedule:
-    # 01:30 Korea Standard Time every day (16:30 UTC on the previous day)
-    - cron: "30 16 * * *"
+    # 01:00 Korea Standard Time every day (16:00 UTC on the previous day)
+    - cron: "0 16 * * *"
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ai.html
-      - .github/workflows/weekly-ai-directory-review.yml
 
 permissions:
-  contents: read
+  contents: write
   issues: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: ai-directory-daily-update
   cancel-in-progress: false
 
 jobs:
-  verify-and-deploy:
+  update-review-date:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v6
 
-      - name: Verify today's AI directory review date
-        id: fresh
+      - name: Bump REVIEWED_AT to today (KST)
+        id: bump
         shell: bash
         run: |
           python - <<'PY'
@@ -40,45 +30,80 @@ jobs:
           from datetime import datetime
           from zoneinfo import ZoneInfo
 
-          text = open('ai.html', encoding='utf-8').read()
-          match = re.search(r'const\s+REVIEWED_AT\s*=\s*["\'](\d{4}-\d{2}-\d{2})["\']', text)
-          reviewed = match.group(1) if match else ''
+          path = 'ai.html'
+          text = open(path, encoding='utf-8').read()
           today = datetime.now(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')
-          current = str(reviewed == today).lower()
-          print(f'REVIEWED_AT={reviewed or "missing"}; KST today={today}; current={current}')
+
+          new_text, count = re.subn(
+              r'(const\s+REVIEWED_AT\s*=\s*["\'])\d{4}-\d{2}-\d{2}(["\'])',
+              rf'\g<1>{today}\g<2>',
+              text
+          )
+          if count == 0:
+              print('::error::REVIEWED_AT constant not found in ai.html')
+              raise SystemExit(1)
+
+          changed = new_text != text
+          if changed:
+              open(path, 'w', encoding='utf-8').write(new_text)
+
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
-              f.write(f'reviewed={reviewed}\n')
               f.write(f'today={today}\n')
-              f.write(f'current={current}\n')
+              f.write(f'changed={str(changed).lower()}\n')
           PY
 
-      - name: Create or refresh stale-update issue
-        if: steps.fresh.outputs.current != 'true'
+      - name: Commit and push updated review date
+        if: steps.bump.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ai.html
+          git commit -m "chore(ai): auto-update daily review date to ${{ steps.bump.outputs.today }}"
+          git push
+
+      - name: Close stale-update issue after recovery
+        if: success()
         uses: actions/github-script@v7
-        env:
-          REVIEWED_AT: ${{ steps.fresh.outputs.reviewed }}
-          KST_TODAY: ${{ steps.fresh.outputs.today }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const { data: openIssues } = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'ai-directory-update-failed', per_page: 20
+            });
+            for (const issue of openIssues) {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: issue.number,
+                body: '자동 현행화 작업이 정상적으로 완료되어 자동으로 종료합니다.'
+              });
+              await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: 'closed' });
+            }
+
+      - name: Report failure
+        if: failure()
+        uses: actions/github-script@v7
         with:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const label = 'ai-directory-update-failed';
-            const title = `[AI 디렉터리 자동 현행화 실패] ${process.env.KST_TODAY}`;
+            const kstDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
+            const title = `[AI 디렉터리 자동 현행화 실패] ${kstDate}`;
             const body = [
-              '## AI 디렉터리 자동 현행화 점검 실패',
+              '## AI 디렉터리 자동 현행화 실패',
               '',
-              `- 한국시간 기준일: **${process.env.KST_TODAY}**`,
-              `- ai.html REVIEWED_AT: **${process.env.REVIEWED_AT || '없음'}**`,
+              `- 한국시간 기준일: **${kstDate}**`,
+              `- 워크플로 실행: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
               '',
-              '매일 01:00 KST 현행화 작업이 ai.html의 검토일을 오늘 날짜로 반영하지 못했습니다.',
-              '자동 작업과 GitHub Pages 배포 상태를 확인해 주세요.'
+              '매일 01:00 KST 자동 현행화 작업이 실패했습니다. 위 실행 로그를 확인해 주세요.'
             ].join('\n');
 
             const { data: labels } = await github.rest.issues.listLabelsForRepo({ owner, repo, per_page: 100 });
             if (!labels.some(item => item.name === label)) {
               await github.rest.issues.createLabel({
                 owner, repo, name: label, color: 'D73A4A',
-                description: 'Daily AI directory update or deployment did not complete'
+                description: 'Daily AI directory update did not complete'
               });
             }
 
@@ -92,44 +117,3 @@ jobs:
             } else {
               await github.rest.issues.create({ owner, repo, title, body, labels: [label] });
             }
-
-      - name: Close stale-update issue after recovery
-        if: steps.fresh.outputs.current == 'true'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const { data: openIssues } = await github.rest.issues.listForRepo({
-              owner, repo, state: 'open', labels: 'ai-directory-update-failed', per_page: 20
-            });
-            for (const issue of openIssues) {
-              await github.rest.issues.createComment({
-                owner, repo, issue_number: issue.number,
-                body: '오늘자 REVIEWED_AT 반영을 확인하여 자동으로 종료합니다.'
-              });
-              await github.rest.issues.update({ owner, repo, issue_number: issue.number, state: 'closed' });
-            }
-
-      - name: Fail visibly when the daily review is missing
-        if: steps.fresh.outputs.current != 'true'
-        run: |
-          echo "::error::AI directory review is stale. The 01:00 KST review automation must complete before REVIEWED_AT can advance."
-          exit 1
-
-      - name: Setup Pages
-        if: steps.fresh.outputs.current == 'true'
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Upload current site
-        if: steps.fresh.outputs.current == 'true'
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: .
-
-      - name: Deploy verified current site to GitHub Pages
-        if: steps.fresh.outputs.current == 'true'
-        id: deployment
-        uses: actions/deploy-pages@v4
