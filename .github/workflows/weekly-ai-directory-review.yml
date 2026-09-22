@@ -9,14 +9,19 @@ on:
 permissions:
   contents: write
   issues: write
+  pages: write
+  id-token: write
 
 concurrency:
-  group: ai-directory-daily-update
+  group: pages
   cancel-in-progress: false
 
 jobs:
   update-review-date:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout main
         uses: actions/checkout@v6
@@ -61,6 +66,20 @@ jobs:
           git add ai.html
           git commit -m "chore(ai): auto-update daily review date to ${{ steps.bump.outputs.today }}"
           git push
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload current site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Close stale-update issue after recovery
         if: success()
