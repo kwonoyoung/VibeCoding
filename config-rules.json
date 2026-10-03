@@ -1,0 +1,103 @@
+{
+  "2022": {
+    "year": 2022,
+    "periods": [
+      {
+        "months": "1-3",
+        "description": "첫 3개월 (특례 적용)",
+        "cap": 2500000,
+        "rate": 1.0,
+        "deferredRate": 0.15
+      },
+      {
+        "months": "4-12",
+        "description": "4개월 이상",
+        "cap": 1500000,
+        "rate": 0.8,
+        "deferredRate": 0.15
+      }
+    ],
+    "minimum": 700000,
+    "specialConditions": {
+      "일반": {
+        "rate": 0.8,
+        "cap": 1500000,
+        "deferredRate": 0.15,
+        "description": "일반 공무원"
+      },
+      "아빠의 달": {
+        "rate": 1.0,
+        "cap": 2500000,
+        "deferredRate": 0.0,
+        "description": "아빠의 달 (첫 3개월 100%, 이후 80%)"
+      },
+      "한부모가족": {
+        "rate": 1.0,
+        "cap": 2500000,
+        "deferredRate": 0.0,
+        "description": "한부모가족 (첫 3개월 100%, 이후 80%)"
+      }
+    },
+    "childOrder": {
+      "첫째": {
+        "deferredRate": 0.15,
+        "description": "첫째 자녀 (복직합산금 15% 공제)"
+      },
+      "둘째이후": {
+        "deferredRate": 0.0,
+        "description": "둘째 이상 (복직합산금 공제 없음)"
+      }
+    }
+  },
+  "2024": {
+    "year": 2024,
+    "periods": [
+      {
+        "months": "1-3",
+        "description": "첫 3개월 (최고 수당)",
+        "cap": 2500000,
+        "rate": 1.0
+      },
+      {
+        "months": "4-6",
+        "description": "4-6개월 (아빠의 달 확대)",
+        "cap": 2500000,
+        "rate": 1.0
+      },
+      {
+        "months": "7-12",
+        "description": "7개월 이상",
+        "cap": 1500000,
+        "rate": 0.8
+      }
+    ],
+    "minimum": 700000,
+    "specialConditions": {
+      "일반": {
+        "rate": 0.8,
+        "cap": 1500000,
+        "description": "일반 공무원"
+      },
+      "아빠의 달": {
+        "rate": 1.0,
+        "cap": 2500000,
+        "description": "아빠의 달 (첫 6개월 100%)"
+      },
+      "한부모가족": {
+        "rate": 1.0,
+        "cap": 2500000,
+        "description": "한부모가족 (첫 3개월 100%)"
+      }
+    },
+    "childOrder": {
+      "첫째": {
+        "deferredRate": 0.15,
+        "description": "첫째 자녀"
+      },
+      "둘째이후": {
+        "deferredRate": 0.0,
+        "description": "둘째 이상 (복직합산금 공제 없음)"
+      }
+    }
+  }
+}
